@@ -1,48 +1,34 @@
-# Envanter: hukuk-buro-yonetim → kg-devkit (Faz 1)
+# Tasarım notları
 
-Kaynak: `hukuk-buro-yonetim/.claude/`. Sayılar o dosyadaki bağımlılık işaretleyicileridir
-(AGENTS.md atfı / dokümana atıf / `dev.sh` / `§` / tenant-büro terimi). Yüksek sayı = daha çok yeniden yazım.
+kg-devkit, bir .NET + React çok kiracılı projede kullanılan agent, skill ve kuralların projeden bağımsız hale getirilmiş
+halidir. Projeye özgü bilgi (komutlar, yollar, cluster adları, kural belgeleri) dosyalara gömülmez; her repo bunu kendi
+`AGENTS.md` dosyasındaki `## Project profile` bölümünde verir ([şablon](project-profile-template.md)).
 
-## Durum
+## Ne nerede
 
-| Dosya | Bağımlılık | Karar | Faz |
+| Tür | Kaynak | Claude | Codex |
 | --- | --- | --- | --- |
-| agent frontend-developer | A1 D0 S0 §0 T0; `../rules/*` linkleri | Taşındı (profil okur) | 2 ✅ |
-| agent frontend-browser-tester | A1 S1 T1; kimlik bilgisi, URL, `frontend/src/**`, router yolları | Taşındı (<profile> yer tutucuları) | 2 ✅ |
-| skill browser-test | bağımsız; `agent:` ile yukarıdakine bağlı | Taşındı | 2 ✅ |
-| agent backend-developer | A1 S2 T1 | Genelleştirildi | 3 ✅ |
-| agent backend-test-developer | A1 D1 S1 T2 | Genelleştirildi | 3 ✅ |
-| agent frontend-test-developer | A1 S2 | Genelleştirildi | 3 ✅ |
-| agent database-reviewer | A1 D1 §3 T5 | Genelleştirildi (tenant kısmı opsiyonel bölüm) | 3 ✅ |
-| agent engineering-software-architect | A2 D2 §1 T6 | Genelleştirildi | 3 ✅ |
-| agent devops-engineer / devops-operator | A1 D1 S2 / A1 | Genelleştirildi; DigitalOcean'a özgü kısım profile | 3 ✅ |
-| skill verify-change | A2 D1 T2 | Genelleştirildi (bitirme kapısı profilden) | 3 ✅ |
-| skill add-migration | A2 D1 S5 §3 T3 | Genelleştirildi (EF/komut profilden) | 3 ✅ |
-| skill release / rollback / live-check | A2 D2 S4 / A1 S1 / A1 S1 | Genelleştirildi; ortama özgü adımlar profile | 3 ✅ |
-| agent tenant-security-reviewer | T10 | Genelleştirildi (aynı ad); modele özgü kısım profile/kural dosyasına | 4 ✅ |
-| agent office-scope-advisor | T8, "büro" alan kavramı | Genelleştirildi, adı `scope-advisor`; mekanizma adları profilden | 4 ✅ |
-| rules/* (7 dosya) | §-numaralı teknik belge atıfı | Projede kalır (plugin rule taşımaz) | — |
+| Agent (11) | `plugins/kg-devkit/agents/*.md` | plugin, `kg-devkit:<ad>` | `codex/agents/*.toml` → `~/.codex/agents` |
+| Skill (6) | `plugins/kg-devkit/skills/*/SKILL.md` | plugin, `/kg-devkit:<ad>` | `codex/skills/*` → `~/.agents/skills`, `$<ad>` |
+| Kural (3) | `rules/*.md` | `~/.claude/rules` (symlink, plugin kural taşımaz) | okunmaz; ilkeler agent/skill gövdelerinde |
 
-## Açık kararlar
+`codex/` çıktısı `scripts/build-codex.py` ile Claude kaynağından üretilir (CI `--check` ile güncelliği doğrular).
 
-- Kit dili: şimdilik İngilizce yazıldı, rapor dili profilden gelir. Türkçe istenirse tek seferlik çeviri.
-- `.codex/` ve `.agents/` kopyaları: kit yalnız Claude tarafını taşıyor; Codex kopyaları ayrı karar (Faz 3 sonrası).
-- Genel rule'lar için `~/.claude/rules/` symlink'i: Faz 3'te, hangi kuralların gerçekten genel olduğu netleşince.
-- AGENTS.md'deki "agent'tan agent başlatma yok" gibi kısıtlar: kit agent'larında sabit bırakıldı, profil gerekirse ezer.
+## Tasarım kararları
 
-## Faz 3 notları
+- **Profil okuma:** Agent ve skill'ler önce `Project profile` bölümünü okur; yoksa `package.json`/README'den çıkarım yapar
+  ve raporda söyler. Rapor dili profilden gelir (varsayılan: kullanıcının isteği).
+- **Reviewer çıktısı:** `database-reviewer` ve `tenant-security-reviewer` raporu `VERDICT: PASS / FAIL / UNCLEAR` ile bitirir;
+  profil farklı bir geçti ifadesi isterse onu da yazar.
+- **Salt-okuma sınırı:** Reviewer, danışman ve scope agent'ları yalnız `Read, Grep, Glob` kullanır (Codex'te `sandbox_mode = "read-only"`).
+- **Yan etkili skill'ler:** `release`, `rollback`, `live-check`, `add-migration`, `verify-change`, `browser-test`
+  `disable-model-invocation: true` ile yalnız açıkça çağrılır; commit, deploy ve veritabanı yetkisi vermezler.
+- **Kapsam:** Çok kiracılı projelere özgü `tenant-security-reviewer` ve `scope-advisor` tek müşterili projede işe yaramaz;
+  profilde ilgili alan yoksa durup bildirirler.
+- **Stack paketleri yok:** .NET/React'e özgü kural paketleri bilerek eklenmedi; aynı stack'te ikinci proje gelince çıkarılır.
 
-- Reviewer çıktısı artık `VERDICT: PASS/FAIL/UNCLEAR`. Hukuk projesine geçişte (Faz 4) bitirme kapısı tablosu
-  ve `AGENTS.md` "KARAR: GEÇTİ" ifadesini kit ile eşleştirmek veya profilde belirtmek gerekir.
-- Kit rapor dilini profilden alır; hukuk projesi profilinde `Report language: Türkçe` yazmalı.
-- Skill'ler diğer skill'e `/kg-devkit:live-check` olarak atıf yapar (rollback → live-check).
-- Faz 4b: `tenant-security-reviewer` ve `scope-advisor` da kite taşındı; verify-change/release/add-migration
-  bunlara profildeki "finish gate" üzerinden atıf yapar, adlarını gömmez.
+## Bilinen sınırlar
 
-## Faz 5: kurallar
-
-- Projenin 9 kural dosyası (backend, frontend, testler, operations, runbook, documentation, database/security-review) §-numaralı
-  teknik belgeye ve projeye özgü yardımcılara bağlıdır; olduğu gibi projede kaldı.
-- Kitteki 3 genel kural (`rules/`) projedeki karşılıklarının genel ilkelerini taşır; projede tekrar var, bilinçli
-  (kit kurulu olmayan makinede proje kuralları tek başına yeterli kalsın diye).
-- Stack'e özgü kural paketleri (.NET/React) eklenmedi; ikinci bir aynı-stack projesi gelince çıkarılır.
+- Codex tarafı Claude kadar sınanmadı: agent'ların yüklenmesi ve `$verify-change` doğrulandı, diğer skill'ler denenmedi.
+- `frontend-browser-tester` gerçek Chrome oturumunda denenmedi.
+- `release`, `rollback`, `live-check`, `add-migration` canlı bir ortamda uçtan uca çalıştırılmadı; yalnız talimat düzeyinde gözden geçirildi.
