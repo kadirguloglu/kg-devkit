@@ -32,4 +32,6 @@ Codex'te skill'ler `$verify-change` biçiminde çağrılır. Agent'lar `.toml` o
   `backend-test-developer`, `database-reviewer`, `engineering-software-architect`, `devops-engineer`, `devops-operator`
 - Skill'ler: `browser-test`, `verify-change`, `add-migration`, `release`, `rollback`, `live-check`
 
+CI: `.github/workflows/check.yml` Codex çıktısının güncelliğini ve manifestleri doğrular.
+
 Taşıma durumu ve açık kararlar: [docs/inventory.md](docs/inventory.md).

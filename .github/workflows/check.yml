@@ -1,0 +1,28 @@
+name: check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Codex çıktısı Claude kaynağıyla eşit mi
+        run: python3 scripts/build-codex.py --check
+      - name: Betik sözdizimi
+        run: bash -n scripts/install-codex.sh
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Claude Code kur
+        run: npm install -g @anthropic-ai/claude-code
+      - name: Marketplace ve plugin doğrula
+        run: |
+          claude plugin validate .
+          claude plugin validate plugins/kg-devkit
