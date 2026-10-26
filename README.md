@@ -14,6 +14,19 @@ claude plugin install kg-devkit@kg-devkit
 Skill'ler `/kg-devkit:<ad>`, agent'lar `kg-devkit:<ad>` olarak görünür. Aynı adlı proje agent'ı/skill'i
 plugin'i ezer; projeye özel sürüm gerektiğinde yerel dosya yeterlidir.
 
+## Kurallar (rules)
+
+Plugin kural taşımaz; `rules/` altındaki genel kurallar kullanıcı düzeyine bağlanır ve ilgili `paths` dosyalarına
+girildiğinde yüklenir (projenin kendi kurallarıyla birlikte, onların önceliği vardır):
+
+```bash
+./scripts/install-claude-rules.sh            # ~/.claude/rules altına symlink
+./scripts/install-claude-rules.sh --uninstall
+```
+
+- `kg-test-discipline` (test dosyaları), `kg-documentation-maintenance` (`docs/**`, README, ADR), `kg-ops-safety` (deploy, k8s, Dockerfile, CI).
+- Codex `~/.claude/rules` okumaz; Codex'te bu ilkeler agent/skill gövdelerindedir.
+
 ## Codex
 
 Tek kaynak Claude tarafıdır. `codex/` çıktısı üretilir, elle düzenlenmez:

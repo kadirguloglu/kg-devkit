@@ -38,3 +38,11 @@ Kaynak: `hukuk-buro-yonetim/.claude/`. Sayılar o dosyadaki bağımlılık işar
 - Skill'ler diğer skill'e `/kg-devkit:live-check` olarak atıf yapar (rollback → live-check).
 - Faz 4b: `tenant-security-reviewer` ve `scope-advisor` da kite taşındı; verify-change/release/add-migration
   bunlara profildeki "finish gate" üzerinden atıf yapar, adlarını gömmez.
+
+## Faz 5: kurallar
+
+- Projenin 9 kural dosyası (backend, frontend, testler, operations, runbook, documentation, database/security-review) §-numaralı
+  teknik belgeye ve projeye özgü yardımcılara bağlıdır; olduğu gibi projede kaldı.
+- Kitteki 3 genel kural (`rules/`) projedeki karşılıklarının genel ilkelerini taşır; projede tekrar var, bilinçli
+  (kit kurulu olmayan makinede proje kuralları tek başına yeterli kalsın diye).
+- Stack'e özgü kural paketleri (.NET/React) eklenmedi; ikinci bir aynı-stack projesi gelince çıkarılır.
