@@ -14,8 +14,10 @@ claude plugin install kg-devkit@kg-devkit
 Skill'ler `/kg-devkit:<ad>`, agent'lar `kg-devkit:<ad>` olarak görünür. Aynı adlı proje agent'ı/skill'i
 plugin'i ezer; projeye özel sürüm gerektiğinde yerel dosya yeterlidir.
 
-## İçerik (v0.1.0)
+## İçerik (v0.2.0)
 
-- agent `frontend-developer`, agent `frontend-browser-tester`, skill `browser-test`
+- Agent'lar: `frontend-developer`, `frontend-browser-tester`, `frontend-test-developer`, `backend-developer`,
+  `backend-test-developer`, `database-reviewer`, `engineering-software-architect`, `devops-engineer`, `devops-operator`
+- Skill'ler: `browser-test`, `verify-change`, `add-migration`, `release`, `rollback`, `live-check`
 
 Taşıma durumu ve açık kararlar: [docs/inventory.md](docs/inventory.md).
