@@ -19,8 +19,8 @@ Kaynak: `hukuk-buro-yonetim/.claude/`. Sayılar o dosyadaki bağımlılık işar
 | skill verify-change | A2 D1 T2 | Genelleştirildi (bitirme kapısı profilden) | 3 ✅ |
 | skill add-migration | A2 D1 S5 §3 T3 | Genelleştirildi (EF/komut profilden) | 3 ✅ |
 | skill release / rollback / live-check | A2 D2 S4 / A1 S1 / A1 S1 | Genelleştirildi; ortama özgü adımlar profile | 3 ✅ |
-| agent tenant-security-reviewer | T10 | Projede kalır; sonra "multi-tenant" adayı | — |
-| agent office-scope-advisor | T8, "büro" alan kavramı | Projede kalır | — |
+| agent tenant-security-reviewer | T10 | Genelleştirildi (aynı ad); modele özgü kısım profile/kural dosyasına | 4 ✅ |
+| agent office-scope-advisor | T8, "büro" alan kavramı | Genelleştirildi, adı `scope-advisor`; mekanizma adları profilden | 4 ✅ |
 | rules/* (7 dosya) | §-numaralı teknik belge atıfı | Projede kalır (plugin rule taşımaz) | — |
 
 ## Açık kararlar
@@ -36,5 +36,5 @@ Kaynak: `hukuk-buro-yonetim/.claude/`. Sayılar o dosyadaki bağımlılık işar
   ve `AGENTS.md` "KARAR: GEÇTİ" ifadesini kit ile eşleştirmek veya profilde belirtmek gerekir.
 - Kit rapor dilini profilden alır; hukuk projesi profilinde `Report language: Türkçe` yazmalı.
 - Skill'ler diğer skill'e `/kg-devkit:live-check` olarak atıf yapar (rollback → live-check).
-- `tenant-security-reviewer` ve `office-scope-advisor` hâlâ projede; verify-change/release/add-migration
+- Faz 4b: `tenant-security-reviewer` ve `scope-advisor` da kite taşındı; verify-change/release/add-migration
   bunlara profildeki "finish gate" üzerinden atıf yapar, adlarını gömmez.
