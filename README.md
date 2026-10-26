@@ -6,9 +6,14 @@ Proje bilgisi agent'lara gömülmez; her repo `AGENTS.md` içindeki `## Project 
 
 ## Kurulum
 
+Repo özel (private) olduğu için önce `gh auth login` gerekir.
+
 ```bash
-claude plugin marketplace add ~/Documents/GitHub/kg-devkit
+git clone https://github.com/kadirguloglu/kg-devkit ~/Documents/GitHub/kg-devkit
+claude plugin marketplace add kadirguloglu/kg-devkit      # ya da yerel klasör: ~/Documents/GitHub/kg-devkit
 claude plugin install kg-devkit@kg-devkit
+./scripts/install-codex.sh          # Codex agent/skill bağları (isteğe bağlı)
+./scripts/install-claude-rules.sh   # genel kurallar (isteğe bağlı)
 ```
 
 Skill'ler `/kg-devkit:<ad>`, agent'lar `kg-devkit:<ad>` olarak görünür. Aynı adlı proje agent'ı/skill'i
