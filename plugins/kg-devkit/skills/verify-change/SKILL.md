@@ -13,7 +13,8 @@ report language). This skill grants no authority to commit, push, deploy or rese
 
 1. `git status --short`, `git diff --stat`, `git diff --cached --stat` to find the scope. Tell staged, unstaged
    and untracked files apart; never claim or delete the user's changes. Read the relevant diff; open large
-   generated files only if the changed schema/contract requires it.
+   generated files only if the changed schema/contract requires it. If the working tree is clean, the target is
+   the last commit (`git diff --stat HEAD~1..HEAD`, `git show`); state which target you used.
 2. Compare the changed behavior with its callers and contract. Read the profile's path-matched rule documents and
    only the relevant sections of the technical documents. Verify document claims against concrete code; do not
    treat an old decision record as current behavior.

@@ -26,7 +26,7 @@ python3 scripts/build-codex.py           # codex/ yeniden üret (--check: günce
 
 Codex'te skill'ler `$verify-change` biçiminde çağrılır. Agent'lar `.toml` olarak ~/.codex/agents altından yüklenir.
 
-## İçerik (v0.3.0)
+## İçerik (v0.3.1)
 
 - Agent'lar: `frontend-developer`, `frontend-browser-tester`, `frontend-test-developer`, `backend-developer`,
   `backend-test-developer`, `database-reviewer`, `engineering-software-architect`, `devops-engineer`, `devops-operator`
