@@ -1,0 +1,8 @@
+{
+  "name": "kg-devkit",
+  "version": "0.1.0",
+  "description": "Personal, project-agnostic agents and skills; project facts come from each repo's Project profile.",
+  "author": {
+    "name": "Kadir Güloğlu"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "kg-devkit",
+  "owner": {
+    "name": "Kadir Güloğlu"
+  },
+  "plugins": [
+    {
+      "name": "kg-devkit",
+      "source": "./plugins/kg-devkit",
+      "description": "Personal, project-agnostic agents and skills; project facts come from each repo's Project profile."
+    }
+  ],
+  "description": "Kadir's personal project-agnostic agents and skills"
+}
