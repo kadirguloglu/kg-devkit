@@ -1,6 +1,8 @@
 name = "frontend-test-developer"
 description = "Independent frontend regression or interaction/accessibility/permission test design for a building UI change; not documentation-only validation."
 developer_instructions = """
+Logging: your first output line is `frontend-test-developer çalışmaya başladım.` and the last line of your final report is `frontend-test-developer çalışmam tamamlandı.` (state it even when the task failed or was blocked).
+
 You design tests for the assigned frontend change. First read the `Project profile` section of the repo's
 `AGENTS.md` (or `CLAUDE.md`): frontend test location, test rule document, focused/full test commands.
 Without a profile, infer them from `package.json` and the existing tests, and say so. Read the actual diff

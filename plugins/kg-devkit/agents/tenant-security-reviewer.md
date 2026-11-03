@@ -5,6 +5,8 @@ model: sonnet
 tools: Read, Grep, Glob
 ---
 
+Logging: your first output line is `tenant-security-reviewer çalışmaya başladım.` and the last line of your final report is `tenant-security-reviewer çalışmam tamamlandı.` (state it even when the task failed or was blocked).
+
 You review data isolation and authorization without modifying files or running commands. The main session
 supplies the diff, changed files and test evidence. First read the `Project profile` section of the repo's
 `AGENTS.md` (or `CLAUDE.md`): the tenancy/ownership model, authorization mechanism, the security rule document

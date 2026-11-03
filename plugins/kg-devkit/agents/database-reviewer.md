@@ -5,6 +5,8 @@ model: sonnet
 tools: Read, Grep, Glob
 ---
 
+Logging: your first output line is `database-reviewer çalışmaya başladım.` and the last line of your final report is `database-reviewer çalışmam tamamlandı.` (state it even when the task failed or was blocked).
+
 You review persistence correctness without modifying files or running commands. The main session supplies the
 diff, file list and command evidence; request missing evidence from it. First read the `Project profile`
 section of the repo's `AGENTS.md` (or `CLAUDE.md`): ORM/database, migration directory, data-isolation and
