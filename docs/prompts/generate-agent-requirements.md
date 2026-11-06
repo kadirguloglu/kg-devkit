@@ -11,6 +11,7 @@ README'deki doküman linki dışında başka dosyaya dokunma. SORU-CEVAP yürüt
 yalnız bulunamayan veya çelişen noktaları, en çok 4 soruluk gruplar halinde (AskUserQuestion varsa onunla) sor. "Belirtilmemiş" yazmadan önce sor.
 
 ## 1. Keşif (önce oku, sonra yaz)
+- Önce agent/skill/kural dizinlerinin yerini bul. Bulamazsan veya birden fazla aday varsa varsayma, kullanıcıya sor. Aşağıdaki yollar yalnız örnektir.
 - Agent tanım dosyalarını bul (ör. plugins/*/agents/*.md, .claude/agents/*.md, codex/agents/*.toml) ve hepsini baştan sona oku.
   Kaynak ile üretilmiş çıktı varsa (ör. Claude .md → Codex .toml) yalnız kaynağı esas al, üretilmiş olanı elle değiştirme.
 - Skill tanımlarını (ör. plugins/*/skills/*/SKILL.md) oku: her skill için çağrı biçimi (`disable-model-invocation`, `agent`/`context`), okuduğu profil alanları,

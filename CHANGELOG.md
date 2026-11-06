@@ -5,6 +5,9 @@ ile seviye seçilir. Bu dosya kullanıcıya dönük etkiyi özetler; taslağı `
 (bkz. [docs/inventory.md](docs/inventory.md)). Kategoriler: **Kırıcı**, **Eklenen**, **Değişen**, **Düzeltilen**, **Doküman/Altyapı**.
 
 ## Yayınlanmadı (öneri: patch)
+- **Doküman/Altyapı:** `generate-project-profile.md` prompt'u kendi içinde eksiksiz: profil şablonu prompt'un içine gömüldü, kg-devkit reposundaki
+  dosyalara ihtiyaç duymadan başka projede kopyala-yapıştır çalışır. `generate-agent-requirements.md` agent/skill dizinlerini varsaymaz, bulamazsa sorar.
+  `kit-doc-sync`, gömülü şablonun `docs/project-profile-template.md` ile aynı kalmasını da denetler.
 - **Doküman/Altyapı:** `docs/prompts/` altındaki iki prompt soru-cevap akışına çevrildi: önce repo/mevcut doküman taranır, cevabı bulunanlar
   sorulmaz, yalnız belirsiz/bulunamayan noktalar (en çok 4'lü gruplar) kullanıcıya sorulur. Gereksinim prompt'u artık skill'leri ve kuralları da
   kapsar; `agent-requirements.md`'ye Skill tablosu, profil şablonuna `Production` altında bulut CLI kimlik ve rollback komutu eklendi.
