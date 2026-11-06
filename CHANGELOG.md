@@ -11,7 +11,7 @@ ile seviye seçilir. Bu dosya kullanıcıya dönük etkiyi özetler; taslağı `
   `dependency-supply-chain-reviewer` CI sınırı netleştirildi (pinleme/güven/secret; workflow mantığı `devops-engineer`'da).
   `build-codex.py`'den artık gereksiz `kg-devkit:` önek kuralı kaldırıldı.
 - **Doküman/Altyapı:** `.claude/settings.json` `Stop` kancası (`.claude/hooks/kit-review-gate.py`): kit kaynakları değişince
-  `kit-agent-linter` ve `kit-doc-sync` çalıştırılmasını ister; kaynak değişip `CHANGELOG.md` değişmediyse `kit-release-notes` da istenir (yalnız bu repoda).
+  `kit-agent-linter` ve `kit-doc-sync` çalıştırılmasını ister; kaynak değişip `CHANGELOG.md` değişmediyse `kit-release-notes` da istenir; özet agent başına ve dosya içeriğine bağlıdır, commit veya kanca betiği düzenlemesi yeniden tetiklemez (yalnız bu repoda).
 
 ## 0.8.0 – 2026-11-06 (öneri: `[minor]`)
 - **Eklenen:** 4 salt-okuma reviewer agent'ı: `api-contract-reviewer` (opus; kırıcı API değişikliği ve backend/frontend sözleşme sapması),

@@ -3,25 +3,38 @@
 
 - plugins/kg-devkit/agents/** veya codex/agents/** değiştiyse -> kit-agent-linter
 - agent, skill, kural, kanca, betik, workflow, doküman veya README değiştiyse -> kit-doc-sync
-- plugin kaynağı (agent/skill/kanca), kural, betik veya workflow değiştiyse ve CHANGELOG.md değişmediyse -> kit-release-notes
-Aynı değişiklik kümesi için yalnız bir kez durdurur (özet .git/kit-review-gate/ altında tutulur), böylece döngü olmaz.
-Salt-okuma git komutları dışında bir şey çalıştırmaz; hata olursa sessizce izin verir.
+- plugin kaynağı, kural, betik veya workflow değiştiyse ve CHANGELOG.md son çalıştırmadan beri değişmediyse -> kit-release-notes
+
+Her agent için ayrı bir özet tutulur (.git/kit-review-gate/state.json). Özet yalnız o agent'ın baktığı dosyaların içeriğinden
+hesaplanır: commit atmak veya kanca betiğini düzenlemek hiçbir şeyi yeniden tetiklemez, yalnız ilgili dosyaların içeriği değişince
+o agent bir kez daha istenir. Salt-okuma git komutları dışında bir şey çalıştırmaz; hata olursa sessizce izin verir.
 """
-import hashlib, json, os, subprocess, sys
+import hashlib, json, os, subprocess
 
 LINT = ("plugins/kg-devkit/agents/", "codex/agents/")
 SRC = ("plugins/", "rules/", "scripts/", ".github/workflows/")
-DOCS = ("plugins/", "rules/", "scripts/", ".github/workflows/", "docs/", ".claude/agents/", "README.md", "CHANGELOG.md")
+DOCS = SRC + ("docs/", ".claude/agents/", "README.md", "CHANGELOG.md")
+CHANGELOG = "CHANGELOG.md"
 
 
 def git(*args):
     return subprocess.run(["git", *args], capture_output=True, text=True, check=True).stdout
 
 
+def digest(paths):
+    h = hashlib.sha256()
+    for f in sorted(paths):
+        h.update(f.encode())
+        try:
+            h.update(open(f, "rb").read())
+        except OSError:
+            h.update(b"<silindi>")
+    return h.hexdigest()[:24]
+
+
 def main():
     try:
-        root = git("rev-parse", "--show-toplevel").strip()
-        os.chdir(root)
+        os.chdir(git("rev-parse", "--show-toplevel").strip())
         base = None
         for ref in ("origin/main", "origin/master", "main", "master"):
             try:
@@ -32,33 +45,39 @@ def main():
         files = set(git("diff", "--name-only", base or "HEAD~1").split())
         files |= set(git("diff", "--name-only", "HEAD").split())
         files |= set(git("ls-files", "--others", "--exclude-standard").split())
-        lint = sorted(f for f in files if f.startswith(LINT))
-        docs = sorted(f for f in files if f.startswith(DOCS))
-        notes = any(f.startswith(SRC) for f in files) and "CHANGELOG.md" not in files
-        if not lint and not docs and not notes:
+        lint = [f for f in files if f.startswith(LINT)]
+        docs = [f for f in files if f.startswith(DOCS) and f != CHANGELOG]
+        src = [f for f in files if f.startswith(SRC)]
+        changelog = digest([CHANGELOG]) if os.path.exists(CHANGELOG) else ""
+        cur = {"lint": digest(lint), "docs": digest(docs), "src": digest(src), "changelog": changelog}
+
+        state_dir = os.path.join(git("rev-parse", "--git-dir").strip(), "kit-review-gate")
+        state_file = os.path.join(state_dir, "state.json")
+        try:
+            old = json.load(open(state_file))
+        except Exception:
+            old = {}
+
+        want = []
+        if lint and cur["lint"] != old.get("lint"):
+            want.append("`kit-agent-linter` (agent dosyaları değişti: " + ", ".join(sorted(lint)[:6]) + (" …" if len(lint) > 6 else "") + ")")
+        if docs and cur["docs"] != old.get("docs"):
+            want.append("`kit-doc-sync` (README/doküman/prompt kaynakla uyumlu mu)")
+        if src and cur["src"] != old.get("src"):
+            # CHANGELOG ilk çalıştırmada dal farkına, sonraki çalıştırmalarda son özete göre güncel sayılır
+            touched = (CHANGELOG in files) if "changelog" not in old else (cur["changelog"] != old["changelog"])
+            if not touched:
+                want.append("`kit-release-notes` (kaynak değişti ama CHANGELOG.md güncellenmedi; sürüm notu taslağı ve [minor]/[major] önerisi için)")
+
+        if cur != old:
+            os.makedirs(state_dir, exist_ok=True)
+            json.dump(cur, open(state_file, "w"))
+        if not want:
             return
-        h = hashlib.sha256()
-        h.update(git("diff", base or "HEAD~1").encode())
-        h.update(git("diff", "HEAD").encode())
-        for f in sorted(f for f in files if os.path.isfile(f) and not git("ls-files", f).strip()):
-            h.update(f.encode()); h.update(open(f, "rb").read())
-        marker_dir = os.path.join(git("rev-parse", "--git-dir").strip(), "kit-review-gate")
-        marker = os.path.join(marker_dir, h.hexdigest()[:24])
-        if os.path.exists(marker):
-            return
-        os.makedirs(marker_dir, exist_ok=True)
-        open(marker, "w").close()
     except Exception:
         return
-    todo = []
-    if lint:
-        todo.append("`kit-agent-linter` (agent dosyaları değişti: " + ", ".join(lint[:6]) + (" …" if len(lint) > 6 else "") + ")")
-    if docs:
-        todo.append("`kit-doc-sync` (README/doküman/prompt kaynakla uyumlu mu)")
-    if notes:
-        todo.append("`kit-release-notes` (kaynak değişti ama CHANGELOG.md güncellenmedi; sürüm notu taslağı ve [minor]/[major] önerisi için)")
     reason = ("Kit kaynakları değişti; bitirmeden önce şu bakım agent'larını Agent aracıyla çalıştır ve bulguları raporla/düzelt: "
-              + " ve ".join(todo) + ". Hedef olarak bu değişiklik kümesini ver. Zaten çalıştırdıysan sonucu özetleyip bitir.")
+              + " ve ".join(want) + ". Hedef olarak bu değişiklik kümesini ver. Zaten çalıştırdıysan sonucu özetleyip bitir.")
     print(json.dumps({"decision": "block", "reason": reason}, ensure_ascii=False))
 
 

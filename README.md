@@ -71,7 +71,7 @@ python3 scripts/test_guard_infra.py      # güvenlik kancası kural testleri
 claude plugin validate . && claude plugin validate plugins/kg-devkit
 ```
 
-Bu repoyu geliştirirken `.claude/agents/` altındaki bakım agent'ları kullanılır: `kit-doc-sync`, `kit-agent-linter`, `kit-release-notes` (plugin'e dahil değildir, kullanıcılara gitmez). `.claude/settings.json` içindeki `Stop` kancası (`.claude/hooks/kit-review-gate.py`) kit kaynakları değiştiğinde `kit-agent-linter` ve `kit-doc-sync`'in otomatik çalıştırılmasını ister; `CHANGELOG.md` güncellenmeden kaynak değişirse `kit-release-notes` da istenir.
+Bu repoyu geliştirirken `.claude/agents/` altındaki bakım agent'ları kullanılır: `kit-doc-sync`, `kit-agent-linter`, `kit-release-notes` (plugin'e dahil değildir, kullanıcılara gitmez). `.claude/settings.json` içindeki `Stop` kancası (`.claude/hooks/kit-review-gate.py`) kit kaynakları değiştiğinde `kit-agent-linter` ve `kit-doc-sync`'in otomatik çalıştırılmasını ister; `CHANGELOG.md` güncellenmeden kaynak değişirse `kit-release-notes` da istenir; her agent yalnız kendi baktığı dosyalar değişince bir kez istenir.
 
 CI (`.github/workflows/check.yml`) Codex çıktısının güncelliğini, kanca testlerini ve manifestleri doğrular.
 Tasarım kararları ve bilinen sınırlar: [docs/inventory.md](docs/inventory.md).
