@@ -2,6 +2,7 @@
 
 Project-agnostic agents, skills and rules for **Claude Code** and **Codex**: developers, test developers, reviewers
 (database, tenant security), an architecture advisor, a scope advisor, and release/rollback/live-check/migration skills.
+A Claude-only safety hook asks for approval before `kubectl`/`helm`/`terraform` mutations and secret reads.
 Nothing project-specific is baked in: each repo describes itself in a `## Project profile` section of its `AGENTS.md`
 (see the [template](docs/project-profile-template.md)), and the agents read it first. License: MIT.
 
@@ -36,14 +37,24 @@ git clone https://github.com/kadirguloglu/kg-devkit ~/kg-devkit && cd ~/kg-devki
 Skill'ler `/kg-devkit:<ad>`, agent'lar `kg-devkit:<ad>` olarak görünür (Codex'te skill: `$<ad>`). Aynı adlı proje
 agent'ı/skill'i plugin'i ezer. Betikler yalnız sembolik bağ kurar, var olan dosyaya dokunmaz; `--uninstall` ile kaldırılır.
 
-## İçerik (v0.4.0)
+## İçerik
 
-- **Agent'lar:** `frontend-developer`, `frontend-browser-tester`, `frontend-test-developer`, `backend-developer`,
+- **Agent'lar (11):** `frontend-developer`, `frontend-browser-tester`, `frontend-test-developer`, `backend-developer`,
   `backend-test-developer`, `database-reviewer`, `engineering-software-architect`, `devops-engineer`, `devops-operator`,
-  `tenant-security-reviewer`, `scope-advisor`
+  `tenant-security-reviewer`, `scope-advisor`. Riskli işler için `devops-operator`, `database-reviewer` ve
+  `tenant-security-reviewer` `opus`, diğerleri `sonnet` modelini kullanır. `tenant-security-reviewer` ve `scope-advisor`
+  çok kiracılı projeler içindir (tek müşterili projede `scope-advisor` `NOT-APPLICABLE` döner). Ayrıntı: [agent gereksinimleri](docs/agent-requirements.md).
 - **Skill'ler** (yalnız açıkça çağrılır): `browser-test`, `verify-change`, `add-migration`, `release`, `rollback`, `live-check`
 - **Kurallar** (`rules/`, ilgili dosyalara girilince yüklenir): `kg-test-discipline`, `kg-documentation-maintenance`,
   `kg-ops-safety`. Plugin kural taşımadığı için `~/.claude/rules` altına bağlanır; Codex bunları okumaz.
+- **Güvenlik kancası** (yalnız Claude): `hooks/guard-infra.py`, canlı ortamı değiştiren `kubectl`/`oc`/`helm`/`terraform` komutlarını
+  ve secret okumayı kullanıcı onayına düşürür (bloklamaz). Plugin ile birlikte gelir; Codex'te yoktur, orada yalnız agent metin kuralları geçerlidir.
+
+## Sürümleme
+
+`main`'e her push'ta GitHub Actions (`bump-version.yml`) `plugins/kg-devkit/.claude-plugin/plugin.json` sürümünü artırır ve
+`chore(release): vX.Y.Z` commit'i atar. Varsayılan **patch**; merge/commit mesajına `[minor]` veya `[major]` yazarsan o seviye artar.
+Güncel sürüm için `plugin.json`'a bak; README'ye sürüm yazılmaz.
 
 ## Geliştirme
 
@@ -51,8 +62,9 @@ Tek kaynak Claude tarafıdır. `codex/` çıktısı üretilir, elle düzenlenmez
 
 ```bash
 python3 scripts/build-codex.py           # codex/ yeniden üret (--check: güncel mi)
+python3 scripts/test_guard_infra.py      # güvenlik kancası kural testleri
 claude plugin validate . && claude plugin validate plugins/kg-devkit
 ```
 
-CI (`.github/workflows/check.yml`) Codex çıktısının güncelliğini ve manifestleri doğrular.
+CI (`.github/workflows/check.yml`) Codex çıktısının güncelliğini, kanca testlerini ve manifestleri doğrular.
 Tasarım kararları ve bilinen sınırlar: [docs/inventory.md](docs/inventory.md).
