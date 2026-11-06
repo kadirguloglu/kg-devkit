@@ -13,6 +13,7 @@ agent'lara gömülmez; her repo `AGENTS.md` içindeki `## Project profile` böl�
 - [Project profile şablonu](docs/project-profile-template.md) – kendi reponda doldurulacak bölüm.
 - [Tasarım kararları ve sınırlar](docs/inventory.md).
 - [Gereksinim dokümanını üreten prompt](docs/prompts/generate-agent-requirements.md) – agent eklenince/değişince dokümanı yeniden üretmek için.
+- [Project profile üreten prompt](docs/prompts/generate-project-profile.md) – yeni projenin `## Project profile` bölümünü repodan çıkarttırmak için.
 
 > **Güvenlik notu:** Agent'lar çalıştıkları reponun `AGENTS.md` dosyasını okur ve oradaki talimatlara uyar. Güvenmediğin
 > bir repoda kit'i kullanma; `release`, `rollback` ve `devops-operator` canlı sistemi etkileyebilir (hepsi açık onay ister).
