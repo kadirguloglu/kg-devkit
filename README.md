@@ -66,5 +66,7 @@ python3 scripts/test_guard_infra.py      # güvenlik kancası kural testleri
 claude plugin validate . && claude plugin validate plugins/kg-devkit
 ```
 
+Bu repoyu geliştirirken `.claude/agents/` altındaki bakım agent'ları kullanılır: `kit-doc-sync`, `kit-agent-linter`, `kit-release-notes` (plugin'e dahil değildir, kullanıcılara gitmez).
+
 CI (`.github/workflows/check.yml`) Codex çıktısının güncelliğini, kanca testlerini ve manifestleri doğrular.
 Tasarım kararları ve bilinen sınırlar: [docs/inventory.md](docs/inventory.md).
