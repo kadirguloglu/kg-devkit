@@ -25,6 +25,10 @@ halidir. Projeye özgü bilgi (komutlar, yollar, cluster adları, kural belgeler
   `disable-model-invocation: true` ile yalnız açıkça çağrılır; commit, deploy ve veritabanı yetkisi vermezler.
 - **Kapsam:** Çok kiracılı projelere özgü `tenant-security-reviewer` ve `scope-advisor` tek müşterili projede işe yaramaz;
   profilde ilgili alan yoksa durup bildirirler.
+- **Otomatik sürüm:** `main`'e her push'ta `.github/workflows/bump-version.yml`, `scripts/bump-version.py` ile
+  `plugins/kg-devkit/.claude-plugin/plugin.json` sürümünü artırıp `chore(release): vX.Y.Z` commit'i atar. Varsayılan
+  patch; birleştirme/commit mesajında `[minor]` veya `[major]` varsa o seviye. Botun kendi commit'i yeni artış tetiklemez.
+  `main` dal koruması varsa Actions botuna push izni verilmeli (yoksa iş başarısız olur).
 - **Stack paketleri yok:** .NET/React'e özgü kural paketleri bilerek eklenmedi; aynı stack'te ikinci proje gelince çıkarılır.
 
 ## Bilinen sınırlar
