@@ -4,6 +4,14 @@ Sürümler `main`'e her push'ta otomatik artar (`bump-version.yml`): varsayılan
 ile seviye seçilir. Bu dosya kullanıcıya dönük etkiyi özetler; taslağı `kit-release-notes` agent'ı çıkarır
 (bkz. [docs/inventory.md](docs/inventory.md)). Kategoriler: **Kırıcı**, **Eklenen**, **Değişen**, **Düzeltilen**, **Doküman/Altyapı**.
 
+## Yayınlanmadı (öneri: `[minor]`)
+- **Eklenen:** 4 salt-okuma reviewer agent'ı: `api-contract-reviewer` (opus; kırıcı API değişikliği ve backend/frontend sözleşme sapması),
+  `dependency-supply-chain-reviewer` (bağımlılık, lockfile, lisans, CI action tedarik zinciri), `performance-reviewer` (uygulama/UI performansı;
+  şema ve sorgu `database-reviewer`'da kalır) ve `observability-reviewer` (log/metrik/trace, log'a hassas veri sızması, yutulan hatalar).
+  Hepsi `VERDICT: PASS/FAIL/UNCLEAR` ile biter; Codex çıktısı üretildi.
+- **Değişen:** Project profile şablonuna `API contract`, `Dependencies`, `Performance`, `Observability` alanları eklendi
+  (şablon, profil üreten prompt ve `agent-requirements.md` güncellendi). Agent sayısı 11 → 15.
+
 ## 0.7.0 – 2026-11-06 (öneri: `[minor]`)
 - **Değişen:** Güvenlik kancası kapsamı genişledi: `docker`/`docker compose`, `dotnet ef database update|drop`, bulut CLI'ları
   (`doctl`, `gcloud`, `az`, `oci`, `aws`) ve `kubectl exec|port-forward|run|expose|config use-context` onaya düşer. Kanca testleri

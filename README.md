@@ -40,10 +40,11 @@ agent'ı/skill'i plugin'i ezer. Betikler yalnız sembolik bağ kurar, var olan d
 
 ## İçerik
 
-- **Agent'lar (11):** `frontend-developer`, `frontend-browser-tester`, `frontend-test-developer`, `backend-developer`,
+- **Agent'lar (15):** `frontend-developer`, `frontend-browser-tester`, `frontend-test-developer`, `backend-developer`,
   `backend-test-developer`, `database-reviewer`, `engineering-software-architect`, `devops-engineer`, `devops-operator`,
-  `tenant-security-reviewer`, `scope-advisor`. Riskli işler için `devops-operator`, `database-reviewer` ve
-  `tenant-security-reviewer` `opus`, diğerleri `sonnet` modelini kullanır. `tenant-security-reviewer` ve `scope-advisor`
+  `tenant-security-reviewer`, `scope-advisor`, `api-contract-reviewer`, `dependency-supply-chain-reviewer`,
+  `performance-reviewer`, `observability-reviewer`. Riskli işler için `devops-operator`, `database-reviewer`,
+  `tenant-security-reviewer` ve `api-contract-reviewer` `opus`, diğerleri `sonnet` modelini kullanır. `tenant-security-reviewer` ve `scope-advisor`
   çok kiracılı projeler içindir (tek müşterili projede `scope-advisor` `NOT-APPLICABLE` döner). Ayrıntı: [agent gereksinimleri](docs/agent-requirements.md).
 - **Skill'ler** (yalnız açıkça çağrılır): `browser-test`, `verify-change`, `add-migration`, `release`, `rollback`, `live-check`
 - **Kurallar** (`rules/`, ilgili dosyalara girilince yüklenir): `kg-test-discipline`, `kg-documentation-maintenance`,
