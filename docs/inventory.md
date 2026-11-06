@@ -44,6 +44,9 @@ halidir. Projeye özgü bilgi (komutlar, yollar, cluster adları, kural belgeler
   `kit-doc-sync` (README/doküman/prompt kaynakla uyumlu mu), `kit-agent-linter` (agent dosyaları: sızıntı, yetki, eşlik, mekanik
   kontroller; CI betiği yerine agent yapar) ve `kit-release-notes` (sürüm notu ve `[minor]`/`[major]` önerisi; çıktısı `CHANGELOG.md` girdisi olarak kullanılır). Üçü de salt-okuma
   çalışır, düzeltmeyi ana oturum yapar.
+- **Otomatik tetik:** `.claude/settings.json` `Stop` kancası `.claude/hooks/kit-review-gate.py` çalıştırır: agent dosyaları değiştiyse
+  `kit-agent-linter`, agent/skill/kural/kanca/betik/workflow/doküman değiştiyse `kit-doc-sync` çalıştırılması istenir. Aynı değişiklik
+  kümesi için yalnız bir kez durdurur (`.git/kit-review-gate/` özeti); `kit-release-notes` otomatik değildir. Yalnız bu repoda geçerlidir.
 - **Stack paketleri yok:** .NET/React'e özgü kural paketleri bilerek eklenmedi; aynı stack'te ikinci proje gelince çıkarılır.
 
 ## Bilinen sınırlar
