@@ -2,14 +2,45 @@
 
 kg-devkit agent ve skill'leri çalıştıkları reponun `AGENTS.md` dosyasındaki `## Project profile` bölümünü okur
 ([şablon](../project-profile-template.md), [gereksinimler](../agent-requirements.md)). Aşağıdaki prompt'u yeni
-projede Claude Code veya Codex'e ver: repodan çıkarabildiğini çıkarır, **yalnız bulamadığı veya emin olmadığı alanları** sana
+projenin kök dizininde Claude Code veya Codex'e ver (kg-devkit reposunu açman gerekmez): repodan çıkarabildiğini çıkarır, **yalnız bulamadığı veya emin olmadığı alanları** sana
 sorar, sonra bölümü yazar.
 
 ````markdown
 Görev: Bu reponun AGENTS.md dosyasına (yoksa oluştur; CLAUDE.md varsa yalnız oku) `## Project profile` bölümünü ekle veya
-güncelle. Şablon: docs/project-profile-template.md (kg-devkit) ya da aşağıdaki alan listesi. Bölüm dışındaki içeriği
-değiştirme. Bunu SORU-CEVAP olarak yürüt: önce repodan çıkar, cevabı bulunanı sorma, kalanı kullanıcıya sor.
-Dil: Türkçe.
+güncelle. Şablon aşağıda (## 0). Bölüm dışındaki içeriği değiştirme. Bunu SORU-CEVAP olarak yürüt: önce repodan çıkar,
+cevabı bulunanı sorma, kalanı kullanıcıya sor. Dil: Türkçe. Bu prompt kendi içinde eksiksizdir: kg-devkit reposundaki dosyalara ihtiyaç duymaz.
+
+## 0. Şablon (alan listesi; kullanılmayan alanı silerek doldur)
+```markdown
+## Project profile
+
+- Layers / dirs: backend=`backend/`, frontend=`frontend/` (bağımlılık yönü: ...)
+- Commands: start=`...`, status=`...`, lint/typecheck/build=`...`, focused tests=`...`, full tests only when: ...
+- Dev app: url=`http://localhost:5173`, test login=`user@example.com` / `<dev şifresi>` (yalnız localhost)
+- Router / navigation files: `frontend/src/app/router/...`, `.../navigation.ts`
+- Rule docs: frontend=`...`, backend=`...`, tests=`...`; technical doc=`docs/...` (hangi bölüm ne için)
+- Conventions: tenancy / soft delete / audit / hata (Result) kuralları, para ve tarih kuralları, kimlik yeniden kullanımı, sunucu-otoriter hesaplamalar, başarısız yazma temizliği
+- Scope mechanisms: mevcut büro/müşteri ayarı, özellik bayrağı ve lookup mekanizmalarının adları + belgeleri; kapsam sorusunun metni
+  (scope-advisor okur; tenant'sız projede yazma, agent durur)
+- Security review: tenancy/yetki modeli ve güvenlik kural belgesi (tenant-security-reviewer okur)
+- Persistence: ORM=`...`, migration komutu=`...`, migrations dizini=`...`, üretilen migration artefaktları (ör. EF Core: designer/snapshot),
+  global filtre bypass API'leri (ör. EF Core `IgnoreQueryFilters`), adlandırma, izin zinciri, API tip üretimi komutu
+- API contract: şema/OpenAPI konumu, istemci tipi üretim komutu, versiyonlama ve kullanımdan kaldırma politikası, eski/harici istemciler
+  (api-contract-reviewer okur)
+- Dependencies: paket yöneticileri ve lockfile konumları, izinli lisanslar, güvenlik taraması komutu, sabitleme/güncelleme politikası, özel registry
+  (dependency-supply-chain-reviewer okur)
+- Performance: gecikme/boyut bütçeleri, sıcak endpoint ve ekranlar, beklenen veri hacmi, mevcut önbellek mekanizması
+  (performance-reviewer okur)
+- Observability: log/metrik/trace kütüphaneleri ve kuralları, korelasyon/tenant kimliği, log'a girmeyecek veriler, sağlık endpoint'leri
+  (observability-reviewer okur)
+- Finish gate: hangi değişiklik hangi bağımsız kontrolü/reviewer'ı zorunlu kılar (tek kaynak); reviewer geçti ifadesi
+- Release: changelog dosyası + sürüm kuralı (özellik=minor, düzeltme=patch), commit stili (dil, önek),
+  gizli dosya listesi (commit'e girmeyecek), deploy komutu, sağlık URL'leri ve beklenen kodlar
+- Production: cluster context=`...`, namespace=`...`, bulut CLI kimlik komutu, status/deploy/rollback komutları, iş yükü adları,
+  registry repoları, topoloji sınırları (replika, güncelleme stratejisi, depolama), runbook=`...`, secret konumları
+- Report language: Türkçe
+- Hard limits: commit/push yetkisi, branch politikası, yasak komutlar (db reset, force-push, ...)
+```
 
 ## 1. Keşif (yalnız oku; komut çalıştırma, canlı sisteme bağlanma)
 Mevcut `## Project profile` varsa önce onu oku; dolu ve repoyla tutarlı alanı yeniden sorma, çelişen/eskiyeni işaretle.

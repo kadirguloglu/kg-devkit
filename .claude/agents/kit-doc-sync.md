@@ -35,7 +35,8 @@ If the brief names no change at all, check the whole repository.
    what needs user approval) have a direct basis in that agent file. A row stating what an agent does not do or read
    must be checked against its text with Grep, not assumed.
 3. **Profile fields:** every field named in docs or prompts exists in the template, and every template field is
-   covered by `generate-project-profile.md`.
+   covered by `generate-project-profile.md`. The template block embedded in `generate-project-profile.md` (section 0)
+   must be identical to the one in `docs/project-profile-template.md`.
 4. **No hard-coded version** in README or docs (the version lives in `plugin.json` and is bumped automatically).
 5. **Links and paths:** every relative link and file path mentioned exists.
 6. **Codex parity:** `python3 scripts/build-codex.py --check` passes; Claude-only features (hooks, `kg-devkit:` prefix,
