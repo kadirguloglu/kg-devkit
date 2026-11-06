@@ -43,7 +43,7 @@ agent çıkarım yapmaz -> DURUR; koşul yok -> UYGULANAMAZ.
 | `observability-reviewer` | Observability, Conventions (hata) | ÇIKARIM |
 | `scope-advisor` | Scope mechanisms, Report language | tek müşterili projede UYGULANAMAZ (`NOT-APPLICABLE`) |
 | `engineering-software-architect` | Layers/dirs, Conventions, Scope mechanisms, Rule docs, Finish gate | ÇIKARIM |
-| `frontend-browser-tester`, `browser-test` | Dev app (URL + yerel test girişi), Commands (start/status), Router/navigation files, Layers/dirs; Claude in Chrome eklentisi | URL veya test girişi yoksa DURUR |
+| `frontend-browser-tester`, `browser-test` | Dev app (URL + yerel test girişi), Commands (start/status), Router/navigation files, Layers/dirs, Hard limits; Claude in Chrome eklentisi | URL veya test girişi yoksa DURUR |
 | `devops-engineer` | Production, Report language, Hard limits | Production yoksa yalnız statik dosyaya bakar; canlı komuttan önce hedefi sorar |
 | `devops-operator` | Production (hedef, secret konumları, registry, topoloji, runbook), Hard limits | DURUR |
 | `live-check` | Production (context, namespace, durum komutu, bulut CLI kimlik komutu, iş yükleri, sağlık URL'leri + beklenen kodlar, runbook) | DURUR |

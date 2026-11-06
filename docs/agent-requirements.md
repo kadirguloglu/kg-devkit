@@ -10,7 +10,7 @@ sütunu bunun dışındaki davranışı verir.
 | Agent | Tür / araçlar | Profil alanları | Projede olması gereken | Profil yoksa / uygulanamazsa |
 | --- | --- | --- | --- | --- |
 | `backend-developer` | yazar (`Edit, Write, Bash`) | Layers/dirs, Commands, Rule docs, Conventions, Persistence (ORM + migration artefaktları), Hard limits | backend dizini, build/test komutu | koddan çıkarım, raporda belirtir |
-| `backend-test-developer` | yazar | Layers/dirs (test dizini), Rule docs (tests), Commands (focused/full test) | test projeleri, fixture'lar | test projelerinden çıkarım |
+| `backend-test-developer` | yazar | Layers/dirs (test dizini), Rule docs (tests), Commands (focused/full test), Hard limits | test projeleri, fixture'lar | test projelerinden çıkarım |
 | `database-reviewer` (model: opus) | salt-okuma (`Read, Grep, Glob`) | Persistence (ORM, migration artefaktları), Conventions (isolation, soft delete, para/tarih, başarısız yazma temizliği), Rule docs | ORM/migration dizini; ana oturum diff ve komut kanıtı verir | stack'i koddan çıkarır, doğrulayamadığını yazar |
 | `tenant-security-reviewer` (model: opus) | salt-okuma | Security review (tenancy/yetki modeli + güvenlik kural belgesi), Conventions (kimlik yeniden kullanımı, sunucu-otoriter hesaplamalar), Persistence (filtre bypass API'leri), teknik doküman bölümleri (güvenlik, depolama, arka plan işleri) | tenancy/yetki modeli (yoksa düz yetki + sahiplik incelenir) | modeli koddan çıkarır, varsayımları yazar |
 | `api-contract-reviewer` (model: opus) | salt-okuma | API contract (şema, tip üretimi, versiyonlama), Layers/dirs, Conventions (hata/Result) | ana oturum diff ve varsa üretilmiş şema/komut kanıtı verir | sözleşme yüzeyini controller/DTO/frontend API katmanından çıkarır |
@@ -19,10 +19,10 @@ sütunu bunun dışındaki davranışı verir.
 | `observability-reviewer` | salt-okuma | Observability (log/metrik/trace kuralları, hassas veri, sağlık), Conventions (hata) | ana oturum diff verir | log/metrik yığınını koddan çıkarır, doğrulayamadığını yazar |
 | `scope-advisor` | salt-okuma | Scope mechanisms, Report language | **çok kiracılı/çok müşterili ürün** | kiracı yoksa `NOT-APPLICABLE` döner ve durur |
 | `engineering-software-architect` | salt-okuma | Layers/dirs, Conventions, Scope mechanisms, Rule docs, Finish gate | ana oturum soru ve kodu/diff'i verir | mimariyi koddan çıkarır |
-| `frontend-developer` | yazar | Layers/dirs, Commands (lint/typecheck/build/test), Rule docs | frontend dizini | `package.json`'dan çıkarım |
-| `frontend-test-developer` | yazar | Commands (focused/full test), Rule docs (tests) | frontend test konumu | `package.json` ve mevcut testlerden çıkarım |
-| `frontend-browser-tester` | tester (kod yazmaz; Chrome araçları) | Layers/dirs (frontend src), Commands (start/status), Dev app (url + test login), Router/navigation files | **Claude in Chrome eklentisi**, çalışan dev uygulaması | dev URL veya test login bulunamazsa durur, kullanıcıya sorar |
-| `devops-engineer` | yazar (`Bash` dahil) | Production (sahip olunan yollar, hedef ortam, deploy/status komutu, topoloji, registry, runbook), Report language | deploy/manifest/CI dosyaları | Production girdisi yoksa yalnız statik dosyaya bakar, canlı komuttan önce hedefi sorar |
+| `frontend-developer` | yazar | Layers/dirs, Commands (lint/typecheck/build/test), Rule docs, Hard limits | frontend dizini | `package.json`'dan çıkarım |
+| `frontend-test-developer` | yazar | Commands (focused/full test), Rule docs (tests), Hard limits | frontend test konumu | `package.json` ve mevcut testlerden çıkarım |
+| `frontend-browser-tester` | tester (kod yazmaz; Chrome araçları) | Layers/dirs (frontend src), Commands (start/status), Dev app (url + test login), Router/navigation files, Hard limits | **Claude in Chrome eklentisi**, çalışan dev uygulaması | dev URL veya test login bulunamazsa durur, kullanıcıya sorar |
+| `devops-engineer` | yazar (`Bash` dahil) | Production (sahip olunan yollar, hedef ortam, deploy/status komutu, topoloji, registry, runbook), Report language, Hard limits | deploy/manifest/CI dosyaları | Production girdisi yoksa yalnız statik dosyaya bakar, canlı komuttan önce hedefi sorar |
 | `devops-operator` (model: opus) | yazar, yüksek etkili | Production (hedef, secret konumları, registry, topoloji, runbook), Hard limits | kullanıcının **o işlem için açık onayı** (ana oturum iletir) | Production girdisi yoksa durur ve sorar |
 
 ## Skill'ler
