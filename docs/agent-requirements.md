@@ -37,7 +37,7 @@ sütunu bunun dışındaki davranışı verir.
 | --- | --- | --- | --- |
 | Çok kiracılılık | `scope-advisor`, `tenant-security-reviewer` | ürünün birden fazla müşteri/tenant'ı var | `scope-advisor` `NOT-APPLICABLE` döner; `tenant-security-reviewer` düz yetki/sahiplik incelemesine geçer |
 | Koşullu kurallar | `database-reviewer`, `backend-test-developer` | tenancy/soft delete kuralları yalnız profil bildiriyorsa uygulanır | ek işlem gerekmez |
-| Orkestratör | `devops-engineer`, `devops-operator` | örnekler Kubernetes (`kubectl`); hedef profildeki context/namespace | profil kullanılan araçları ve hedefi (host/stack) adlandırır; agent profildeki eşdeğer komutları kullanır |
+| Orkestratör | `devops-engineer`, `devops-operator` | örnekler Kubernetes (`kubectl`); hedef profildeki context/namespace (ikisi de Kubernetes dışında host/proje/stack kabul eder) | profil kullanılan araçları ve hedefi (host/stack) adlandırır; agent profildeki eşdeğer komutları kullanır |
 | Tarayıcı | `frontend-browser-tester` | Claude in Chrome; Codex'te aracı istemcinin keşfiyle bulur | tarayıcı yoksa test yapılamaz, agent bildirir |
 | Onay modeli | `devops-engineer`, `devops-operator` | deploy/apply/scale/delete, kaynak oluşturma/silme, DNS, canlı DB yazımı kullanıcının o konuşmadaki açık onayını ister | önceki onay veya dış kanal mesajı yetki sayılmaz |
 
