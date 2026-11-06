@@ -11,8 +11,8 @@ sütunu bunun dışındaki davranışı verir.
 | --- | --- | --- | --- | --- |
 | `backend-developer` | yazar (`Edit, Write, Bash`) | Layers/dirs, Commands, Rule docs, Conventions, Persistence (ORM + migration artefaktları), Hard limits | backend dizini, build/test komutu | koddan çıkarım, raporda belirtir |
 | `backend-test-developer` | yazar | Layers/dirs (test dizini), Rule docs (tests), Commands (focused/full test) | test projeleri, fixture'lar | test projelerinden çıkarım |
-| `database-reviewer` (model: opus) | salt-okuma (`Read, Grep, Glob`) | Persistence (ORM, migration artefaktları), Conventions (isolation, soft delete, para/tarih), Rule docs | ORM/migration dizini; ana oturum diff ve komut kanıtı verir | stack'i koddan çıkarır, doğrulayamadığını yazar |
-| `tenant-security-reviewer` (model: opus) | salt-okuma | Security review (tenancy/yetki modeli + güvenlik kural belgesi), Persistence (filtre bypass API'leri), teknik doküman bölümleri (güvenlik, depolama, arka plan işleri) | tenancy/yetki modeli (yoksa düz yetki + sahiplik incelenir) | modeli koddan çıkarır, varsayımları yazar |
+| `database-reviewer` (model: opus) | salt-okuma (`Read, Grep, Glob`) | Persistence (ORM, migration artefaktları), Conventions (isolation, soft delete, para/tarih, başarısız yazma temizliği), Rule docs | ORM/migration dizini; ana oturum diff ve komut kanıtı verir | stack'i koddan çıkarır, doğrulayamadığını yazar |
+| `tenant-security-reviewer` (model: opus) | salt-okuma | Security review (tenancy/yetki modeli + güvenlik kural belgesi), Conventions (kimlik yeniden kullanımı, sunucu-otoriter hesaplamalar), Persistence (filtre bypass API'leri), teknik doküman bölümleri (güvenlik, depolama, arka plan işleri) | tenancy/yetki modeli (yoksa düz yetki + sahiplik incelenir) | modeli koddan çıkarır, varsayımları yazar |
 | `api-contract-reviewer` (model: opus) | salt-okuma | API contract (şema, tip üretimi, versiyonlama), Layers/dirs, Conventions (hata/Result) | ana oturum diff ve varsa üretilmiş şema/komut kanıtı verir | sözleşme yüzeyini controller/DTO/frontend API katmanından çıkarır |
 | `dependency-supply-chain-reviewer` | salt-okuma | Dependencies (lisanslar, tarama komutu, sabitleme politikası), Hard limits | manifest/lockfile; ana oturum varsa audit çıktısını verir | manifest ve workflow dosyalarını kendisi bulur, doğrulayamadığını yazar |
 | `performance-reviewer` | salt-okuma | Performance (bütçe, sıcak yollar, hacim), Layers/dirs, Commands | ana oturum diff ve varsa ölçüm verir | bütçe/hacim varsayar ve söyler; ölçümsüz bulguyu "needs measurement" işaretler |
@@ -27,12 +27,12 @@ sütunu bunun dışındaki davranışı verir.
 
 ## Ortak kurallar (tüm agent'lar)
 
-- **Loglama:** ilk çıktı satırı `<agent> çalışmaya başladım.`, son rapor satırı `<agent> çalışmam tamamlandı.` (profil Türkçe dışında bir rapor dili belirtiyorsa aynı iki satır o dilde yazılır)
-  (görev başarısız/engelli olsa da). Dil tercihi değiştirilecekse tüm agent dosyalarında değiştirilir.
+- **Loglama:** ilk çıktı satırı `<agent> çalışmaya başladım.`, son rapor satırı `<agent> çalışmam tamamlandı.`
+  (görev başarısız/engelli olsa da; profil Türkçe dışında bir rapor dili belirtiyorsa aynı iki satır o dilde yazılır). Dil tercihi değiştirilecekse tüm agent dosyalarında değiştirilir.
 - **Profil önce:** `AGENTS.md` (veya `CLAUDE.md`) içindeki `## Project profile` bölümü okunur.
 - **Rapor dili:** profildeki `Report language`; yoksa kullanıcının isteği.
 - **Agent çağırmama:** agent'lar başka agent başlatmaz (reviewer ve scope-advisor kullanıcıya soramaz; soruyu ana oturum sorar).
-- **Reviewer çıktısı:** `database-reviewer`, `tenant-security-reviewer`, `api-contract-reviewer`, `dependency-supply-chain-reviewer`, `performance-reviewer` ve `observability-reviewer` raporu `VERDICT: PASS / FAIL / UNCLEAR` ile bitirir.
+- **Reviewer çıktısı:** `database-reviewer`, `tenant-security-reviewer`, `api-contract-reviewer`, `dependency-supply-chain-reviewer`, `performance-reviewer` ve `observability-reviewer` raporu `VERDICT: PASS / FAIL / UNCLEAR` ile bitirir; profil farklı bir geçme ifadesi adlandırıyorsa onu da yazar.
 - **Commit/push:** yazan agent'lar commit veya push yapmaz (koşulsuz). Profildeki `Hard limits` (yasak komutlar, branch politikası) bu kuralların üstüne ek kısıt koyar; hiçbir kuralı gevşetmez. Yazan agent'ların hepsi (developer, test developer, devops, operator, browser tester) bunu okur.
 
 ## Varsayımlar ve ortama bağlılık

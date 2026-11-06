@@ -12,7 +12,7 @@ Yalnız ilgili alanları doldur, kullanılmayanı sil.
 - Dev app: url=`http://localhost:5173`, test login=`user@example.com` / `<dev şifresi>` (yalnız localhost)
 - Router / navigation files: `frontend/src/app/router/...`, `.../navigation.ts`
 - Rule docs: frontend=`...`, backend=`...`, tests=`...`; technical doc=`docs/...` (hangi bölüm ne için)
-- Conventions: tenancy / soft delete / audit / hata (Result) kuralları, para ve tarih kuralları
+- Conventions: tenancy / soft delete / audit / hata (Result) kuralları, para ve tarih kuralları, kimlik yeniden kullanımı, sunucu-otoriter hesaplamalar, başarısız yazma temizliği
 - Scope mechanisms: mevcut büro/müşteri ayarı, özellik bayrağı ve lookup mekanizmalarının adları + belgeleri; kapsam sorusunun metni
   (scope-advisor okur; tenant'sız projede yazma, agent durur)
 - Security review: tenancy/yetki modeli ve güvenlik kural belgesi (tenant-security-reviewer okur)

@@ -27,8 +27,8 @@ Görev: Bu repodaki agent'ları inceleyip her birinin çalışması için gereke
 ## 2. Doküman yapısı
 1. Giriş: 2-3 cümle; alan adlarının hangi şablona ait olduğunu ve profil yoksa genel davranışı söyle.
 2. **Özet tablo:** satır = agent; sütunlar = Tür/araçlar | Profil alanları | Projede olması gereken | Profil yoksa/uygulanamazsa.
-3. **Ortak kurallar:** tüm agent'lara uyan kurallar (loglama satırları, rapor dili, profil önce okunur, alt agent başlatmama,
-   reviewer çıktı formatı, commit/push yetkisi). Yalnız gerçekten hepsinde geçenleri yaz.
+3. **Ortak kurallar:** tüm agent'lara uyan kurallar (loglama satırları (rapor diline göre), rapor dili, profil önce okunur, alt agent başlatmama,
+   reviewer çıktı formatı (+ profilin geçme ifadesi), commit/push yetkisi). Yalnız gerçekten hepsinde geçenleri yaz.
 4. **Varsayımlar ve ortama bağlılık** (orkestratör, tarayıcı, çok kiracılılık, model katmanları, kancalar/ikinci kilitler, Claude–Codex farkları): Konu | Hangi agent | Ne varsayıyor | Uymuyorsa ne olur. Her satır için agent
    dosyasından dayanak göster.
 5. **Yeni projeye başlarken kontrol listesi:** 4-6 madde, uygulanabilir ve kısa.
