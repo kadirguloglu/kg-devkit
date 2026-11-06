@@ -48,7 +48,7 @@ agent çıkarım yapmaz -> DURUR; koşul yok -> UYGULANAMAZ.
 | `devops-operator` | Production (hedef, secret konumları, registry, topoloji, runbook), Hard limits | DURUR |
 | `live-check` | Production (context, namespace, durum komutu, bulut CLI kimlik komutu, iş yükleri, sağlık URL'leri + beklenen kodlar, runbook) | DURUR |
 | `rollback` | Production (hedef, rollback/deploy komutu, sağlık URL'leri, iş yükleri, registry, runbook), Persistence (migrations dizini) | DURUR |
-| `release` | Release, Commands, Finish gate, Hard limits; `deploy` ile Production | Release yoksa kullanıcıya sorar |
+| `release` | Release, Commands, Finish gate, `AGENTS.md`/`CLAUDE.md` sınırları; `deploy` ile Production | Release yoksa kullanıcıya sorar |
 | `add-migration` | Persistence, Conventions, Finish gate, Report language | ORM aracını repoda bulur, çalıştırmadan önce onaylatır |
 | `verify-change` | Commands, Rule docs, Finish gate, Report language | ÇIKARIM |
 

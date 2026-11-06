@@ -31,7 +31,7 @@ Hepsi `disable-model-invocation: true`: yalnız kullanıcı açıkça çağırı
 
 | Skill | Yetki / onay | Profil alanları | Profil yoksa / uygulanamazsa |
 | --- | --- | --- | --- |
-| `release` | çağrı commit+push yetkisi verir; canlı deploy yalnız `deploy` argümanıyla | Release, Commands, Finish gate, Hard limits, Production (yalnız `deploy` ile: deploy/durum komutu, sağlık URL'leri) | Release girdisi yoksa kullanıcıya sorar |
+| `release` | çağrı commit+push yetkisi verir; canlı deploy yalnız `deploy` argümanıyla | Release, Commands, Finish gate, `AGENTS.md`/`CLAUDE.md` sınırları (alan adı anılmaz), Production (yalnız `deploy` ile: deploy/durum komutu, sağlık URL'leri) | Release girdisi yoksa kullanıcıya sorar |
 | `rollback` | canlı geri alma için ayrıca açık onay ister | Production (context, namespace, iş yükü, registry, sağlık URL'leri, güncelleme stratejisi, rollback/deploy komutu; bulut CLI kimlik komutu `live-check` adımları üzerinden), Persistence (migrations dizini; skill bunu Production içinde sayar, şablonda Persistence altındadır) | Production girdisi yoksa durur |
 | `live-check` | salt-okuma | Production (context, namespace, durum komutu, bulut CLI kimlik komutu, iş yükü adları, sağlık URL'leri ve beklenen kodlar, runbook) | Production girdisi yoksa durur ve sorar |
 | `add-migration` | commit/push/deploy/veritabanı yetkisi vermez | Persistence, Conventions, Finish gate, Report language | ORM araçlarını repoda bulur, komutu çalıştırmadan önce kullanıcıya onaylatır |
