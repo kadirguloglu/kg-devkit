@@ -30,7 +30,8 @@ Claude files are the source; `codex/agents/*.toml` are generated and are only co
    customer names. Stack names (EF Core, kubectl, React, ...) are allowed only as "for example"/"EF Core:" examples
    next to a profile-driven rule, never as the only instruction.
 8. Claude-only tool names (`ToolSearch`, `mcp__claude-in-chrome__*`, `AskUserQuestion`, `kg-devkit:` prefix) appear only
-   where `scripts/build-codex.py` has a replacement for them; `codex/` contains none of them.
+   where `scripts/build-codex.py` has a replacement for them, or in a sentence that names both clients side by side
+   (for example "Claude: AskUserQuestion; Codex: request_user_input"); `codex/` contains no unpaired Claude-only name.
 9. Parity: `python3 scripts/build-codex.py --check` passes.
 10. Hygiene: `git ls-files | grep -E '__pycache__|\.pyc$'` is empty.
 

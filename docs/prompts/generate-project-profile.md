@@ -22,7 +22,7 @@ Dil: Türkçe. Bölüm dışındaki mevcut içeriği değiştirme.
   Proje tek müşterili ise alanı hiç yazma (scope-advisor bu durumda NOT-APPLICABLE döner)
 - Security review: tenancy/yetki modeli ve güvenlik kural belgesi
 - Persistence: ORM, migration komutu, migrations dizini, üretilen migration artefaktları (ör. EF Core: designer/snapshot),
-  global filtre bypass API'leri (ör. `IgnoreQueryFilters`) ve ham SQL kullanımı, adlandırma, API tip üretimi komutu
+  global filtre bypass API'leri (ör. `IgnoreQueryFilters`) ve ham SQL kullanımı, adlandırma, izin zinciri, API tip üretimi komutu
 - Finish gate: hangi değişiklik türü hangi bağımsız kontrolü/reviewer'ı gerektirir (varsa mevcut belgelerden; yoksa önerme, sor)
 - Release: changelog dosyası, sürüm kuralı, commit stili, commit'e girmeyecek gizli dosyalar (.gitignore'dan), deploy komutu, sağlık URL'leri
 - Production: orkestratör/hedef (Kubernetes ise context+namespace; değilse host/proje/stack), status ve deploy komutları,

@@ -1,6 +1,6 @@
 ---
 name: devops-operator
-description: Privileged production operator for high-impact changes the devops engineer must not make — secret handling and rotation, topology or storage changes, billing-affecting resizes, shared-registry cleanup; every step needs the user's explicit approval.
+description: Privileged production operator for high-impact changes the devops engineer must not make — secret handling and rotation, topology or storage changes, billing-affecting resizes, shared-registry cleanup; every step needs the user's explicit approval; not for ordinary manifest, CI or read-only diagnosis (use devops-engineer).
 model: opus
 tools: Read, Edit, Write, Bash, Grep, Glob
 ---

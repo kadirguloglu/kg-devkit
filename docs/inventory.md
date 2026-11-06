@@ -22,9 +22,11 @@ halidir. Projeye özgü bilgi (komutlar, yollar, cluster adları, kural belgeler
   profil farklı bir geçti ifadesi isterse onu da yazar.
 - **Salt-okuma sınırı:** Reviewer, danışman ve scope agent'ları yalnız `Read, Grep, Glob` kullanır (Codex'te `sandbox_mode = "read-only"`).
 - **Yan etkili skill'ler:** `release`, `rollback`, `live-check`, `add-migration`, `verify-change`, `browser-test`
-  `disable-model-invocation: true` ile yalnız açıkça çağrılır; commit, deploy ve veritabanı yetkisi vermezler.
-- **Kapsam:** Çok kiracılı projelere özgü `tenant-security-reviewer` ve `scope-advisor` tek müşterili projede işe yaramaz;
-  profilde ilgili alan yoksa durup bildirirler.
+  `disable-model-invocation: true` ile yalnız açıkça çağrılır. `release` çağrıldığında commit+push yetkisi verir
+  (`deploy` argümanıyla ayrıca canlı deploy); `rollback` canlı geri alma için ayrıca açık onay ister; `live-check`
+  salt-okumadır; `add-migration`, `verify-change` ve `browser-test` commit/push/deploy/veritabanı yetkisi vermez.
+- **Kapsam:** `scope-advisor` tek müşterili projede `NOT-APPLICABLE` döner ve durur; `tenant-security-reviewer` kiracı yoksa
+  durmaz, düz yetki/sahiplik incelemesine geçer.
 - **Otomatik sürüm:** `main`'e her push'ta `.github/workflows/bump-version.yml`, `scripts/bump-version.py` ile
   `plugins/kg-devkit/.claude-plugin/plugin.json` sürümünü artırıp `chore(release): vX.Y.Z` commit'i atar. Varsayılan
   patch; birleştirme/commit mesajında `[minor]` veya `[major]` varsa o seviye. Botun kendi commit'i yeni artış tetiklemez.

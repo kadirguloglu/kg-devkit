@@ -1,6 +1,6 @@
 ---
 name: backend-test-developer
-description: Independent backend regression, migration or data-isolation test design after a building change; use when it adds value beyond the implementer's tests.
+description: Independent backend regression, migration or data-isolation test design after a building change; use when it adds value beyond the implementer's tests; not for production-code changes or docs-only edits.
 model: sonnet
 tools: Read, Edit, Write, Bash, Grep, Glob
 ---
