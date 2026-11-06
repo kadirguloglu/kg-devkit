@@ -1,0 +1,41 @@
+name: bump-version
+
+# main'e her push'ta plugin sürümünü (plugin.json) artırır ve geri commit'ler.
+# Varsayılan patch; birleştirme/commit mesajında [minor] veya [major] varsa o seviye.
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: bump-version
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  bump:
+    # Botun kendi sürüm commit'i tekrar tetiklemesin
+    if: github.actor != 'github-actions[bot]' && !startsWith(github.event.head_commit.message, 'chore(release):')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Sürümü artır
+        id: bump
+        env:
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        run: |
+          version=$(python3 scripts/bump-version.py --from-message "$COMMIT_MESSAGE")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - name: Commit ve push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add plugins/kg-devkit/.claude-plugin/plugin.json
+          git commit -m "chore(release): v${{ steps.bump.outputs.version }}"
+          git push origin main
