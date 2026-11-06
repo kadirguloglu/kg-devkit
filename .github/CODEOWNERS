@@ -1,0 +1,9 @@
+# Kod sahipleri: bu yollardaki her değişiklik için @kadirguloglu otomatik review ister.
+# Bu dosyalar plugin'i kuran herkesin makinesinde çalışan talimat/kod içerir (agent metinleri, kanca, iş akışları).
+/plugins/ @kadirguloglu
+/codex/ @kadirguloglu
+/.claude/ @kadirguloglu
+/.claude-plugin/ @kadirguloglu
+/.github/ @kadirguloglu
+/rules/ @kadirguloglu
+/scripts/ @kadirguloglu
