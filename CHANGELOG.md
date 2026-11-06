@@ -5,13 +5,18 @@ ile seviye seçilir. Bu dosya kullanıcıya dönük etkiyi özetler; taslağı `
 (bkz. [docs/inventory.md](docs/inventory.md)). Kategoriler: **Kırıcı**, **Eklenen**, **Değişen**, **Düzeltilen**, **Doküman/Altyapı**.
 
 ## Yayınlanmadı (öneri: patch)
+- **Düzeltilen:** `Stop` kancasının özeti artık `origin/main`'e göre diff'ten değil, bakılan klasörlerdeki izlenen dosyaların içeriğinden
+  hesaplanır; dal veya `origin/main` ilerlemesi (ör. PR merge'ü) boşuna tetiklemez. Özet yoksa (yeni klon) başlangıç HEAD'deki
+  commit'li içeriktir.
+
+## 0.8.1 – 2026-11-06 ([#13](https://github.com/kadirguloglu/kg-devkit/pull/13))
 - **Değişen:** `dependency-supply-chain-reviewer` modeli `sonnet` → `opus` (diğer güvenlik reviewer'larıyla aynı katman). Agent log satırları profilin rapor dilini izler (Türkçe dışıysa aynı iki satır o dilde); altı reviewer'a ortak
   "profil farklı geçme ifadesi adlandırırsa onu da yaz" kuralı, `database-reviewer` ve `tenant-security-reviewer`'a "Do not spawn agents"
   eklendi; bu ikisindeki alan-özel ifadeler (finansal hesap, silinmiş kullanıcı kimliği, para/yükleme temizliği) profile bırakıldı;
   `dependency-supply-chain-reviewer` CI sınırı netleştirildi (pinleme/güven/secret; workflow mantığı `devops-engineer`'da).
   `build-codex.py`'den artık gereksiz `kg-devkit:` önek kuralı kaldırıldı.
 - **Doküman/Altyapı:** `.claude/settings.json` `Stop` kancası (`.claude/hooks/kit-review-gate.py`): kit kaynakları değişince
-  `kit-agent-linter` ve `kit-doc-sync` çalıştırılmasını ister; kaynak değişip `CHANGELOG.md` değişmediyse `kit-release-notes` da istenir; özet agent başına ve dosya içeriğine bağlıdır (dal, `origin/main` ve commit geçmişinden bağımsız); commit, dal ilerlemesi veya kanca betiği düzenlemesi yeniden tetiklemez (yalnız bu repoda).
+  `kit-agent-linter` ve `kit-doc-sync` çalıştırılmasını ister; kaynak değişip `CHANGELOG.md` değişmediyse `kit-release-notes` da istenir; özet agent başına ve dosya içeriğine bağlıdır (kanca betiği düzenlemesi ve commit yeniden tetiklemez) (yalnız bu repoda).
 
 ## 0.8.0 – 2026-11-06 (öneri: `[minor]`)
 - **Eklenen:** 4 salt-okuma reviewer agent'ı: `api-contract-reviewer` (opus; kırıcı API değişikliği ve backend/frontend sözleşme sapması),
