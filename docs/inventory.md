@@ -37,7 +37,7 @@ halidir. Projeye özgü bilgi (komutlar, yollar, cluster adları, kural belgeler
 - **Modeller:** `devops-operator`, `database-reviewer` ve `tenant-security-reviewer` `model: opus`, diğerleri `sonnet`.
 - **Kit bakım agent'ları:** `.claude/agents/` altında (yalnız bu repoda çalışırken; plugin'e ve Codex çıktısına girmez):
   `kit-doc-sync` (README/doküman/prompt kaynakla uyumlu mu), `kit-agent-linter` (agent dosyaları: sızıntı, yetki, eşlik, mekanik
-  kontroller; CI betiği yerine agent yapar) ve `kit-release-notes` (sürüm notu ve `[minor]`/`[major]` önerisi). Üçü de salt-okuma
+  kontroller; CI betiği yerine agent yapar) ve `kit-release-notes` (sürüm notu ve `[minor]`/`[major]` önerisi; çıktısı `CHANGELOG.md` girdisi olarak kullanılır). Üçü de salt-okuma
   çalışır, düzeltmeyi ana oturum yapar.
 - **Stack paketleri yok:** .NET/React'e özgü kural paketleri bilerek eklenmedi; aynı stack'te ikinci proje gelince çıkarılır.
 

@@ -26,6 +26,7 @@ If the brief names no change at all, check the whole repository.
   `docs/prompts/generate-project-profile.md`.
 - `scripts/`, `.github/workflows/*` -> README "Sürümleme"/"Geliştirme" sections and `docs/inventory.md`.
 - `.claude/agents/*.md` (these maintenance agents) -> `docs/inventory.md`.
+- `plugin.json` version and merged changes -> `CHANGELOG.md` has an entry for the current version (newest first, no gaps).
 
 ## What to check
 1. **Counts and lists:** every number ("11 agents", "6 skills", "3 rules") and every listed name matches the files
