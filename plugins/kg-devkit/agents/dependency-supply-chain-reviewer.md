@@ -1,7 +1,7 @@
 ---
 name: dependency-supply-chain-reviewer
 description: Independent read-only review of dependency, lockfile and CI-action changes (new/updated packages, licenses, vulnerabilities, supply-chain risk); not for application logic, authorization or infrastructure manifests.
-model: sonnet
+model: opus
 tools: Read, Grep, Glob
 ---
 

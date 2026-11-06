@@ -5,7 +5,7 @@ ile seviye seçilir. Bu dosya kullanıcıya dönük etkiyi özetler; taslağı `
 (bkz. [docs/inventory.md](docs/inventory.md)). Kategoriler: **Kırıcı**, **Eklenen**, **Değişen**, **Düzeltilen**, **Doküman/Altyapı**.
 
 ## Yayınlanmadı (öneri: patch)
-- **Değişen:** Agent log satırları profilin rapor dilini izler (Türkçe dışıysa aynı iki satır o dilde); altı reviewer'a ortak
+- **Değişen:** `dependency-supply-chain-reviewer` modeli `sonnet` → `opus` (diğer güvenlik reviewer'larıyla aynı katman). Agent log satırları profilin rapor dilini izler (Türkçe dışıysa aynı iki satır o dilde); altı reviewer'a ortak
   "profil farklı geçme ifadesi adlandırırsa onu da yaz" kuralı, `database-reviewer` ve `tenant-security-reviewer`'a "Do not spawn agents"
   eklendi; bu ikisindeki alan-özel ifadeler (finansal hesap, silinmiş kullanıcı kimliği, para/yükleme temizliği) profile bırakıldı;
   `dependency-supply-chain-reviewer` CI sınırı netleştirildi (pinleme/güven/secret; workflow mantığı `devops-engineer`'da).
