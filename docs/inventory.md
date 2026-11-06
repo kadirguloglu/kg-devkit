@@ -48,7 +48,7 @@ halidir. Projeye özgü bilgi (komutlar, yollar, cluster adları, kural belgeler
   `kit-agent-linter`, agent/skill/kural/kanca/betik/workflow/doküman değiştiyse `kit-doc-sync` çalıştırılması istenir. Her agent için ayrı, yalnız
   baktığı dosyaların içeriğinden hesaplanan özet tutulur (`.git/kit-review-gate/state.json`): commit atmak veya kanca betiğini düzenlemek
   tetiklemez, ilgili dosyalar değişince o agent bir kez istenir. Kaynak (plugin/kural/betik/workflow) değişip `CHANGELOG.md` son çalıştırmadan
-  beri değişmediyse `kit-release-notes` da istenir (ilk çalıştırmada dal farkına bakılır). Yalnız bu repoda geçerlidir.
+  beri değişmediyse `kit-release-notes` da istenir (özet yoksa, ör. yeni klonda, başlangıç HEAD'deki commit'li içeriktir; dal ve `origin/main` ilerlemesi tetiklemez). Yalnız bu repoda geçerlidir.
 - **Stack paketleri yok:** .NET/React'e özgü kural paketleri bilerek eklenmedi; aynı stack'te ikinci proje gelince çıkarılır.
 
 ## Bilinen sınırlar
