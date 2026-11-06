@@ -18,6 +18,14 @@ Yalnız ilgili alanları doldur, kullanılmayanı sil.
 - Security review: tenancy/yetki modeli ve güvenlik kural belgesi (tenant-security-reviewer okur)
 - Persistence: ORM=`...`, migration komutu=`...`, migrations dizini=`...`, üretilen migration artefaktları (ör. EF Core: designer/snapshot),
   global filtre bypass API'leri (ör. EF Core `IgnoreQueryFilters`), adlandırma, izin zinciri, API tip üretimi komutu
+- API contract: şema/OpenAPI konumu, istemci tipi üretim komutu, versiyonlama ve kullanımdan kaldırma politikası, eski/harici istemciler
+  (api-contract-reviewer okur)
+- Dependencies: paket yöneticileri ve lockfile konumları, izinli lisanslar, güvenlik taraması komutu, sabitleme/güncelleme politikası, özel registry
+  (dependency-supply-chain-reviewer okur)
+- Performance: gecikme/boyut bütçeleri, sıcak endpoint ve ekranlar, beklenen veri hacmi, mevcut önbellek mekanizması
+  (performance-reviewer okur)
+- Observability: log/metrik/trace kütüphaneleri ve kuralları, korelasyon/tenant kimliği, log'a girmeyecek veriler, sağlık endpoint'leri
+  (observability-reviewer okur)
 - Finish gate: hangi değişiklik hangi bağımsız kontrolü/reviewer'ı zorunlu kılar (tek kaynak); reviewer geçti ifadesi
 - Release: changelog dosyası + sürüm kuralı (özellik=minor, düzeltme=patch), commit stili (dil, önek),
   gizli dosya listesi (commit'e girmeyecek), deploy komutu, sağlık URL'leri ve beklenen kodlar

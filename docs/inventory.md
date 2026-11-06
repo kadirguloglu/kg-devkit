@@ -8,7 +8,7 @@ halidir. Projeye özgü bilgi (komutlar, yollar, cluster adları, kural belgeler
 
 | Tür | Kaynak | Claude | Codex |
 | --- | --- | --- | --- |
-| Agent (11) | `plugins/kg-devkit/agents/*.md` | plugin, `kg-devkit:<ad>` | `codex/agents/*.toml` → `~/.codex/agents` |
+| Agent (15) | `plugins/kg-devkit/agents/*.md` | plugin, `kg-devkit:<ad>` | `codex/agents/*.toml` → `~/.codex/agents` |
 | Skill (6) | `plugins/kg-devkit/skills/*/SKILL.md` | plugin, `/kg-devkit:<ad>` | `codex/skills/*` → `~/.agents/skills`, `$<ad>` |
 | Kural (3) | `rules/*.md` | `~/.claude/rules` (symlink, plugin kural taşımaz) | okunmaz; ilkeler agent/skill gövdelerinde |
 
@@ -18,7 +18,7 @@ halidir. Projeye özgü bilgi (komutlar, yollar, cluster adları, kural belgeler
 
 - **Profil okuma:** Agent ve skill'ler önce `Project profile` bölümünü okur; yoksa `package.json`/README'den çıkarım yapar
   ve raporda söyler. Rapor dili profilden gelir (varsayılan: kullanıcının isteği).
-- **Reviewer çıktısı:** `database-reviewer` ve `tenant-security-reviewer` raporu `VERDICT: PASS / FAIL / UNCLEAR` ile bitirir;
+- **Reviewer çıktısı:** tüm reviewer agent'ları (`database-reviewer`, `tenant-security-reviewer`, `api-contract-reviewer`, `dependency-supply-chain-reviewer`, `performance-reviewer`, `observability-reviewer`) raporu `VERDICT: PASS / FAIL / UNCLEAR` ile bitirir;
   profil farklı bir geçti ifadesi isterse onu da yazar.
 - **Salt-okuma sınırı:** Reviewer, danışman ve scope agent'ları yalnız `Read, Grep, Glob` kullanır (Codex'te `sandbox_mode = "read-only"`).
 - **Yan etkili skill'ler:** `release`, `rollback`, `live-check`, `add-migration`, `verify-change`, `browser-test`
@@ -39,7 +39,7 @@ halidir. Projeye özgü bilgi (komutlar, yollar, cluster adları, kural belgeler
   (`doctl/gcloud/az/oci/aws`) komutlarını onaya düşürür (bloklamaz, `ask`). Claude'a özgüdür; Codex'te yoktur. Sınırlar: yalnız Bash
   komut metnine bakar (kabuk kısayolu/fonksiyon, betik içi komut ve MCP araçları görünmez); `python3` yoksa sessizce geçer (fail-open).
   Kural testleri: `python3 scripts/test_guard_infra.py` (CI'da çalışır).
-- **Modeller:** `devops-operator`, `database-reviewer` ve `tenant-security-reviewer` `model: opus`, diğerleri `sonnet`.
+- **Modeller:** `devops-operator`, `database-reviewer`, `tenant-security-reviewer` ve `api-contract-reviewer` `model: opus`, diğerleri `sonnet`.
 - **Kit bakım agent'ları:** `.claude/agents/` altında (yalnız bu repoda çalışırken; plugin'e ve Codex çıktısına girmez):
   `kit-doc-sync` (README/doküman/prompt kaynakla uyumlu mu), `kit-agent-linter` (agent dosyaları: sızıntı, yetki, eşlik, mekanik
   kontroller; CI betiği yerine agent yapar) ve `kit-release-notes` (sürüm notu ve `[minor]`/`[major]` önerisi; çıktısı `CHANGELOG.md` girdisi olarak kullanılır). Üçü de salt-okuma
