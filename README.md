@@ -8,6 +8,12 @@ Nothing project-specific is baked in: each repo describes itself in a `## Projec
 Kişisel, projeden bağımsız Claude Code ve Codex agent/skill/kural koleksiyonu (plugin + marketplace). Proje bilgisi
 agent'lara gömülmez; her repo `AGENTS.md` içindeki `## Project profile` bölümünü sağlar. Aşağıdaki anlatım Türkçedir.
 
+**Dokümanlar / Docs**
+- [Agent gereksinimleri](docs/agent-requirements.md) – her agent'ın okuduğu profil alanları, varsayımları ve profil yokken davranışı (plugin'i incelemeden önce buraya bak / start here when evaluating the plugin).
+- [Project profile şablonu](docs/project-profile-template.md) – kendi reponda doldurulacak bölüm.
+- [Tasarım kararları ve sınırlar](docs/inventory.md).
+- [Gereksinim dokümanını üreten prompt](docs/prompts/generate-agent-requirements.md) – agent eklenince/değişince dokümanı yeniden üretmek için.
+
 > **Güvenlik notu:** Agent'lar çalıştıkları reponun `AGENTS.md` dosyasını okur ve oradaki talimatlara uyar. Güvenmediğin
 > bir repoda kit'i kullanma; `release`, `rollback` ve `devops-operator` canlı sistemi etkileyebilir (hepsi açık onay ister).
 
@@ -48,4 +54,4 @@ claude plugin validate . && claude plugin validate plugins/kg-devkit
 ```
 
 CI (`.github/workflows/check.yml`) Codex çıktısının güncelliğini ve manifestleri doğrular.
-Tasarım kararları ve bilinen sınırlar: [docs/inventory.md](docs/inventory.md). Agent gereksinimleri: [docs/agent-requirements.md](docs/agent-requirements.md).
+Tasarım kararları ve bilinen sınırlar: [docs/inventory.md](docs/inventory.md).
