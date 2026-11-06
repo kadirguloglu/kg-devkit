@@ -27,7 +27,7 @@ sütunu bunun dışındaki davranışı verir.
 
 ## Ortak kurallar (tüm agent'lar)
 
-- **Loglama:** ilk çıktı satırı `<agent> çalışmaya başladım.`, son rapor satırı `<agent> çalışmam tamamlandı.`
+- **Loglama:** ilk çıktı satırı `<agent> çalışmaya başladım.`, son rapor satırı `<agent> çalışmam tamamlandı.` (profil Türkçe dışında bir rapor dili belirtiyorsa aynı iki satır o dilde yazılır)
   (görev başarısız/engelli olsa da). Dil tercihi değiştirilecekse tüm agent dosyalarında değiştirilir.
 - **Profil önce:** `AGENTS.md` (veya `CLAUDE.md`) içindeki `## Project profile` bölümü okunur.
 - **Rapor dili:** profildeki `Report language`; yoksa kullanıcının isteği.
