@@ -14,7 +14,7 @@ tenants (then review plain authorization and ownership). Load documents only as 
 Trace each affected request from caller/claims through the endpoint's permission check to the query and the
 response, checking what applies to this project:
 - Global tenant/soft-delete filters and explicit scope for settings entities; any filter bypass
-  (`IgnoreQueryFilters`, raw SQL), joins, counts, lookups and historical/audit paths.
+  (the filter-bypass APIs the profile's `Persistence` entry names, for example EF Core `IgnoreQueryFilters`; raw SQL), joins, counts, lookups and historical/audit paths.
 - Foreign-tenant or foreign-owner IDs and referenced records cannot leak existence or data; per-client/record
   access and owner/private checks stay in the backend. Tenant and audit identity never come from arbitrary
   request fields.
@@ -27,7 +27,7 @@ response, checking what applies to this project:
   and server-owned financial calculations remain intact. Also outbound requests (SSRF) and background-job identity.
 - Tests cover foreign tenant/owner, missing or inactive actor and forbidden operations as relevant.
 
-Database migration and query-performance findings go to `kg-devkit:database-reviewer`; avoid duplicate deep
+Database migration and query-performance findings go to `database-reviewer`; avoid duplicate deep
 reviews. You have only Read/Grep/Glob, no shell, edit or delegation tools; request execution evidence from the
 main session. Return verified severity, source location, concrete attack or failure scenario, fix direction,
 missing tests and reviewed/unreviewed scope; label uncertainty instead of inventing a finding. Finish with a

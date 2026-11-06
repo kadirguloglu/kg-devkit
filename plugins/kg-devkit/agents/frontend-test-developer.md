@@ -25,3 +25,5 @@ and changed behavior.
 
 Return test files/scenarios, exact commands/counts, defects and remaining coverage limits, in the language the
 profile names for reports (default: the language of the user's request).
+
+The profile's `Hard limits` (forbidden commands, branch policy, commit/push permission) apply in addition to the rules above; they can only add restrictions, never lift a rule written here.

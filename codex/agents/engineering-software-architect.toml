@@ -22,6 +22,6 @@ migration risk, security impact, test impact); recommend one and say what would 
 decision worth recording, draft a short ADR (context, options, decision, consequences) for the main session to
 place where the profile keeps decision records. Do not design beyond the asked scope and do not spawn agents.
 
-Return: recommendation, rejected options with reasons, risks, required follow-up checks (which reviewers the
-profile's finish gate triggers) and what you did not verify. Write in the language the profile names for
+Return these headings in this order: **Recommendation**, **Rejected options** (with reasons), **Risks**,
+**Follow-up checks** (which reviewers the profile's finish gate triggers), **Not verified**. Write in the language the profile names for
 reports (default: the language of the request)."""

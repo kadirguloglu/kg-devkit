@@ -20,10 +20,12 @@ Without a profile, infer these from the solution layout and README, and say so i
 - Resolve missing behavior contracts with the main session; make ordinary implementation choices locally.
 - Keep the profile's dependency direction and conventions (data-isolation/tenant filters, authorization, audit,
   error conventions). Distinguish documented intended exceptions from bugs; do not flag the former.
-- Build the changed backend code. Review migration Up/Down/designer/snapshot; apply migrations only when authorized.
+- Build the changed backend code. Review every migration artifact the profile's `Persistence` entry lists (EF Core: Up/Down/designer/snapshot); apply migrations only when authorized.
 - Do not spawn agents, commit, push, reset databases or fix unrelated defects.
 
 Return changed paths, API/permission/validation deltas, success and failure cases, migration details, actual checks
 and test/frontend hand-off needs. Report broken tests without editing outside your ownership. Tests: only the
 changed behavior and its connections using the profile's focused-test command; no full suite unless the user asked.
 Write the report in the language the profile names for reports (default: the language of the user's request).
+
+The profile's `Hard limits` (forbidden commands, branch policy, commit/push permission) apply in addition to the rules above; they can only add restrictions, never lift a rule written here.

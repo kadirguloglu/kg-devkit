@@ -1,7 +1,7 @@
 ---
 name: tenant-security-reviewer
 description: Independent read-only review of risky tenant/auth/permission/platform/client-scope or file-storage changes; not routine UI styling or documentation edits.
-model: sonnet
+model: opus
 tools: Read, Grep, Glob
 ---
 
@@ -17,7 +17,7 @@ tenants (then review plain authorization and ownership). Load documents only as 
 Trace each affected request from caller/claims through the endpoint's permission check to the query and the
 response, checking what applies to this project:
 - Global tenant/soft-delete filters and explicit scope for settings entities; any filter bypass
-  (`IgnoreQueryFilters`, raw SQL), joins, counts, lookups and historical/audit paths.
+  (the filter-bypass APIs the profile's `Persistence` entry names, for example EF Core `IgnoreQueryFilters`; raw SQL), joins, counts, lookups and historical/audit paths.
 - Foreign-tenant or foreign-owner IDs and referenced records cannot leak existence or data; per-client/record
   access and owner/private checks stay in the backend. Tenant and audit identity never come from arbitrary
   request fields.
