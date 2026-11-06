@@ -17,7 +17,7 @@ Dil: Türkçe. Bölüm dışındaki mevcut içeriği değiştirme.
   "BELİRTİLMEMİŞ - kullanıcıya sor" yaz
 - Router / navigation files: frontend yönlendirme ve menü dosyaları
 - Rule docs / teknik doküman: docs/ altında frontend, backend, test kural belgeleri ve hangi bölümün ne için olduğu
-- Conventions: tenancy, soft delete, audit, hata/Result stili, para ve tarih kuralları (kodda ve belgelerde ara)
+- Conventions: tenancy, soft delete, audit, hata/Result stili, para ve tarih kuralları, kimlik yeniden kullanımı, sunucu-otoriter hesaplamalar, başarısız yazma temizliği (kodda ve belgelerde ara)
 - Scope mechanisms: müşteri/büro ayarı, özellik bayrağı, lookup mekanizmalarının adları ve belgeleri.
   Proje tek müşterili ise alanı hiç yazma (scope-advisor bu durumda NOT-APPLICABLE döner)
 - Security review: tenancy/yetki modeli ve güvenlik kural belgesi

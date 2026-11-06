@@ -4,7 +4,16 @@ Sürümler `main`'e her push'ta otomatik artar (`bump-version.yml`): varsayılan
 ile seviye seçilir. Bu dosya kullanıcıya dönük etkiyi özetler; taslağı `kit-release-notes` agent'ı çıkarır
 (bkz. [docs/inventory.md](docs/inventory.md)). Kategoriler: **Kırıcı**, **Eklenen**, **Değişen**, **Düzeltilen**, **Doküman/Altyapı**.
 
-## Yayınlanmadı (öneri: `[minor]`)
+## Yayınlanmadı (öneri: patch)
+- **Değişen:** `dependency-supply-chain-reviewer` modeli `sonnet` → `opus` (diğer güvenlik reviewer'larıyla aynı katman). Agent log satırları profilin rapor dilini izler (Türkçe dışıysa aynı iki satır o dilde); altı reviewer'a ortak
+  "profil farklı geçme ifadesi adlandırırsa onu da yaz" kuralı, `database-reviewer` ve `tenant-security-reviewer`'a "Do not spawn agents"
+  eklendi; bu ikisindeki alan-özel ifadeler (finansal hesap, silinmiş kullanıcı kimliği, para/yükleme temizliği) profile bırakıldı;
+  `dependency-supply-chain-reviewer` CI sınırı netleştirildi (pinleme/güven/secret; workflow mantığı `devops-engineer`'da).
+  `build-codex.py`'den artık gereksiz `kg-devkit:` önek kuralı kaldırıldı.
+- **Doküman/Altyapı:** `.claude/settings.json` `Stop` kancası (`.claude/hooks/kit-review-gate.py`): kit kaynakları değişince
+  `kit-agent-linter` ve `kit-doc-sync` çalıştırılmasını ister; kaynak değişip `CHANGELOG.md` değişmediyse `kit-release-notes` da istenir; özet agent başına ve dosya içeriğine bağlıdır, commit veya kanca betiği düzenlemesi yeniden tetiklemez (yalnız bu repoda).
+
+## 0.8.0 – 2026-11-06 (öneri: `[minor]`)
 - **Eklenen:** 4 salt-okuma reviewer agent'ı: `api-contract-reviewer` (opus; kırıcı API değişikliği ve backend/frontend sözleşme sapması),
   `dependency-supply-chain-reviewer` (bağımlılık, lockfile, lisans, CI action tedarik zinciri), `performance-reviewer` (uygulama/UI performansı;
   şema ve sorgu `database-reviewer`'da kalır) ve `observability-reviewer` (log/metrik/trace, log'a hassas veri sızması, yutulan hatalar).

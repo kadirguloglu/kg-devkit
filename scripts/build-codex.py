@@ -18,9 +18,6 @@ WRITE_TOOLS = {"Edit", "Write", "Bash", "NotebookEdit"}
 
 # Claude'a özgü araç adları geçen paragraflar: (ajan adı, eski metin) -> Codex metni. Eski metin bulunamazsa derleme durur.
 AGENT_REPLACEMENTS = {
-    "tenant-security-reviewer": [
-        ("`kg-devkit:database-reviewer`", "`database-reviewer`"),
-    ],
     "frontend-browser-tester": [
         (
             "- Load the Chrome tools in one `ToolSearch` (`select:` with every tool you need), call\n"

@@ -18,7 +18,7 @@ Claude files are the source; `codex/agents/*.toml` are generated and are only co
 1. Frontmatter: `name` equals the file name; `description` states when to use it and what it is not for; `model` is
    `sonnet` or `opus`; `tools` is present.
 2. Logging line: first paragraph contains exactly `<name> çalışmaya başladım.` and `<name> çalışmam tamamlandı.`
-   with the agent's own name.
+   with the agent's own name, followed by the clause that lets a non-Turkish profile report language replace them.
 3. Profile handling: reads the `Project profile` section of `AGENTS.md`/`CLAUDE.md` first and says what it does
    without a profile (infer and say so, or stop and ask).
 4. Report language: refers to the language the profile names (default: the user's request language).
