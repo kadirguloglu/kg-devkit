@@ -2,6 +2,8 @@ name: bump-version
 
 # main'e her push'ta plugin sürümünü (plugin.json) artırır ve geri commit'ler.
 # Varsayılan patch; birleştirme/commit mesajında [minor] veya [major] varsa o seviye.
+# main'de PR zorunlu bir ruleset var; push, bypass yetkili yöneticinin BUMP_TOKEN'ı (fine-grained PAT, Contents: write) ile yapılır.
+# Bu yüzden commit'in yazarı bot değil yönetici görünür; döngüyü 'chore(release):' mesaj denetimi keser.
 on:
   push:
     branches: [main]
@@ -19,9 +21,18 @@ jobs:
     if: github.actor != 'github-actions[bot]' && !startsWith(github.event.head_commit.message, 'chore(release):')
     runs-on: ubuntu-latest
     steps:
+      - name: BUMP_TOKEN tanımlı mı
+        env:
+          BUMP_TOKEN: ${{ secrets.BUMP_TOKEN }}
+        run: |
+          if [ -z "$BUMP_TOKEN" ]; then
+            echo "::error::BUMP_TOKEN secret'ı yok. main kuralları (PR zorunlu) GITHUB_TOKEN ile push'u engeller; docs/inventory.md'ye bak."
+            exit 1
+          fi
       - uses: actions/checkout@v4
         with:
           ref: main
+          token: ${{ secrets.BUMP_TOKEN }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"

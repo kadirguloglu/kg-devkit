@@ -30,7 +30,10 @@ halidir. Projeye özgü bilgi (komutlar, yollar, cluster adları, kural belgeler
 - **Otomatik sürüm:** `main`'e her push'ta `.github/workflows/bump-version.yml`, `scripts/bump-version.py` ile
   `plugins/kg-devkit/.claude-plugin/plugin.json` sürümünü artırıp `chore(release): vX.Y.Z` commit'i atar. Varsayılan
   patch; birleştirme/commit mesajında `[minor]` veya `[major]` varsa o seviye. Botun kendi commit'i yeni artış tetiklemez.
-  `main` dal koruması varsa Actions botuna push izni verilmeli (yoksa iş başarısız olur).
+  `main`'de PR zorunlu bir ruleset olduğu için push `GITHUB_TOKEN` ile değil, repo secret'ı `BUMP_TOKEN` (yönetici hesabının
+  fine-grained jetonu, yalnız bu repo, Contents: Read and write) ile yapılır; ruleset bypass listesinde **Repository admin** olmalıdır.
+  Jeton süresi dolarsa `bump-version` "BUMP_TOKEN secret'ı yok/geçersiz" diye başarısız olur ve yenilenmelidir.
+  Döngüyü `chore(release):` mesaj denetimi keser.
 - **Altyapı kancası:** `plugins/kg-devkit/hooks/` altındaki PreToolUse kancası (`guard-infra.py`) canlı ortamı değiştiren
   veya secret okuyan `kubectl/oc/helm/terraform` komutlarını onaya düşürür (bloklamaz, `ask`). Claude'a özgüdür; Codex'te yoktur.
   Kural testleri: `python3 scripts/test_guard_infra.py` (CI'da çalışır).
