@@ -29,7 +29,7 @@ Yalnız ilgili alanları doldur, kullanılmayanı sil.
 - Finish gate: hangi değişiklik hangi bağımsız kontrolü/reviewer'ı zorunlu kılar (tek kaynak); reviewer geçti ifadesi
 - Release: changelog dosyası + sürüm kuralı (özellik=minor, düzeltme=patch), commit stili (dil, önek),
   gizli dosya listesi (commit'e girmeyecek), deploy komutu, sağlık URL'leri ve beklenen kodlar
-- Production: cluster context=`...`, namespace=`...`, status/deploy komutları, iş yükü adları,
+- Production: cluster context=`...`, namespace=`...`, bulut CLI kimlik komutu, status/deploy/rollback komutları, iş yükü adları,
   registry repoları, topoloji sınırları (replika, güncelleme stratejisi, depolama), runbook=`...`, secret konumları
 - Report language: Türkçe
 - Hard limits: commit/push yetkisi, branch politikası, yasak komutlar (db reset, force-push, ...)
