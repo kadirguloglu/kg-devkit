@@ -48,4 +48,4 @@ claude plugin validate . && claude plugin validate plugins/kg-devkit
 ```
 
 CI (`.github/workflows/check.yml`) Codex çıktısının güncelliğini ve manifestleri doğrular.
-Tasarım kararları ve bilinen sınırlar: [docs/inventory.md](docs/inventory.md).
+Tasarım kararları ve bilinen sınırlar: [docs/inventory.md](docs/inventory.md). Agent gereksinimleri: [docs/agent-requirements.md](docs/agent-requirements.md).

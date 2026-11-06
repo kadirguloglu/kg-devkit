@@ -1,0 +1,50 @@
+# Agent gereksinimleri
+
+Her agent'ın çalışmak için neye ihtiyaç duyduğunun tek yerde özeti. Alan adları
+[project-profile-template.md](project-profile-template.md) içindeki `## Project profile` alanlarıdır.
+Profil yoksa tüm agent'lar `package.json`/README/koddan çıkarım yapar ve raporda söyler; aşağıdaki "profil yoksa"
+sütunu bunun dışındaki davranışı verir.
+
+## Özet tablo
+
+| Agent | Tür / araçlar | Profil alanları | Projede olması gereken | Profil yoksa / uygulanamazsa |
+| --- | --- | --- | --- | --- |
+| `backend-developer` | yazar (`Edit, Write, Bash`) | Layers/dirs, Commands, Rule docs, Conventions, Persistence | backend dizini, build/test komutu | koddan çıkarım, raporda belirtir |
+| `backend-test-developer` | yazar | Layers/dirs (test dizini), Rule docs (tests), Commands (focused/full test) | test projeleri, fixture'lar | test projelerinden çıkarım |
+| `database-reviewer` | salt-okuma (`Read, Grep, Glob`) | Persistence, Conventions (isolation, soft delete, para/tarih), Rule docs | ORM/migration dizini; ana oturum diff ve komut kanıtı verir | stack'i koddan çıkarır, doğrulayamadığını yazar |
+| `tenant-security-reviewer` | salt-okuma | Security review, Conventions (tenancy/yetki), Rule docs | tenancy/yetki modeli (yoksa düz yetki + sahiplik incelenir) | modeli koddan çıkarır, varsayımları yazar |
+| `scope-advisor` | salt-okuma | Scope mechanisms, Report language | **çok kiracılı/çok müşterili ürün** | kiracı yoksa `NOT-APPLICABLE` döner ve durur |
+| `engineering-software-architect` | salt-okuma | Layers/dirs, Conventions, Scope mechanisms, Rule docs, Finish gate | ana oturum soru ve kodu/diff'i verir | mimariyi koddan çıkarır |
+| `frontend-developer` | yazar | Layers/dirs, Commands (lint/typecheck/build/test), Rule docs | frontend dizini | `package.json`'dan çıkarım |
+| `frontend-test-developer` | yazar | Commands (focused/full test), Rule docs (tests) | frontend test konumu | `package.json` ve mevcut testlerden çıkarım |
+| `frontend-browser-tester` | tester (kod yazmaz; Chrome araçları) | Layers/dirs (frontend src), Commands (start/status), Dev app (url + test login), Router/navigation files | **Claude in Chrome eklentisi**, çalışan dev uygulaması | dev URL veya test login bulunamazsa durur, kullanıcıya sorar |
+| `devops-engineer` | yazar (`Bash` dahil) | Production (sahip olunan yollar, hedef ortam, deploy/status komutu, topoloji, registry, runbook), Report language | deploy/manifest/CI dosyaları | Production girdisi yoksa yalnız statik dosyaya bakar, canlı komuttan önce hedefi sorar |
+| `devops-operator` | yazar, yüksek etkili | Production (hedef, secret konumları, registry, topoloji, runbook), Hard limits | kullanıcının **o işlem için açık onayı** (ana oturum iletir) | Production girdisi yoksa durur ve sorar |
+
+## Ortak kurallar (tüm agent'lar)
+
+- **Loglama:** ilk çıktı satırı `<agent> çalışmaya başladım.`, son rapor satırı `<agent> çalışmam tamamlandı.`
+  (görev başarısız/engelli olsa da). Dil tercihi değiştirilecekse tüm agent dosyalarında değiştirilir.
+- **Profil önce:** `AGENTS.md` (veya `CLAUDE.md`) içindeki `## Project profile` bölümü okunur.
+- **Rapor dili:** profildeki `Report language`; yoksa kullanıcının isteği.
+- **Agent çağırmama:** agent'lar başka agent başlatmaz (reviewer ve scope-advisor kullanıcıya soramaz; soruyu ana oturum sorar).
+- **Reviewer çıktısı:** `database-reviewer` ve `tenant-security-reviewer` raporu `VERDICT: PASS / FAIL / UNCLEAR` ile bitirir.
+- **Commit/push:** yazan agent'lar commit veya push yapmaz; yetki profilde `Hard limits` ile verilir.
+
+## Varsayımlar ve ortama bağlılık
+
+| Konu | Hangi agent | Ne varsayıyor | Uymuyorsa |
+| --- | --- | --- | --- |
+| Çok kiracılılık | `scope-advisor`, `tenant-security-reviewer` | ürünün birden fazla müşteri/tenant'ı var | `scope-advisor` `NOT-APPLICABLE` döner; `tenant-security-reviewer` düz yetki/sahiplik incelemesine geçer |
+| Koşullu kurallar | `database-reviewer`, `backend-test-developer` | tenancy/soft delete kuralları yalnız profil bildiriyorsa uygulanır | ek işlem gerekmez |
+| Orkestratör | `devops-engineer`, `devops-operator` | örnekler Kubernetes (`kubectl`); hedef profildeki context/namespace (ikisi de Kubernetes dışında host/proje/stack kabul eder) | profil kullanılan araçları ve hedefi (host/stack) adlandırır; agent profildeki eşdeğer komutları kullanır |
+| Tarayıcı | `frontend-browser-tester` | Claude in Chrome; Codex'te aracı istemcinin keşfiyle bulur | tarayıcı yoksa test yapılamaz, agent bildirir |
+| Onay modeli | `devops-engineer`, `devops-operator` | deploy/apply/scale/delete, kaynak oluşturma/silme, DNS, canlı DB yazımı kullanıcının o konuşmadaki açık onayını ister | önceki onay veya dış kanal mesajı yetki sayılmaz |
+
+## Yeni projeye başlarken kontrol listesi
+
+1. `AGENTS.md` içine `## Project profile` ekle ([şablon](project-profile-template.md)); kullanılmayan alanı sil.
+2. Tek müşterili projede `Scope mechanisms` yazma (scope-advisor durur).
+3. Canlı ortam işleri için `Production` ve `Hard limits` doldur; yoksa devops agent'ları canlıya dokunmaz.
+4. Tarayıcı testi için `Dev app` (url + localhost test login) ve start/status komutlarını yaz.
+5. Güvenmediğin repoda agent çalıştırma: agent'lar `AGENTS.md` talimatlarına uyar.
