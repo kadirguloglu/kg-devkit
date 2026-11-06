@@ -14,7 +14,7 @@ agent'lara gömülmez; her repo `AGENTS.md` içindeki `## Project profile` böl�
 - [Project profile şablonu](docs/project-profile-template.md) – kendi reponda doldurulacak bölüm.
 - [Tasarım kararları ve sınırlar](docs/inventory.md).
 - [Değişiklik günlüğü](CHANGELOG.md) – sürüm sürüm kullanıcıya dönük değişiklikler.
-- [Gereksinim dokümanını üreten prompt](docs/prompts/generate-agent-requirements.md) – agent eklenince/değişince dokümanı yeniden üretmek için.
+- [Proje hazırlık raporu prompt'u](docs/prompts/project-readiness-report.md) – bir projenin kit agent/skill'lerine ne kadar hazır olduğunu (dolu/eksik profil alanı, hangi agent çalışır/durur) raporlatmak için.
 - [Project profile üreten prompt](docs/prompts/generate-project-profile.md) – yeni projenin `## Project profile` bölümünü repodan çıkarttırmak için.
 
 > **Güvenlik notu:** Agent'lar çalıştıkları reponun `AGENTS.md` dosyasını okur ve oradaki talimatlara uyar. Güvenmediğin

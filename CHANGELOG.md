@@ -5,8 +5,11 @@ ile seviye seçilir. Bu dosya kullanıcıya dönük etkiyi özetler; taslağı `
 (bkz. [docs/inventory.md](docs/inventory.md)). Kategoriler: **Kırıcı**, **Eklenen**, **Değişen**, **Düzeltilen**, **Doküman/Altyapı**.
 
 ## Yayınlanmadı (öneri: patch)
+- **Değişen:** `generate-agent-requirements.md` kaldırıldı; yerine `project-readiness-report.md`: tüketici projede çalışıp "bu proje için hangi agent/skill
+  HAZIR / ÇIKARIM / DURUR / UYGULANAMAZ" raporu verir (matris prompt'a gömülü, kit iç yapısı girmez). Eski prompt agent dosyalarının repoda olduğunu
+  varsaydığı için tüketici projede kit'in iç yapısını döküyordu. `kit-doc-sync` gömülü matrisin `agent-requirements.md` ile uyumunu denetler.
 - **Doküman/Altyapı:** `generate-project-profile.md` prompt'u kendi içinde eksiksiz: profil şablonu prompt'un içine gömüldü, kg-devkit reposundaki
-  dosyalara ihtiyaç duymadan başka projede kopyala-yapıştır çalışır. `generate-agent-requirements.md` agent/skill dizinlerini varsaymaz, bulamazsa sorar.
+  dosyalara ihtiyaç duymadan başka projede kopyala-yapıştır çalışır.
   `kit-doc-sync`, gömülü şablonun `docs/project-profile-template.md` ile aynı kalmasını da denetler.
 - **Doküman/Altyapı:** `docs/prompts/` altındaki iki prompt soru-cevap akışına çevrildi: önce repo/mevcut doküman taranır, cevabı bulunanlar
   sorulmaz, yalnız belirsiz/bulunamayan noktalar (en çok 4'lü gruplar) kullanıcıya sorulur. Gereksinim prompt'u artık skill'leri ve kuralları da

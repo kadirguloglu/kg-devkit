@@ -42,7 +42,8 @@ If the brief names no change at all, check the whole repository.
 6. **Codex parity:** `python3 scripts/build-codex.py --check` passes; Claude-only features (hooks, `kg-devkit:` prefix,
    Chrome tools) are documented as Claude-only.
 7. **Prompts:** both files in `docs/prompts/` still produce what the current docs contain (fields, hooks, models,
-   Hard limits wording).
+   Hard limits wording). The matrix embedded in `project-readiness-report.md` (section 2) must agree with the agent/skill table of
+   `docs/agent-requirements.md` (fields read, what stops, what is inferred); the prompt must not mention kit internals.
 8. **Tracked junk:** `git ls-files | grep -E '__pycache__|\.pyc$'` is empty.
 
 ## Report (in Turkish, compact)
