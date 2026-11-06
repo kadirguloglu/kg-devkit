@@ -46,7 +46,7 @@ halidir. Projeye özgü bilgi (komutlar, yollar, cluster adları, kural belgeler
   çalışır, düzeltmeyi ana oturum yapar.
 - **Otomatik tetik:** `.claude/settings.json` `Stop` kancası `.claude/hooks/kit-review-gate.py` çalıştırır: agent dosyaları değiştiyse
   `kit-agent-linter`, agent/skill/kural/kanca/betik/workflow/doküman değiştiyse `kit-doc-sync` çalıştırılması istenir. Aynı değişiklik
-  kümesi için yalnız bir kez durdurur (`.git/kit-review-gate/` özeti); `kit-release-notes` otomatik değildir. Yalnız bu repoda geçerlidir.
+  kümesi için yalnız bir kez durdurur (`.git/kit-review-gate/` özeti); kaynak (plugin/kural/betik/workflow) değişip `CHANGELOG.md` değişmediyse `kit-release-notes` da istenir. Yalnız bu repoda geçerlidir.
 - **Stack paketleri yok:** .NET/React'e özgü kural paketleri bilerek eklenmedi; aynı stack'te ikinci proje gelince çıkarılır.
 
 ## Bilinen sınırlar
