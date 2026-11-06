@@ -29,6 +29,10 @@ halidir. Projeye özgü bilgi (komutlar, yollar, cluster adları, kural belgeler
   `plugins/kg-devkit/.claude-plugin/plugin.json` sürümünü artırıp `chore(release): vX.Y.Z` commit'i atar. Varsayılan
   patch; birleştirme/commit mesajında `[minor]` veya `[major]` varsa o seviye. Botun kendi commit'i yeni artış tetiklemez.
   `main` dal koruması varsa Actions botuna push izni verilmeli (yoksa iş başarısız olur).
+- **Altyapı kancası:** `plugins/kg-devkit/hooks/` altındaki PreToolUse kancası (`guard-infra.py`) canlı ortamı değiştiren
+  veya secret okuyan `kubectl/oc/helm/terraform` komutlarını onaya düşürür (bloklamaz, `ask`). Claude'a özgüdür; Codex'te yoktur.
+  Kural testleri: `python3 scripts/test_guard_infra.py` (CI'da çalışır).
+- **Modeller:** `devops-operator`, `database-reviewer` ve `tenant-security-reviewer` `model: opus`, diğerleri `sonnet`.
 - **Stack paketleri yok:** .NET/React'e özgü kural paketleri bilerek eklenmedi; aynı stack'te ikinci proje gelince çıkarılır.
 
 ## Bilinen sınırlar

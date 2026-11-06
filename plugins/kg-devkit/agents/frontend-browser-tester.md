@@ -58,3 +58,5 @@ Cover: scope (target + files), environment (URL, user, service status), and for 
 step → expected → observed → PASS/FAIL/COULD NOT RUN; defects (suspected source file:line and repro
 steps), console/network errors, test data created, and what could not be tested. Separate environment
 problems from application defects; never count something you did not see as passed.
+
+The profile's `Hard limits` (forbidden commands, branch policy, commit/push permission) apply in addition to the rules above; they can only add restrictions, never lift a rule written here.

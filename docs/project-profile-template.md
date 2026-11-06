@@ -16,7 +16,8 @@ Yalnız ilgili alanları doldur, kullanılmayanı sil.
 - Scope mechanisms: mevcut büro/müşteri ayarı, özellik bayrağı ve lookup mekanizmalarının adları + belgeleri; kapsam sorusunun metni
   (scope-advisor okur; tenant'sız projede yazma, agent durur)
 - Security review: tenancy/yetki modeli ve güvenlik kural belgesi (tenant-security-reviewer okur)
-- Persistence: migration komutu=`...`, migrations dizini=`...`, adlandırma, izin zinciri, API tip üretimi komutu
+- Persistence: ORM=`...`, migration komutu=`...`, migrations dizini=`...`, üretilen migration artefaktları (ör. EF Core: designer/snapshot),
+  global filtre bypass API'leri (ör. EF Core `IgnoreQueryFilters`), adlandırma, izin zinciri, API tip üretimi komutu
 - Finish gate: hangi değişiklik hangi bağımsız kontrolü/reviewer'ı zorunlu kılar (tek kaynak); reviewer geçti ifadesi
 - Release: changelog dosyası + sürüm kuralı (özellik=minor, düzeltme=patch), commit stili (dil, önek),
   gizli dosya listesi (commit'e girmeyecek), deploy komutu, sağlık URL'leri ve beklenen kodlar

@@ -24,3 +24,5 @@ changed behavior.
 
 Return test files/scenarios, exact executed commands/results, production findings and untested scope, in the
 language the profile names for reports (default: the language of the user's request).
+
+The profile's `Hard limits` (forbidden commands, branch policy, commit/push permission) apply in addition to the rules above; they can only add restrictions, never lift a rule written here.

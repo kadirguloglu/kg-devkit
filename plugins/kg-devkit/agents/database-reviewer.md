@@ -1,7 +1,7 @@
 ---
 name: database-reviewer
 description: Independent read-only review of risky schema/migration, index, query or delete changes; excludes permission policy and pure frontend/docs edits.
-model: sonnet
+model: opus
 tools: Read, Grep, Glob
 ---
 
@@ -15,7 +15,7 @@ Without a profile, infer the stack from the code and state which conventions you
 the relevant document sections.
 
 Check the assigned change:
-1. Model/configuration/migration/designer/snapshot agreement; rename versus destructive drop, existing-row
+1. Model/configuration/migration agreement, including the generated artifacts the profile's `Persistence` entry lists (EF Core: designer/snapshot); rename versus destructive drop, existing-row
    backfills, nullable/type/length changes, data SQL and documented lossy Down. Migrations stay separate from
    application startup unless the profile says otherwise.
 2. If the profile declares multi-tenancy or soft delete: tenant-led composite uniqueness, soft-delete-aware
@@ -24,9 +24,9 @@ Check the assigned change:
 3. Reference existence/in-use checks, dependent soft-delete, atomic writes, and audit or filter bypass in
    bulk updates/raw SQL. Do not confuse documented cleanup (for example failed-upload cleanup) with
    business-record deletion.
-4. Query shape: projection/no-tracking for reads, deterministic pagination and count filters, no premature
+4. Query shape: projection and read-only/no-tracking queries for reads (where the ORM has them), deterministic pagination and count filters, no premature
    materialization or N+1.
-5. Query performance: include chains (cartesian explosion, split queries/projection), queries or saves in
+5. Query performance: eager-load/include chains (cartesian explosion, split queries/projection), queries or saves in
    loops, large `IN` lists, client-side evaluation after materialization, unpaged lists, count where exists
    suffices, deep offsets; new filter/order/join columns covered by an index matching the query filter
    (tenant-led and soft-delete-aware where applicable), duplicate or needless indexes, batch size in

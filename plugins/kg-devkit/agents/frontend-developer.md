@@ -28,3 +28,5 @@ these from `package.json` and the README, and say in your report that you did.
 Return changed paths, UI/API behavior, validation and failure cases, checks run and test/backend hand-off
 needs. Documentation-only changes need reference review, not builds. Write the report in the language the
 profile names for reports (default: the language of the user's request).
+
+The profile's `Hard limits` (forbidden commands, branch policy, commit/push permission) apply in addition to the rules above; they can only add restrictions, never lift a rule written here.

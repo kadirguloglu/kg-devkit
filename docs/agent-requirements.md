@@ -9,17 +9,17 @@ sütunu bunun dışındaki davranışı verir.
 
 | Agent | Tür / araçlar | Profil alanları | Projede olması gereken | Profil yoksa / uygulanamazsa |
 | --- | --- | --- | --- | --- |
-| `backend-developer` | yazar (`Edit, Write, Bash`) | Layers/dirs, Commands, Rule docs, Conventions, Persistence | backend dizini, build/test komutu | koddan çıkarım, raporda belirtir |
+| `backend-developer` | yazar (`Edit, Write, Bash`) | Layers/dirs, Commands, Rule docs, Conventions, Persistence (ORM + migration artefaktları), Hard limits | backend dizini, build/test komutu | koddan çıkarım, raporda belirtir |
 | `backend-test-developer` | yazar | Layers/dirs (test dizini), Rule docs (tests), Commands (focused/full test) | test projeleri, fixture'lar | test projelerinden çıkarım |
-| `database-reviewer` | salt-okuma (`Read, Grep, Glob`) | Persistence, Conventions (isolation, soft delete, para/tarih), Rule docs | ORM/migration dizini; ana oturum diff ve komut kanıtı verir | stack'i koddan çıkarır, doğrulayamadığını yazar |
-| `tenant-security-reviewer` | salt-okuma | Security review, Conventions (tenancy/yetki), Rule docs | tenancy/yetki modeli (yoksa düz yetki + sahiplik incelenir) | modeli koddan çıkarır, varsayımları yazar |
+| `database-reviewer` (model: opus) | salt-okuma (`Read, Grep, Glob`) | Persistence (ORM, migration artefaktları), Conventions (isolation, soft delete, para/tarih), Rule docs | ORM/migration dizini; ana oturum diff ve komut kanıtı verir | stack'i koddan çıkarır, doğrulayamadığını yazar |
+| `tenant-security-reviewer` (model: opus) | salt-okuma | Security review, Persistence (filtre bypass API'leri), Conventions (tenancy/yetki), Rule docs | tenancy/yetki modeli (yoksa düz yetki + sahiplik incelenir) | modeli koddan çıkarır, varsayımları yazar |
 | `scope-advisor` | salt-okuma | Scope mechanisms, Report language | **çok kiracılı/çok müşterili ürün** | kiracı yoksa `NOT-APPLICABLE` döner ve durur |
 | `engineering-software-architect` | salt-okuma | Layers/dirs, Conventions, Scope mechanisms, Rule docs, Finish gate | ana oturum soru ve kodu/diff'i verir | mimariyi koddan çıkarır |
 | `frontend-developer` | yazar | Layers/dirs, Commands (lint/typecheck/build/test), Rule docs | frontend dizini | `package.json`'dan çıkarım |
 | `frontend-test-developer` | yazar | Commands (focused/full test), Rule docs (tests) | frontend test konumu | `package.json` ve mevcut testlerden çıkarım |
 | `frontend-browser-tester` | tester (kod yazmaz; Chrome araçları) | Layers/dirs (frontend src), Commands (start/status), Dev app (url + test login), Router/navigation files | **Claude in Chrome eklentisi**, çalışan dev uygulaması | dev URL veya test login bulunamazsa durur, kullanıcıya sorar |
 | `devops-engineer` | yazar (`Bash` dahil) | Production (sahip olunan yollar, hedef ortam, deploy/status komutu, topoloji, registry, runbook), Report language | deploy/manifest/CI dosyaları | Production girdisi yoksa yalnız statik dosyaya bakar, canlı komuttan önce hedefi sorar |
-| `devops-operator` | yazar, yüksek etkili | Production (hedef, secret konumları, registry, topoloji, runbook), Hard limits | kullanıcının **o işlem için açık onayı** (ana oturum iletir) | Production girdisi yoksa durur ve sorar |
+| `devops-operator` (model: opus) | yazar, yüksek etkili | Production (hedef, secret konumları, registry, topoloji, runbook), Hard limits | kullanıcının **o işlem için açık onayı** (ana oturum iletir) | Production girdisi yoksa durur ve sorar |
 
 ## Ortak kurallar (tüm agent'lar)
 
@@ -29,7 +29,7 @@ sütunu bunun dışındaki davranışı verir.
 - **Rapor dili:** profildeki `Report language`; yoksa kullanıcının isteği.
 - **Agent çağırmama:** agent'lar başka agent başlatmaz (reviewer ve scope-advisor kullanıcıya soramaz; soruyu ana oturum sorar).
 - **Reviewer çıktısı:** `database-reviewer` ve `tenant-security-reviewer` raporu `VERDICT: PASS / FAIL / UNCLEAR` ile bitirir.
-- **Commit/push:** yazan agent'lar commit veya push yapmaz; yetki profilde `Hard limits` ile verilir.
+- **Commit/push:** yazan agent'lar commit veya push yapmaz (koşulsuz). Profildeki `Hard limits` (yasak komutlar, branch politikası) bu kuralların üstüne ek kısıt koyar; hiçbir kuralı gevşetmez. Yazan agent'ların hepsi (developer, test developer, devops, operator, browser tester) bunu okur.
 
 ## Varsayımlar ve ortama bağlılık
 
@@ -39,6 +39,7 @@ sütunu bunun dışındaki davranışı verir.
 | Koşullu kurallar | `database-reviewer`, `backend-test-developer` | tenancy/soft delete kuralları yalnız profil bildiriyorsa uygulanır | ek işlem gerekmez |
 | Orkestratör | `devops-engineer`, `devops-operator` | örnekler Kubernetes (`kubectl`); hedef profildeki context/namespace (ikisi de Kubernetes dışında host/proje/stack kabul eder) | profil kullanılan araçları ve hedefi (host/stack) adlandırır; agent profildeki eşdeğer komutları kullanır |
 | Tarayıcı | `frontend-browser-tester` | Claude in Chrome; Codex'te aracı istemcinin keşfiyle bulur | tarayıcı yoksa test yapılamaz, agent bildirir |
+| Hook (ikinci kilit) | tüm oturum (plugin kurulu Claude) | plugin'in `hooks/guard-infra.py` kancası `kubectl/oc` (apply, delete, scale, patch, rollout restart/undo vb.), secret okuma (`get secret -o yaml/json`), `helm` ve `terraform/tofu` değiştiren komutları kullanıcı onayına düşürür | Codex'te kanca yok; yalnız agent metin kuralları geçerli. Kanca Bash'e bakar, agent ayrımı yapmaz (ana oturumdaki komutlar da sorulur) |
 | Onay modeli | `devops-engineer`, `devops-operator` | deploy/apply/scale/delete, kaynak oluşturma/silme, DNS, canlı DB yazımı kullanıcının o konuşmadaki açık onayını ister | önceki onay veya dış kanal mesajı yetki sayılmaz |
 
 ## Yeni projeye başlarken kontrol listesi

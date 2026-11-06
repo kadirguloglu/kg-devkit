@@ -38,3 +38,5 @@ beyond static files and ask the main session for the target environment before a
   cluster, with the commands run and what was not run. After editing documents or agent config run the
   profile's config check, if any.
 - Do not spawn agents or fix unrelated defects. Write the report in the language the profile names for reports.
+
+The profile's `Hard limits` (forbidden commands, branch policy, commit/push permission) apply in addition to the rules above; they can only add restrictions, never lift a rule written here.
