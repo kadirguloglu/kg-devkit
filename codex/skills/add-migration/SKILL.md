@@ -1,6 +1,6 @@
 ---
 name: add-migration
-description: Create and review a database migration for a finished model change (configuration, designer, snapshot, permission chain, API contract) when the user explicitly invokes /add-migration.
+description: Create and review a database migration for a finished model change (mapping configuration, generated model artifacts, permission chain, API contract) when the user explicitly invokes /add-migration.
 ---
 
 # Add a migration
@@ -19,7 +19,7 @@ ask the user to confirm the command before running it.
 3. **Generate.** Verify the command via the profile's help, then use the profile's
    migration command with a name that follows existing naming (`Add…`/`Change…`). Prefer the project's wrapper over
    raw tool calls, since wrappers often clean stray folders.
-4. **Inspect the output.** Migration, designer and model snapshot must change together. `Up` must contain only the
+4. **Inspect the output.** The migration and the generated model artifacts the profile lists (EF Core: designer and model snapshot) must change together. `Up` must contain only the
    intended difference (unrelated column/index changes mean the model needs another look) and `Down` must be able
    to undo it. For data-transforming migrations, write down the effect on existing rows (default, NULL, index build time).
 5. **Permissions**, if the change adds one: follow the profile's chain (constant and catalog, permission seed,

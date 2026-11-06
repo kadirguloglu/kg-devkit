@@ -24,8 +24,10 @@ database data, DNS, volumes or secrets.
    table) may be compatible with the old image; explain why. Never run a reverse migration against the live database.
 4. **Plan and approval.** Write the exact commands, expected downtime (per the profile's update strategy) and
    affected components; get explicit approval. Do not proceed to step 5 without it.
-5. **Execute (after approval).** One workload at a time: `kubectl --context <ctx> -n <ns> rollout undo
-   deployment/<name> [--to-revision=N]`, then `rollout status --timeout=600s` for each.
+5. **Execute (after approval).** One workload at a time, with the profile's rollback
+   command (Kubernetes: `kubectl --context <ctx> -n <ns> rollout undo deployment/<name> [--to-revision=N]`, then
+   `rollout status --timeout=600s` for each; compose or plain host: redeploy the target tag with the profile's deploy
+   command). The plugin's guard hook asks for confirmation again on these commands; that is expected.
 6. **Verify.** Rerun the live-check: health URLs return their expected codes, pods ready, no restart increase.
 7. **Realign the repo.** A manual rollback is overwritten by the next deploy: the faulty commit must be reverted
    (`git revert`, with the user's approval) before deploying again. State this plainly in the report.
