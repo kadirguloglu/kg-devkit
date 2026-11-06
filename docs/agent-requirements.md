@@ -25,6 +25,19 @@ sütunu bunun dışındaki davranışı verir.
 | `devops-engineer` | yazar (`Bash` dahil) | Production (sahip olunan yollar, hedef ortam, deploy/status komutu, topoloji, registry, runbook), Report language | deploy/manifest/CI dosyaları | Production girdisi yoksa yalnız statik dosyaya bakar, canlı komuttan önce hedefi sorar |
 | `devops-operator` (model: opus) | yazar, yüksek etkili | Production (hedef, secret konumları, registry, topoloji, runbook), Hard limits | kullanıcının **o işlem için açık onayı** (ana oturum iletir) | Production girdisi yoksa durur ve sorar |
 
+## Skill'ler
+
+Hepsi `disable-model-invocation: true`: yalnız kullanıcı açıkça çağırınca çalışır. `Project profile` ve `AGENTS.md`/`CLAUDE.md` kısıtları geçerlidir.
+
+| Skill | Yetki / onay | Profil alanları | Profil yoksa / uygulanamazsa |
+| --- | --- | --- | --- |
+| `release` | çağrı commit+push yetkisi verir; canlı deploy yalnız `deploy` argümanıyla | Release, Commands, Finish gate, Hard limits, Production (yalnız `deploy` ile: deploy/durum komutu, sağlık URL'leri) | Release girdisi yoksa kullanıcıya sorar |
+| `rollback` | canlı geri alma için ayrıca açık onay ister | Production (context, namespace, iş yükü, registry, sağlık URL'leri, güncelleme stratejisi, rollback/deploy komutu; bulut CLI kimlik komutu `live-check` adımları üzerinden), Persistence (migrations dizini; skill bunu Production içinde sayar, şablonda Persistence altındadır) | Production girdisi yoksa durur |
+| `live-check` | salt-okuma | Production (context, namespace, durum komutu, bulut CLI kimlik komutu, iş yükü adları, sağlık URL'leri ve beklenen kodlar, runbook) | Production girdisi yoksa durur ve sorar |
+| `add-migration` | commit/push/deploy/veritabanı yetkisi vermez | Persistence, Conventions, Finish gate, Report language | ORM araçlarını repoda bulur, komutu çalıştırmadan önce kullanıcıya onaylatır |
+| `verify-change` | commit/push/deploy yetkisi vermez | Commands, Rule docs, Finish gate, Report language | skill'de ayrı ifade yok; profil kısıtları geçerli, genel kural: koddan çıkarım ve raporda belirtme |
+| `browser-test` | commit/push/deploy yetkisi vermez; `frontend-browser-tester` agent'ında çalışır | `frontend-browser-tester` satırındaki alanlar | agent'ın davranışı geçerli |
+
 ## Ortak kurallar (tüm agent'lar)
 
 - **Loglama:** ilk çıktı satırı `<agent> çalışmaya başladım.`, son rapor satırı `<agent> çalışmam tamamlandı.`
