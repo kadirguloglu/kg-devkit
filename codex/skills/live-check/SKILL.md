@@ -7,13 +7,13 @@ description: Read-only health check of the production environment when the user 
 
 Read-only. Changes nothing, deploys nothing, reads no secrets. The repo's `AGENTS.md`/`CLAUDE.md` limits and its
 `Project profile` `Production` entry (cluster context, namespace, status command, health URLs and expected codes,
-workload names, runbook) apply. Without a Production entry, stop and ask. Hand the work to the `devops-engineer`
+workload names, runbook) apply. Without a Production entry, stop and ask. The steps below use Kubernetes commands; for a compose or plain-host target use the profile's equivalent status/logs commands. Hand the work to the `devops-engineer`
 agent if useful.
 
-1. **Prerequisites.** Check that the cloud CLI session and kubectl context exist (for example `doctl account get`,
-   `kubectl config get-contexts`); if not, report the state and ask the user to authenticate. Pass the profile's
-   context and namespace on every `kubectl` call; keep the flags in a shell function, not a variable (zsh does
-   not word-split variables), e.g. `k() { kubectl --context <ctx> -n <ns> "$@"; }`.
+1. **Prerequisites.** Check that the cloud CLI session and kubectl context exist (the profile's cloud CLI identity command and, on
+   Kubernetes, `kubectl config get-contexts`); if not, report the state and ask the user to authenticate. Pass the
+   profile's context and namespace explicitly on every `kubectl` call, written out in full. Do not hide `kubectl`
+   behind a shell alias or function: the plugin's guard hook inspects the literal command text.
 2. **Overall status.** The profile's status command (address, load-balancer IP, DNS, pods, certificate). Point out
    a DNS record that differs from the load-balancer IP.
 3. **Pod health.** `get pods -o wide`; for unready or restart-increasing pods run `describe pod` and read the last

@@ -4,6 +4,20 @@ Sürümler `main`'e her push'ta otomatik artar (`bump-version.yml`): varsayılan
 ile seviye seçilir. Bu dosya kullanıcıya dönük etkiyi özetler; taslağı `kit-release-notes` agent'ı çıkarır
 (bkz. [docs/inventory.md](docs/inventory.md)). Kategoriler: **Kırıcı**, **Eklenen**, **Değişen**, **Düzeltilen**, **Doküman/Altyapı**.
 
+## 0.7.0 – 2026-11-06 (öneri: `[minor]`)
+- **Değişen:** Güvenlik kancası kapsamı genişledi: `docker`/`docker compose`, `dotnet ef database update|drop`, bulut CLI'ları
+  (`doctl`, `gcloud`, `az`, `oci`, `aws`) ve `kubectl exec|port-forward|run|expose|config use-context` onaya düşer. Kanca testleri
+  genişletildi. Sınırlar README/`inventory.md`'de belgelendi (yalnız Bash metni, fail-open).
+- **Düzeltilen:** `add-migration`, `live-check` ve `rollback` skill'leri ORM ve orkestratör-nötr yazıldı (EF Core ve DigitalOcean örnekleri
+  kaldırıldı/örneğe çevrildi); `live-check` kancayı atlatan `k()` kısayolunu önermiyor. Test betiği plugin dizininde `__pycache__` oluşturmuyor.
+
+## 0.6.4 – 2026-11-06 ([#9](https://github.com/kadirguloglu/kg-devkit/pull/9), [#10](https://github.com/kadirguloglu/kg-devkit/pull/10))
+- **Doküman/Altyapı:** `CODEOWNERS` ve `SECURITY.md` eklendi; `main` ruleset ile korundu. `bump-version`, ruleset'i geçmek için
+  `BUMP_TOKEN` (yönetici fine-grained jetonu) ile push eder.
+
+## 0.6.3 – 2026-11-06 ([#8](https://github.com/kadirguloglu/kg-devkit/pull/8))
+- **Doküman/Altyapı:** `CHANGELOG.md` eklendi.
+
 ## 0.6.2 – 2026-11-06 ([#7](https://github.com/kadirguloglu/kg-devkit/pull/7))
 - **Doküman/Altyapı:** Repo içi bakım agent'ları eklendi (`.claude/agents/`: `kit-doc-sync`, `kit-agent-linter`,
   `kit-release-notes`; plugin'e ve Codex çıktısına girmez).

@@ -35,7 +35,9 @@ halidir. Projeye özgü bilgi (komutlar, yollar, cluster adları, kural belgeler
   Jeton süresi dolarsa `bump-version` "BUMP_TOKEN secret'ı yok/geçersiz" diye başarısız olur ve yenilenmelidir.
   Döngüyü `chore(release):` mesaj denetimi keser.
 - **Altyapı kancası:** `plugins/kg-devkit/hooks/` altındaki PreToolUse kancası (`guard-infra.py`) canlı ortamı değiştiren
-  veya secret okuyan `kubectl/oc/helm/terraform` komutlarını onaya düşürür (bloklamaz, `ask`). Claude'a özgüdür; Codex'te yoktur.
+  veya secret okuyan `kubectl/oc/helm/terraform/tofu`, `docker`/`docker compose`, `dotnet ef database update|drop` ve bulut CLI
+  (`doctl/gcloud/az/oci/aws`) komutlarını onaya düşürür (bloklamaz, `ask`). Claude'a özgüdür; Codex'te yoktur. Sınırlar: yalnız Bash
+  komut metnine bakar (kabuk kısayolu/fonksiyon, betik içi komut ve MCP araçları görünmez); `python3` yoksa sessizce geçer (fail-open).
   Kural testleri: `python3 scripts/test_guard_infra.py` (CI'da çalışır).
 - **Modeller:** `devops-operator`, `database-reviewer` ve `tenant-security-reviewer` `model: opus`, diğerleri `sonnet`.
 - **Kit bakım agent'ları:** `.claude/agents/` altında (yalnız bu repoda çalışırken; plugin'e ve Codex çıktısına girmez):
