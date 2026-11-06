@@ -21,18 +21,22 @@ Dil: Türkçe. Bölüm dışındaki mevcut içeriği değiştirme.
 - Scope mechanisms: müşteri/büro ayarı, özellik bayrağı, lookup mekanizmalarının adları ve belgeleri.
   Proje tek müşterili ise alanı hiç yazma (scope-advisor bu durumda NOT-APPLICABLE döner)
 - Security review: tenancy/yetki modeli ve güvenlik kural belgesi
-- Persistence: ORM, migration komutu, migrations dizini, adlandırma, API tip üretimi komutu
+- Persistence: ORM, migration komutu, migrations dizini, üretilen migration artefaktları (ör. EF Core: designer/snapshot),
+  global filtre bypass API'leri (ör. `IgnoreQueryFilters`) ve ham SQL kullanımı, adlandırma, API tip üretimi komutu
 - Finish gate: hangi değişiklik türü hangi bağımsız kontrolü/reviewer'ı gerektirir (varsa mevcut belgelerden; yoksa önerme, sor)
 - Release: changelog dosyası, sürüm kuralı, commit stili, commit'e girmeyecek gizli dosyalar (.gitignore'dan), deploy komutu, sağlık URL'leri
 - Production: orkestratör/hedef (Kubernetes ise context+namespace; değilse host/proje/stack), status ve deploy komutları,
   iş yükü adları, registry, topoloji sınırları, runbook, secret KONUMLARI
-- Report language ve Hard limits (commit/push yetkisi, branch politikası, yasak komutlar)
+- Report language ve Hard limits: yazan agent'ların hepsi bunu okur; yasak komutlar, branch politikası ve ek kısıtlar buraya yazılır.
+  Agent'lar commit/push'u zaten hiç yapmaz; `Hard limits` bu kuralları gevşetemez, yalnız kısıt ekler (bunu yazma, sadece ek kısıtları yaz)
 
 ## 2. Yazma kuralları
 - Yalnız ilgili alanları yaz, kullanılmayanı sil. Kanıtı olmayan değeri uydurma; bulunamayanı `BELİRTİLMEMİŞ` olarak işaretle
   ve sonda toplu listele.
 - Secret, şifre, token, bağlantı dizesi, özel anahtar ASLA yazma; yalnız bunların dosya yolunu/adını yaz.
 - Production, Release ve Hard limits alanlarında emin olmadığın hiçbir şeyi çıkarım olarak yazma; kullanıcıya sor.
+  Production'da hedefi agent'ın açıkça kullanabileceği biçimde yaz (Kubernetes: context+namespace; değilse host/proje/stack);
+  "geçerli context"e güvenen bir tanım yazma.
   Canlı sistem komutu çalıştırma, canlı ortama bağlanma.
 - Her alan tek satır veya kısa madde olsun; uzun açıklama için ilgili belgeye link ver.
 
@@ -42,5 +46,7 @@ Dil: Türkçe. Bölüm dışındaki mevcut içeriği değiştirme.
 - Çok kiracılı değilse Scope mechanisms ve tenant alanlarının yazılmadığını doğrula.
 - Sonunda raporla: doldurulan alanlar, `BELİRTİLMEMİŞ` kalanlar, kullanıcıya sorulması gereken noktalar
   (Dev app girişi, Production, Hard limits, Finish gate).
+- Plugin kancası (kg-devkit `guard-infra`) canlı değiştiren kubectl/helm/terraform komutlarını onaya düşürür;
+  profilde bu komutları "onaysız çalıştırılabilir" diye yazma.
 - Commit ve push yapma; yalnız istenirse yap.
 ````
