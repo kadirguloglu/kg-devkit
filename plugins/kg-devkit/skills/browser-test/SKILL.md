@@ -17,6 +17,7 @@ Target: $ARGUMENTS
 
 - Empty target: take the working-tree changes; if the tree is clean, use `HEAD~1..HEAD`.
 - A commit range (`abc123..HEAD`, `HEAD~3..HEAD`): take the frontend diff of that range.
-- A file or a free-text note (for example "default interest start date"): narrow the scope to it.
+- An existing file path (check that it exists): narrow the scope to that file. Anything else is a free-text note
+  (for example "default interest start date"): use it as a focus hint within the working-tree diff.
 
 Do not change code or commit/push; report any defect with repro steps.

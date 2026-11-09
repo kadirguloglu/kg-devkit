@@ -5,6 +5,7 @@ ile seviye seçilir. Bu dosya kullanıcıya dönük etkiyi özetler; taslağı `
 (bkz. [docs/inventory.md](docs/inventory.md)). Kategoriler: **Kırıcı**, **Eklenen**, **Değişen**, **Düzeltilen**, **Doküman/Altyapı**.
 
 ## Yayınlanmadı (öneri: patch)
+- **Düzeltilen:** Skill netleştirmeleri: `rollback` birden çok workload'ı tek tek geri alırken oluşan karışık sürüm penceresini plana ve hedef tag uyumluluk kontrolüne ekledi; `browser-test` hedef argümanında dosya yolu ile serbest notu ayırt eder (yol yoksa not sayılır); `add-migration` tekrar eden son satırı kaldırıp adı ilk cümleye taşıdı.
 - **Doküman/Altyapı:** Yeni bakım agent'ı `kit-prompt-sync` (`.claude/agents/`, plugin'e girmez): profil gereksinimi değişince yalnız
   `docs/prompts/generate-project-profile.md` ve `docs/prompts/project-readiness-report.md` dosyalarını günceller. `Stop` kancası
   `plugins/kg-devkit/`, `rules/`, `docs/project-profile-template.md` veya `docs/agent-requirements.md` değişince onu da ister (yalnız bu repoda).
