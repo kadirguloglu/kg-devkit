@@ -64,7 +64,7 @@ def main():
         if cur["lint"] != old["lint"]:
             want.append("`kit-agent-linter` (agent dosyaları değişti)")
         if cur["docs"] != old["docs"]:
-            want.append("`kit-doc-sync` (README/doküman/prompt kaynakla uyumlu mu)")
+            want.append("`kit-doc-sync` (README/doküman kaynakla uyumlu mu)")
         if cur["req"] != old.get("req"):
             want.append("`kit-prompt-sync` (profil gereksinimi değişmiş olabilir; docs/prompts altındaki iki prompt'u günceller)")
         if cur["src"] != old["src"] and cur["changelog"] == old["changelog"]:

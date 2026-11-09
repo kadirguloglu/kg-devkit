@@ -1,6 +1,6 @@
 ---
 name: kit-prompt-sync
-description: Reads kg-devkit's agents, skills, hooks and rules and, when a change creates or alters a profile requirement, updates docs/prompts/generate-project-profile.md and docs/prompts/project-readiness-report.md (only those two files); run after a change to those sources. Not for README/inventory drift (kit-doc-sync) or agent linting.
+description: Reads kg-devkit's agents, skills, hooks and rules and, when a change creates or alters a profile requirement, updates docs/prompts/generate-project-profile.md and docs/prompts/project-readiness-report.md (only those two files); run after a change to those sources. The only owner of the prompts' content; README/docs drift is kit-doc-sync, agent linting is kit-agent-linter.
 model: sonnet
 tools: Read, Grep, Glob, Edit, Bash
 ---
