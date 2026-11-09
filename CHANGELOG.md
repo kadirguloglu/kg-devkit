@@ -5,6 +5,7 @@ ile seviye seçilir. Bu dosya kullanıcıya dönük etkiyi özetler; taslağı `
 (bkz. [docs/inventory.md](docs/inventory.md)). Kategoriler: **Kırıcı**, **Eklenen**, **Değişen**, **Düzeltilen**, **Doküman/Altyapı**.
 
 ## Yayınlanmadı (öneri: patch)
+- **Değişen:** Tüm agent'lara (15 plugin agent'ı ve 4 bakım agent'ı) "Tam okuma (zorunlu)" kuralı eklendi: baktıkları veya değiştirecekleri dosyaların tüm satırlarını okumadan bulgu, hüküm veya düzenleme yapmazlar; dosyayı tam okuyamazlarsa o dosyayı "doğrulanmadı" bildirir (reviewer ve denetleyici agent'lar `VERDICT: UNCLEAR`), düzenlemez. Secret gibi okunması yasak dosyalar için kural geçerli değildir (dosya değerlendirilmez). `kit-agent-linter` bu paragrafı denetler.
 - **Doküman/Altyapı:** Yeni bakım agent'ı `kit-prompt-sync` (`.claude/agents/`, plugin'e girmez): profil gereksinimi değişince yalnız
   `docs/prompts/generate-project-profile.md` ve `docs/prompts/project-readiness-report.md` dosyalarını günceller. `Stop` kancası
   `plugins/kg-devkit/`, `rules/`, `docs/project-profile-template.md` veya `docs/agent-requirements.md` değişince onu da ister (yalnız bu repoda).
