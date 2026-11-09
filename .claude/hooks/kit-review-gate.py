@@ -3,6 +3,7 @@
 
 - plugins/kg-devkit/agents/** veya codex/agents/** değiştiyse -> kit-agent-linter
 - agent, skill, kural, kanca, betik, workflow, doküman veya README değiştiyse -> kit-doc-sync
+- agent, skill, kanca, kural, profil şablonu veya agent-requirements değiştiyse -> kit-prompt-sync
 - plugin kaynağı, kural, betik veya workflow değiştiyse ve CHANGELOG.md son çalıştırmadan beri değişmediyse -> kit-release-notes
 
 Her agent için ayrı bir özet tutulur (.git/kit-review-gate/state.json). Özet yalnız o agent'ın baktığı klasörlerdeki dosyaların
@@ -16,6 +17,7 @@ import hashlib, json, os, subprocess
 LINT = ("plugins/kg-devkit/agents/", "codex/agents/")
 SRC = ("plugins/", "rules/", "scripts/", ".github/workflows/")
 DOCS = SRC + ("docs/", ".claude/agents/", "README.md", "CHANGELOG.md")
+REQ = ("plugins/kg-devkit/", "rules/", "docs/project-profile-template.md", "docs/agent-requirements.md")
 CHANGELOG = "CHANGELOG.md"
 
 
@@ -38,6 +40,7 @@ def digests(paths, read):
     return {
         "lint": one(lambda p: p.startswith(LINT)),
         "docs": one(lambda p: p.startswith(DOCS) and p != CHANGELOG),
+        "req": one(lambda p: p.startswith(REQ)),
         "src": one(lambda p: p.startswith(SRC)),
         "changelog": one(lambda p: p == CHANGELOG),
     }
@@ -61,7 +64,9 @@ def main():
         if cur["lint"] != old["lint"]:
             want.append("`kit-agent-linter` (agent dosyaları değişti)")
         if cur["docs"] != old["docs"]:
-            want.append("`kit-doc-sync` (README/doküman/prompt kaynakla uyumlu mu)")
+            want.append("`kit-doc-sync` (README/doküman kaynakla uyumlu mu)")
+        if cur["req"] != old.get("req"):
+            want.append("`kit-prompt-sync` (profil gereksinimi değişmiş olabilir; docs/prompts altındaki iki prompt'u günceller)")
         if cur["src"] != old["src"] and cur["changelog"] == old["changelog"]:
             want.append("`kit-release-notes` (kaynak değişti ama CHANGELOG.md güncellenmedi; sürüm notu taslağı ve [minor]/[major] önerisi için)")
 

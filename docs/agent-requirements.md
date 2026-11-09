@@ -16,7 +16,7 @@ sütunu bunun dışındaki davranışı verir.
 | `api-contract-reviewer` (model: opus) | salt-okuma | API contract (şema, tip üretimi, versiyonlama), Layers/dirs, Conventions (hata/Result) | ana oturum diff ve varsa üretilmiş şema/komut kanıtı verir | sözleşme yüzeyini controller/DTO/frontend API katmanından çıkarır |
 | `dependency-supply-chain-reviewer` (model: opus) | salt-okuma | Dependencies (lisanslar, tarama komutu, sabitleme politikası), Hard limits | manifest/lockfile; ana oturum varsa audit çıktısını verir | manifest ve workflow dosyalarını kendisi bulur, doğrulayamadığını yazar |
 | `performance-reviewer` | salt-okuma | Performance (bütçe, sıcak yollar, hacim), Layers/dirs, Commands | ana oturum diff ve varsa ölçüm verir | bütçe/hacim varsayar ve söyler; ölçümsüz bulguyu "needs measurement" işaretler |
-| `observability-reviewer` | salt-okuma | Observability (log/metrik/trace kuralları, hassas veri, sağlık), Conventions (hata) | ana oturum diff verir | log/metrik yığınını koddan çıkarır, doğrulayamadığını yazar |
+| `observability-reviewer` | salt-okuma | Observability (log/metrik/trace kuralları, hassas veri, sağlık), Conventions (hata), Rule docs | ana oturum diff verir | log/metrik yığınını koddan çıkarır, doğrulayamadığını yazar |
 | `scope-advisor` | salt-okuma | Scope mechanisms, Report language | **çok kiracılı/çok müşterili ürün** | kiracı yoksa `NOT-APPLICABLE` döner ve durur |
 | `engineering-software-architect` | salt-okuma | Layers/dirs, Conventions, Scope mechanisms, Rule docs, Finish gate | ana oturum soru ve kodu/diff'i verir | mimariyi koddan çıkarır |
 | `frontend-developer` | yazar | Layers/dirs, Commands (lint/typecheck/build/test), Rule docs, Hard limits | frontend dizini | `package.json`'dan çıkarım |

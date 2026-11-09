@@ -5,15 +5,30 @@ ile seviye seçilir. Bu dosya kullanıcıya dönük etkiyi özetler; taslağı `
 (bkz. [docs/inventory.md](docs/inventory.md)). Kategoriler: **Kırıcı**, **Eklenen**, **Değişen**, **Düzeltilen**, **Doküman/Altyapı**.
 
 ## Yayınlanmadı (öneri: patch)
+- **Doküman/Altyapı:** Yeni bakım agent'ı `kit-prompt-sync` (`.claude/agents/`, plugin'e girmez): profil gereksinimi değişince yalnız
+  `docs/prompts/generate-project-profile.md` ve `docs/prompts/project-readiness-report.md` dosyalarını günceller. `Stop` kancası
+  `plugins/kg-devkit/`, `rules/`, `docs/project-profile-template.md` veya `docs/agent-requirements.md` değişince onu da ister (yalnız bu repoda).
+  Tam taramada bulunan sapmalar giderildi: README kanca özetine `tofu`/`oci` eklendi, `test_guard_infra.py`'ye eksik fiiller için 15 onay örneği
+  eklendi, `observability-reviewer` satırına `Rule docs` eklendi (`agent-requirements.md` ve hazırlık raporu prompt'u).
+  Dört bakım agent'ına da "Tam okuma (zorunlu)" kuralı eklendi: baktıkları veya değiştirecekleri dosyaların tüm satırlarını okumadan bulgu, hüküm veya düzenleme yapmazlar; tam okuyamazlarsa dosyayı "doğrulanmadı" bildirir (raporda "doğrulanmadı"; `kit-doc-sync` ve `kit-agent-linter` `VERDICT: UNCLEAR` verir), düzenlemez; okuması yasak dosyalar (secret) için geçerli değildir. `kit-agent-linter` bu paragrafı denetler (plugin agent'ları bundan etkilenmez).
+  Çakışma giderildi: `kit-doc-sync` artık `docs/prompts/*` içeriğini denetlemez (yalnız sürüm/bağlantı), içeriğin tek sahibi `kit-prompt-sync`.
+
+## 0.8.5 – 2026-11-07 ([#17](https://github.com/kadirguloglu/kg-devkit/pull/17))
 - **Değişen:** `generate-agent-requirements.md` kaldırıldı; yerine `project-readiness-report.md`: tüketici projede çalışıp "bu proje için hangi agent/skill
   HAZIR / ÇIKARIM / DURUR / UYGULANAMAZ" raporu verir (matris prompt'a gömülü, kit iç yapısı girmez). Eski prompt agent dosyalarının repoda olduğunu
   varsaydığı için tüketici projede kit'in iç yapısını döküyordu. `kit-doc-sync` gömülü matrisin `agent-requirements.md` ile uyumunu denetler.
+
+## 0.8.4 – 2026-11-07 ([#16](https://github.com/kadirguloglu/kg-devkit/pull/16))
 - **Doküman/Altyapı:** `generate-project-profile.md` prompt'u kendi içinde eksiksiz: profil şablonu prompt'un içine gömüldü, kg-devkit reposundaki
   dosyalara ihtiyaç duymadan başka projede kopyala-yapıştır çalışır.
   `kit-doc-sync`, gömülü şablonun `docs/project-profile-template.md` ile aynı kalmasını da denetler.
+
+## 0.8.3 – 2026-11-07 ([#15](https://github.com/kadirguloglu/kg-devkit/pull/15))
 - **Doküman/Altyapı:** `docs/prompts/` altındaki iki prompt soru-cevap akışına çevrildi: önce repo/mevcut doküman taranır, cevabı bulunanlar
   sorulmaz, yalnız belirsiz/bulunamayan noktalar (en çok 4'lü gruplar) kullanıcıya sorulur. Gereksinim prompt'u artık skill'leri ve kuralları da
   kapsar; `agent-requirements.md`'ye Skill tablosu, profil şablonuna `Production` altında bulut CLI kimlik ve rollback komutu eklendi.
+
+## 0.8.2 – 2026-11-06 ([#14](https://github.com/kadirguloglu/kg-devkit/pull/14))
 - **Düzeltilen:** `Stop` kancasının özeti artık `origin/main`'e göre diff'ten değil, bakılan klasörlerdeki izlenen dosyaların içeriğinden
   hesaplanır; dal veya `origin/main` ilerlemesi (ör. PR merge'ü) boşuna tetiklemez. Özet yoksa (yeni klon) başlangıç HEAD'deki
   commit'li içeriktir.
