@@ -11,8 +11,13 @@ halidir. Projeye özgü bilgi (komutlar, yollar, cluster adları, kural belgeler
 | Agent (15) | `plugins/kg-devkit/agents/*.md` | plugin, `kg-devkit:<ad>` | `codex/agents/*.toml` → `~/.codex/agents` |
 | Skill (6) | `plugins/kg-devkit/skills/*/SKILL.md` | plugin, `/kg-devkit:<ad>` | `codex/skills/*` → `~/.agents/skills`, `$<ad>` |
 | Kural (3) | `rules/*.md` | `~/.claude/rules` (symlink, plugin kural taşımaz) | okunmaz; ilkeler agent/skill gövdelerinde |
+| Repo bakım agent'ı (4) | `.claude/agents/*.md` | yalnız bu repoda | `.codex/agents/*.toml`, yalnız bu repoda |
+| Repo bakım kancası | `.claude/settings.json`, `.claude/hooks/kit-review-gate.py` | yerel `Stop` kancası | `.codex/hooks.json`, `.codex/hooks/kit-review-gate.py` |
 
-`codex/` çıktısı `scripts/build-codex.py` ile Claude kaynağından üretilir (CI `--check` ile güncelliği doğrular).
+`codex/` plugin dağıtımıdır; `.codex/` bu reponun yerel bakım araçlarıdır. `scripts/build-codex.py` plugin
+çıktısını üretir ve `scripts/sync-claude-codex.py` ile bakım çıktısını günceller. `--check` iki çıktıyı da
+dosya yazmadan doğrular. `install-codex.sh` yalnız `codex/` altındaki dağıtımı kurar; bakım agent'larını global
+olarak kurmaz. Tüketici projelerin `Project profile` sözleşmesi değişmez.
 
 ## Tasarım kararları
 
@@ -40,16 +45,31 @@ halidir. Projeye özgü bilgi (komutlar, yollar, cluster adları, kural belgeler
   komut metnine bakar (kabuk kısayolu/fonksiyon, betik içi komut ve MCP araçları görünmez); `python3` yoksa sessizce geçer (fail-open).
   Kural testleri: `python3 scripts/test_guard_infra.py` (CI'da çalışır).
 - **Modeller:** `devops-operator`, `database-reviewer`, `tenant-security-reviewer`, `api-contract-reviewer` ve `dependency-supply-chain-reviewer` `model: opus`, diğerleri `sonnet`.
-- **Kit bakım agent'ları:** `.claude/agents/` altında (yalnız bu repoda çalışırken; plugin'e ve Codex çıktısına girmez):
+- **Kit bakım agent'ları:** kaynak `.claude/agents/`, üretilen Codex karşılığı `.codex/agents/` altındadır
+  (yalnız bu repoda çalışırken; plugin'e ve `codex/` dağıtımına girmez):
   `kit-doc-sync` (README/doküman kaynakla uyumlu mu; prompt içeriğine bakmaz), `kit-agent-linter` (agent dosyaları: sızıntı, yetki, eşlik, bakım agent'larında tam okuma paragrafı, mekanik
   kontroller; CI betiği yerine agent yapar) ve `kit-release-notes` (sürüm notu ve `[minor]`/`[major]` önerisi; çıktısı `CHANGELOG.md` girdisi olarak kullanılır). Bu üçü salt-okuma
   çalışır, düzeltmeyi ana oturum yapar. `kit-prompt-sync` agent/skill/kanca/kural değişiminde profil gereksinimi değiştiyse prompt içeriğinin tek sahibidir ve yalnız
   `docs/prompts/generate-project-profile.md` ve `docs/prompts/project-readiness-report.md` dosyalarını günceller (`Edit` aracı vardır, başka dosyaya dokunmaz; `Stop` kancası `plugins/kg-devkit/` altındaki herhangi bir dosya, kural, profil şablonu veya `agent-requirements.md` değişince ister).
+  Codex'te ilk üç agent `sandbox_mode = "read-only"`, `kit-prompt-sync` `workspace-write` kullanır; iki dosyalık
+  yazma sınırı agent talimatında korunur. Claude `tools` listesi Codex araç erişiminin birebir karşılığı değildir.
+  Claude kaynaklarındaki `sonnet`/`opus` model adları korunur; Codex karşılıkları model belirtmez, oturum modelini devralır.
+- **Bakım dönüşümü:** `python3 scripts/sync-claude-codex.py` `.claude` kaynaklarını `.codex` karşılıklarına çevirir;
+  `--check` fark varsa başarısız olur, `--watch` bir saniyede bir kontrol eder ve Ctrl+C ile durur.
+  `.codex/.claude-sync.json` kaynak/çıktı özetleriyle yönetilen dosyaları izler. Özel Codex dosyaları korunur;
+  üretilen dosya elle değiştirilmişse üzerine yazmak yerine çakışma bildirir. Desteklenmeyen yeni Claude dosya
+  türü veya ayarı sessizce atlanmaz; hata verilir. Bu, bütün Claude özellikleri için genel bir dönüştürücü değildir.
+  `scripts/test_sync_claude_codex.py` dönüşüm ve kanca davranışını sınar; CI'da çalışır.
 - **Otomatik tetik:** `.claude/settings.json` `Stop` kancası `.claude/hooks/kit-review-gate.py` çalıştırır: agent dosyaları değiştiyse
   `kit-agent-linter`, agent/skill/kural/kanca/betik/workflow/doküman değiştiyse `kit-doc-sync` çalıştırılması istenir. Profil gereksinimi kaynakları (plugin, kural, şablon, `agent-requirements.md`) değiştiyse `kit-prompt-sync` da istenir. Her agent için ayrı, yalnız
   baktığı dosyaların içeriğinden hesaplanan özet tutulur (`.git/kit-review-gate/state.json`): commit atmak veya kanca betiğini düzenlemek
   tetiklemez, ilgili dosyalar değişince o agent bir kez istenir. Kaynak (plugin/kural/betik/workflow) değişip `CHANGELOG.md` son çalıştırmadan
   beri değişmediyse `kit-release-notes` da istenir (özet yoksa, ör. yeni klonda, başlangıç HEAD'deki commit'li içeriktir; dal ve `origin/main` ilerlemesi tetiklemez). Yalnız bu repoda geçerlidir.
+  Codex karşılığı `.codex/hooks.json` içindeki yerel `Stop` kaydıyla `.codex/hooks/kit-review-gate.py` çalıştırır.
+  Codex durumu `.git/codex-kit-review-gate/state.json` altında, Claude durumundan ayrı tutulur. Bu kancalar
+  inceleme hatırlatıcısıdır; reviewer'ın çalıştığını veya `PASS` verdiğini doğrulamaz.
+  Codex'in normal güven arayüzünde proje/kanca güveni etkin olmalıdır; senkronlama betiği güven kaydı yazmaz
+  ve onay mekanizmasını atlamaz.
 - **Stack paketleri yok:** .NET/React'e özgü kural paketleri bilerek eklenmedi; aynı stack'te ikinci proje gelince çıkarılır.
 
 ## Bilinen sınırlar
@@ -57,3 +77,5 @@ halidir. Projeye özgü bilgi (komutlar, yollar, cluster adları, kural belgeler
 - Codex tarafı Claude kadar sınanmadı: agent'ların yüklenmesi ve `$verify-change` doğrulandı, diğer skill'ler denenmedi.
 - `frontend-browser-tester` gerçek Chrome oturumunda denenmedi.
 - `release`, `rollback`, `live-check`, `add-migration` canlı bir ortamda uçtan uca çalıştırılmadı; yalnız talimat düzeyinde gözden geçirildi.
+- Yerel `.codex/agents/` keşfi ve `Stop` kancası desteği istemciye bağlıdır. Eski veya bu özellikleri
+  sunmayan istemcilerde üretilen dosyalar aynı çalışma davranışını garanti etmez; hook güveni ayrıca gereklidir.
