@@ -5,12 +5,12 @@ ile seviye seçilir. Bu dosya kullanıcıya dönük etkiyi özetler; taslağı `
 (bkz. [docs/inventory.md](docs/inventory.md)). Kategoriler: **Kırıcı**, **Eklenen**, **Değişen**, **Düzeltilen**, **Doküman/Altyapı**.
 
 ## Yayınlanmadı (öneri: patch)
-- **Değişen:** Tüm agent'lara (15 plugin agent'ı ve 4 bakım agent'ı) "Tam okuma (zorunlu)" kuralı eklendi: baktıkları veya değiştirecekleri dosyaların tüm satırlarını okumadan bulgu, hüküm veya düzenleme yapmazlar; dosyayı tam okuyamazlarsa o dosyayı "doğrulanmadı" bildirir (reviewer ve denetleyici agent'lar `VERDICT: UNCLEAR`), düzenlemez. Secret gibi okunması yasak dosyalar için kural geçerli değildir (dosya değerlendirilmez). `kit-agent-linter` bu paragrafı denetler.
 - **Doküman/Altyapı:** Yeni bakım agent'ı `kit-prompt-sync` (`.claude/agents/`, plugin'e girmez): profil gereksinimi değişince yalnız
   `docs/prompts/generate-project-profile.md` ve `docs/prompts/project-readiness-report.md` dosyalarını günceller. `Stop` kancası
   `plugins/kg-devkit/`, `rules/`, `docs/project-profile-template.md` veya `docs/agent-requirements.md` değişince onu da ister (yalnız bu repoda).
   Tam taramada bulunan sapmalar giderildi: README kanca özetine `tofu`/`oci` eklendi, `test_guard_infra.py`'ye eksik fiiller için 15 onay örneği
   eklendi, `observability-reviewer` satırına `Rule docs` eklendi (`agent-requirements.md` ve hazırlık raporu prompt'u).
+  Dört bakım agent'ına da "Tam okuma (zorunlu)" kuralı eklendi: baktıkları veya değiştirecekleri dosyaların tüm satırlarını okumadan bulgu, hüküm veya düzenleme yapmazlar; tam okuyamazlarsa dosyayı "doğrulanmadı" bildirir (raporda "doğrulanmadı"; `kit-doc-sync` ve `kit-agent-linter` `VERDICT: UNCLEAR` verir), düzenlemez; okuması yasak dosyalar (secret) için geçerli değildir. `kit-agent-linter` bu paragrafı denetler (plugin agent'ları bundan etkilenmez).
   Çakışma giderildi: `kit-doc-sync` artık `docs/prompts/*` içeriğini denetlemez (yalnız sürüm/bağlantı), içeriğin tek sahibi `kit-prompt-sync`.
 
 ## 0.8.5 – 2026-11-07 ([#17](https://github.com/kadirguloglu/kg-devkit/pull/17))

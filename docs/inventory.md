@@ -41,7 +41,7 @@ halidir. Projeye özgü bilgi (komutlar, yollar, cluster adları, kural belgeler
   Kural testleri: `python3 scripts/test_guard_infra.py` (CI'da çalışır).
 - **Modeller:** `devops-operator`, `database-reviewer`, `tenant-security-reviewer`, `api-contract-reviewer` ve `dependency-supply-chain-reviewer` `model: opus`, diğerleri `sonnet`.
 - **Kit bakım agent'ları:** `.claude/agents/` altında (yalnız bu repoda çalışırken; plugin'e ve Codex çıktısına girmez):
-  `kit-doc-sync` (README/doküman kaynakla uyumlu mu; prompt içeriğine bakmaz), `kit-agent-linter` (agent dosyaları: sızıntı, yetki, eşlik, tam okuma paragrafı, mekanik
+  `kit-doc-sync` (README/doküman kaynakla uyumlu mu; prompt içeriğine bakmaz), `kit-agent-linter` (agent dosyaları: sızıntı, yetki, eşlik, bakım agent'larında tam okuma paragrafı, mekanik
   kontroller; CI betiği yerine agent yapar) ve `kit-release-notes` (sürüm notu ve `[minor]`/`[major]` önerisi; çıktısı `CHANGELOG.md` girdisi olarak kullanılır). Bu üçü salt-okuma
   çalışır, düzeltmeyi ana oturum yapar. `kit-prompt-sync` agent/skill/kanca/kural değişiminde profil gereksinimi değiştiyse prompt içeriğinin tek sahibidir ve yalnız
   `docs/prompts/generate-project-profile.md` ve `docs/prompts/project-readiness-report.md` dosyalarını günceller (`Edit` aracı vardır, başka dosyaya dokunmaz; `Stop` kancası `plugins/kg-devkit/` altındaki herhangi bir dosya, kural, profil şablonu veya `agent-requirements.md` değişince ister).

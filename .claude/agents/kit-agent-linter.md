@@ -41,7 +41,7 @@ Claude files are the source; `codex/agents/*.toml` are generated and are only co
    where `scripts/build-codex.py` has a replacement for them, or in a sentence that names both clients side by side
    (for example "Claude: AskUserQuestion; Codex: request_user_input"); `codex/` contains no unpaired Claude-only name.
 9. Parity: `python3 scripts/build-codex.py --check` passes.
-10. Full-read rule: every agent file (Claude source and `.toml`) contains the `Full read (mandatory)` paragraph with the same wording, right after the Logging line.
+10. Full-read rule: every file in `.claude/agents/` contains the `Full read (mandatory)` paragraph with the same wording, right after the Logging line. The plugin agents (`plugins/kg-devkit/agents/`) and `codex/` must NOT contain it.
 11. Hygiene: `git ls-files | grep -E '__pycache__|\.pyc$'` is empty.
 
 ## Judgment checks (explain, do not guess)

@@ -42,7 +42,6 @@ Hepsi `disable-model-invocation: true`: yalnız kullanıcı açıkça çağırı
 
 - **Loglama:** ilk çıktı satırı `<agent> çalışmaya başladım.`, son rapor satırı `<agent> çalışmam tamamlandı.`
   (görev başarısız/engelli olsa da; profil Türkçe dışında bir rapor dili belirtiyorsa aynı iki satır o dilde yazılır). Dil tercihi değiştirilecekse tüm agent dosyalarında değiştirilir.
-- **Tam okuma (zorunlu):** her agent, bulgu/hüküm/düzenleme öncesi baktığı veya değiştireceği her dosyanın tüm satırlarını okur (bir okuma dosyayı kısmen döndürürse offset ile son satıra kadar devam edilir; arama, diff istatistiği, alıntı ve özet yalnız dosyayı bulmak içindir, okuma sayılmaz). Dosyayı tam okuyamazsa o dosya hakkında hüküm vermez, düzenlemez; neyin engellediğini yazıp "doğrulanmadı" der (reviewer ve denetleyici agent'lar `VERDICT: UNCLEAR`; diğerleri düzenlemez, o dosya hakkında iddiada bulunmaz). Kural, dosya okumayı yasaklayan kuralları (ör. secret değerleri) aşmaz: o dosya değerlendirilmez, içeriği çıktıya yazılmaz. Aynı paragraf tüm agent dosyalarında (kit bakım agent'ları dahil) Logging satırından hemen sonra yer alır.
 - **Profil önce:** `AGENTS.md` (veya `CLAUDE.md`) içindeki `## Project profile` bölümü okunur.
 - **Rapor dili:** profildeki `Report language`; yoksa kullanıcının isteği.
 - **Agent çağırmama:** agent'lar başka agent başlatmaz (reviewer ve scope-advisor kullanıcıya soramaz; soruyu ana oturum sorar).
