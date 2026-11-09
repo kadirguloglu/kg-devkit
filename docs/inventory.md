@@ -42,8 +42,9 @@ halidir. Projeye özgü bilgi (komutlar, yollar, cluster adları, kural belgeler
 - **Modeller:** `devops-operator`, `database-reviewer`, `tenant-security-reviewer`, `api-contract-reviewer` ve `dependency-supply-chain-reviewer` `model: opus`, diğerleri `sonnet`.
 - **Kit bakım agent'ları:** `.claude/agents/` altında (yalnız bu repoda çalışırken; plugin'e ve Codex çıktısına girmez):
   `kit-doc-sync` (README/doküman/prompt kaynakla uyumlu mu), `kit-agent-linter` (agent dosyaları: sızıntı, yetki, eşlik, mekanik
-  kontroller; CI betiği yerine agent yapar) ve `kit-release-notes` (sürüm notu ve `[minor]`/`[major]` önerisi; çıktısı `CHANGELOG.md` girdisi olarak kullanılır). Üçü de salt-okuma
-  çalışır, düzeltmeyi ana oturum yapar.
+  kontroller; CI betiği yerine agent yapar) ve `kit-release-notes` (sürüm notu ve `[minor]`/`[major]` önerisi; çıktısı `CHANGELOG.md` girdisi olarak kullanılır). Bu üçü salt-okuma
+  çalışır, düzeltmeyi ana oturum yapar. `kit-prompt-sync` agent/skill/kanca/kural değişiminde profil gereksinimi değiştiyse yalnız
+  `docs/prompts/generate-project-profile.md` ve `docs/prompts/project-readiness-report.md` dosyalarını günceller (`Edit` aracı vardır, başka dosyaya dokunmaz; elle çağrılır, `Stop` kancası istemez).
 - **Otomatik tetik:** `.claude/settings.json` `Stop` kancası `.claude/hooks/kit-review-gate.py` çalıştırır: agent dosyaları değiştiyse
   `kit-agent-linter`, agent/skill/kural/kanca/betik/workflow/doküman değiştiyse `kit-doc-sync` çalıştırılması istenir. Her agent için ayrı, yalnız
   baktığı dosyaların içeriğinden hesaplanan özet tutulur (`.git/kit-review-gate/state.json`): commit atmak veya kanca betiğini düzenlemek
