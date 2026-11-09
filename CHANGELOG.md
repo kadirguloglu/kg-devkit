@@ -8,6 +8,8 @@ ile seviye seçilir. Bu dosya kullanıcıya dönük etkiyi özetler; taslağı `
 - **Doküman/Altyapı:** Yeni bakım agent'ı `kit-prompt-sync` (`.claude/agents/`, plugin'e girmez): profil gereksinimi değişince yalnız
   `docs/prompts/generate-project-profile.md` ve `docs/prompts/project-readiness-report.md` dosyalarını günceller. `Stop` kancası
   `plugins/kg-devkit/`, `rules/`, `docs/project-profile-template.md` veya `docs/agent-requirements.md` değişince onu da ister (yalnız bu repoda).
+  Tam taramada bulunan sapmalar giderildi: README kanca özetine `tofu`/`oci` eklendi, `test_guard_infra.py`'ye eksik fiiller için 15 onay örneği
+  eklendi, `observability-reviewer` satırına `Rule docs` eklendi (`agent-requirements.md` ve hazırlık raporu prompt'u).
   Çakışma giderildi: `kit-doc-sync` artık `docs/prompts/*` içeriğini denetlemez (yalnız sürüm/bağlantı), içeriğin tek sahibi `kit-prompt-sync`.
 
 ## 0.8.5 – 2026-11-07 ([#17](https://github.com/kadirguloglu/kg-devkit/pull/17))

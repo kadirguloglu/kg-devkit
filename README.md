@@ -49,8 +49,8 @@ agent'ı/skill'i plugin'i ezer. Betikler yalnız sembolik bağ kurar, var olan d
 - **Skill'ler** (yalnız açıkça çağrılır): `browser-test`, `verify-change`, `add-migration`, `release`, `rollback`, `live-check`
 - **Kurallar** (`rules/`, ilgili dosyalara girilince yüklenir): `kg-test-discipline`, `kg-documentation-maintenance`,
   `kg-ops-safety`. Plugin kural taşımadığı için `~/.claude/rules` altına bağlanır; Codex bunları okumaz.
-- **Güvenlik kancası** (yalnız Claude): `hooks/guard-infra.py`, canlı ortamı değiştiren `kubectl`/`oc`/`helm`/`terraform` komutlarını
-  ve secret okumayı; ayrıca `docker`/`docker compose`, `dotnet ef database update|drop` ve bulut CLI'larının (`doctl`, `gcloud`, `az`, `aws`)
+- **Güvenlik kancası** (yalnız Claude): `hooks/guard-infra.py`, canlı ortamı değiştiren `kubectl`/`oc`/`helm`/`terraform`/`tofu` komutlarını
+  ve secret okumayı; ayrıca `docker`/`docker compose`, `dotnet ef database update|drop` ve bulut CLI'larının (`doctl`, `gcloud`, `az`, `oci`, `aws`)
   oluşturma/silme komutlarını kullanıcı onayına düşürür (bloklamaz). Yalnız Bash komut metnine bakar: kabuk kısayolu/fonksiyon, betik içinde
   çağrılan komutlar ve MCP araçları görünmez; `python3` yoksa (ör. Windows) sessizce geçer. Plugin ile birlikte gelir; Codex'te yoktur,
   orada yalnız agent metin kuralları geçerlidir.
