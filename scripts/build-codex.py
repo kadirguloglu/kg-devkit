@@ -2,13 +2,15 @@
 """Claude kaynaklarından (plugins/kg-devkit) Codex çıktısını üretir: codex/agents/*.toml ve codex/skills/*.
 
 Tek kaynak Claude tarafıdır; codex/ elle düzenlenmez. Yalnız standart kütüphane (Python 3.11+).
-Kullanım: python3 scripts/build-codex.py          # codex/ dizinini yeniden üretir
-          python3 scripts/build-codex.py --check  # codex/ güncel değilse çıkış kodu 1
+Repo bakım dosyaları için sync-claude-codex.py de çalıştırılır (.claude/ -> .codex/).
+Kullanım: python3 scripts/build-codex.py          # codex/ ve .codex/ yeniden üretir
+          python3 scripts/build-codex.py --check  # çıktılar güncel değilse çıkış kodu 1
 """
 import glob
 import os
 import re
 import shutil
+import subprocess
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -112,6 +114,12 @@ def build():
 
 def main():
     files = build()
+    maintenance = subprocess.run([
+        sys.executable, os.path.join(ROOT, "scripts", "sync-claude-codex.py"),
+        *(["--check"] if "--check" in sys.argv else []),
+    ])
+    if maintenance.returncode:
+        sys.exit(maintenance.returncode)
     if "--check" in sys.argv:
         stale = []
         for rel, content in files.items():
@@ -133,4 +141,5 @@ def main():
     print(f"{len(files)} dosya üretildi → codex/")
 
 
-main()
+if __name__ == "__main__":
+    main()

@@ -5,6 +5,13 @@ ile seviye seçilir. Bu dosya kullanıcıya dönük etkiyi özetler; taslağı `
 (bkz. [docs/inventory.md](docs/inventory.md)). Kategoriler: **Kırıcı**, **Eklenen**, **Değişen**, **Düzeltilen**, **Doküman/Altyapı**.
 
 ## Yayınlanmadı (öneri: patch)
+- **Doküman/Altyapı:** `.claude` altındaki dört bakım agent'ı ve `Stop` kancası için yerel `.codex` karşılıkları
+  eklendi. `scripts/sync-claude-codex.py`, tek seferlik dönüşüm, `--check` ve bir saniyelik `--watch` modlarıyla
+  kaynak değişikliklerini aktarır; özel Codex dosyalarını korur, elle değiştirilmiş çıktıda veya desteklenmeyen
+  Claude ayarında hata verir. `build-codex.py` bakım çıktısını da günceller/denetler; dönüşüm ve kanca testleri
+  CI'a eklendi. Codex bakım agent'ları oturum modelini devralır; üçü salt-okuma, prompt güncelleyen agent
+  `workspace-write` kullanır. Codex kancası normal proje/kanca güven onayına bağlıdır ve Claude'dan ayrı durum
+  tutar; reviewer başarısını doğrulamaz. Bakım araçları global kuruluma girmez; tüketici profil gereksinimleri değişmez.
 - **Doküman/Altyapı:** Yeni bakım agent'ı `kit-prompt-sync` (`.claude/agents/`, plugin'e girmez): profil gereksinimi değişince yalnız
   `docs/prompts/generate-project-profile.md` ve `docs/prompts/project-readiness-report.md` dosyalarını günceller. `Stop` kancası
   `plugins/kg-devkit/`, `rules/`, `docs/project-profile-template.md` veya `docs/agent-requirements.md` değişince onu da ister (yalnız bu repoda).

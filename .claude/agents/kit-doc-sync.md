@@ -32,7 +32,9 @@ If the brief names no change at all, check the whole repository.
   the hook rows of `docs/agent-requirements.md`; every verb the hook guards is covered by a test case.
 - `docs/project-profile-template.md` -> field names used in `docs/agent-requirements.md`.
 - `scripts/`, `.github/workflows/*` -> README "Sürümleme"/"Geliştirme" sections and `docs/inventory.md`.
-- `.claude/agents/*.md` (these maintenance agents) -> `docs/inventory.md`.
+- `.claude/agents/*.md`, `.claude/settings.json`, `.claude/hooks/*` -> generated `.codex/` maintenance
+  agents/hooks via `scripts/sync-claude-codex.py`; `README.md` and `docs/inventory.md` describe the mapping,
+  watch/check modes, separate client state and Codex hook trust requirement.
 - `plugin.json` version and merged changes -> `CHANGELOG.md` has an entry for the current version (newest first, no gaps).
 
 ## What to check
@@ -44,8 +46,9 @@ If the brief names no change at all, check the whole repository.
 3. **Profile fields:** every field named in docs exists in the template.
 4. **No hard-coded version** in README or docs (the version lives in `plugin.json` and is bumped automatically).
 5. **Links and paths:** every relative link and file path mentioned exists.
-6. **Codex parity:** `python3 scripts/build-codex.py --check` passes; Claude-only features (hooks, `kg-devkit:` prefix,
-   Chrome tools) are documented as Claude-only.
+6. **Codex parity:** `python3 scripts/build-codex.py --check` passes for both output trees. Distinguish the
+   Claude-only plugin infrastructure guard/Chrome tools/`kg-devkit:` prefix from the repository's maintenance
+   Stop hook, which also has a native Codex adaptation. Do not claim the reminder proves reviewers passed.
 7. **Prompts are out of scope for content.** `docs/prompts/*.md` (fields, embedded template, matrix, hooks, Hard limits
    wording) belong to `kit-prompt-sync`; do not judge or duplicate those checks. For the prompts check only 4 and 5
    (no hard-coded version, links and paths). If you notice prompt content that disagrees with the docs, do not report
