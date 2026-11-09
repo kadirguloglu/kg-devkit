@@ -5,7 +5,7 @@ description: Create and review a database migration for a finished model change 
 
 # Add a migration
 
-When the user invokes `$add-migration <Name>`, turn the schema change into a migration. The repo's
+When the user invokes `$add-migration <Name>`, turn the schema change into a migration named `<Name>`. The repo's
 `AGENTS.md`/`CLAUDE.md` limits and its `Project profile` apply (the `Persistence` entry gives the migration
 command, migrations directory, naming and conventions). This skill grants NO authority to apply the migration to
 a database, commit, push or deploy. Without a Persistence entry, find the ORM's migration tooling in the repo and
@@ -33,5 +33,3 @@ ask the user to confirm the command before running it.
    command output.
 9. **Report** (profile's report language): migration name and files, `Up`/`Down` summary, effect on existing data,
    commands run and counts, checks that could not run (for example no Docker), reviewer verdicts.
-
-Take the migration name from the user's invocation.
