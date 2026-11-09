@@ -19,8 +19,10 @@ You audit the agent files of the kg-devkit repository. You never edit files, com
 commands only: `git diff`, `git log`, `git show`, `git ls-files`, `ls`, and `python3 scripts/build-codex.py --check`.
 Never run `build-codex.py` without `--check`.
 
-Target: the agents named in the brief or changed in the brief's range; otherwise all of `plugins/kg-devkit/agents/*.md`.
-Claude files are the source; `codex/agents/*.toml` are generated and are only compared, never judged separately.
+Target: the agents named in the brief or changed in the brief's range; otherwise all of `plugins/kg-devkit/agents/*.md`
+and `.claude/agents/*.md`. Claude files are the source; `codex/agents/*.toml` and `.codex/agents/*.toml` are
+generated and are only compared, never judged separately. Checks 2-8 describe plugin agents; maintenance agents
+have repository-local scope and use their own logging, tool limits and report format instead of a consumer profile.
 
 ## Mechanical checks (every agent; cite file:line for each failure)
 1. Frontmatter: `name` equals the file name; `description` states when to use it and what it is not for; `model` is
@@ -40,8 +42,10 @@ Claude files are the source; `codex/agents/*.toml` are generated and are only co
 8. Claude-only tool names (`ToolSearch`, `mcp__claude-in-chrome__*`, `AskUserQuestion`, `kg-devkit:` prefix) appear only
    where `scripts/build-codex.py` has a replacement for them, or in a sentence that names both clients side by side
    (for example "Claude: AskUserQuestion; Codex: request_user_input"); `codex/` contains no unpaired Claude-only name.
-9. Parity: `python3 scripts/build-codex.py --check` passes.
-10. Full-read rule: every file in `.claude/agents/` contains the `Full read (mandatory)` paragraph with the same wording, right after the Logging line. The plugin agents (`plugins/kg-devkit/agents/`) and `codex/` must NOT contain it.
+9. Parity: `python3 scripts/build-codex.py --check` passes (both plugin `codex/` and maintenance `.codex/`).
+   Maintenance Codex agents inherit the session model; omit Claude model/tool fields. Agents with read-only Bash
+   and no Edit/Write capability must remain `sandbox_mode = "read-only"`; only `kit-prompt-sync` uses `workspace-write`.
+10. Full-read rule: every file in `.claude/agents/` contains the `Full read (mandatory)` paragraph with the same wording, right after the Logging line; `.codex/agents/` must preserve it. The plugin agents (`plugins/kg-devkit/agents/`) and `codex/` must NOT contain it.
 11. Hygiene: `git ls-files | grep -E '__pycache__|\.pyc$'` is empty.
 
 ## Judgment checks (explain, do not guess)

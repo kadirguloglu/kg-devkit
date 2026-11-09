@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "sources": {
+    ".claude/agents/kit-agent-linter.md": "17fcf938a0d277ca877c74d37cb766ff58cf576a3f3c8fd4aee0416adc89b971",
+    ".claude/agents/kit-doc-sync.md": "bd2e6def9b686e242790d2a8415984ff1c0fe3f5436c3022c3072e3a85040471",
+    ".claude/agents/kit-prompt-sync.md": "f7d9374a70c1662e0bfd0a70a9e90e708cb5f2fed5c20ab6988fd614d1f924ce",
+    ".claude/agents/kit-release-notes.md": "97d4e7c08726b20d1a30b66ec5774e8c415daf503fc7155fd57d53d0e00e992f",
+    ".claude/hooks/kit-review-gate.py": "8fb0f33403a355d1b26a3eea06e4ec6da2657f00fca3a621d2b84634d7d7f2e8",
+    ".claude/settings.json": "a1618b1a67b79182f3413004ef6619367c8b366b94ac95569e617c3b12341440"
+  },
+  "outputs": {
+    ".codex/agents/kit-agent-linter.toml": "b5d720448b15aef4ef9f63535535e4fe14f71b78f9bcd812ea545ade6e719546",
+    ".codex/agents/kit-doc-sync.toml": "d020f3f826e2bbde9aade96941e5a345e0f1dff255f35eb46d1df566879b8df7",
+    ".codex/agents/kit-prompt-sync.toml": "c52c2c5066ae9ac48d5d438ed2449569f49a2f1474bec69c929c27da0900802b",
+    ".codex/agents/kit-release-notes.toml": "138fcd994875b19724e0142b2e40f3da1a60fc121f8edf4cd7370c19c8d3f226",
+    ".codex/hooks.json": "15886a2f011a8f253145694293c7093f98e1376dd0f2511bf9bda0d175db36ea",
+    ".codex/hooks/kit-review-gate.py": "cd907b29a4e87ea93cde71eddbcc2d282a316e9b1f4b997deedde81957f1c885"
+  }
+}

@@ -63,15 +63,43 @@ Güncel sürüm için `plugin.json`'a bak; README'ye sürüm yazılmaz.
 
 ## Geliştirme
 
-Tek kaynak Claude tarafıdır. `codex/` çıktısı üretilir, elle düzenlenmez:
+Tek kaynak Claude tarafıdır. Plugin dağıtımı `codex/`, bu reponun bakım araçları `.codex/` altında üretilir;
+üretilen dosyalar elle düzenlenmez. Python 3.11+ yeterlidir; dönüşüm betikleri ek paket gerektirmez.
 
 ```bash
-python3 scripts/build-codex.py           # codex/ yeniden üret (--check: güncel mi)
-python3 scripts/test_guard_infra.py      # güvenlik kancası kural testleri
+python3 scripts/build-codex.py            # codex/ ve .codex/ çıktılarını güncelle
+python3 scripts/build-codex.py --check    # iki çıktının da güncelliğini denetle
+python3 scripts/test_guard_infra.py       # güvenlik kancası kural testleri
+python3 scripts/test_sync_claude_codex.py # bakım dönüşümü ve kanca testleri
 claude plugin validate . && claude plugin validate plugins/kg-devkit
 ```
 
-Bu repoyu geliştirirken `.claude/agents/` altındaki bakım agent'ları kullanılır: `kit-doc-sync`, `kit-agent-linter`, `kit-release-notes`, `kit-prompt-sync` (plugin'e dahil değildir, kullanıcılara gitmez). `.claude/settings.json` içindeki `Stop` kancası (`.claude/hooks/kit-review-gate.py`) kit kaynakları değiştiğinde `kit-agent-linter`, `kit-doc-sync` ve `kit-prompt-sync`'in otomatik çalıştırılmasını ister; `CHANGELOG.md` güncellenmeden kaynak değişirse `kit-release-notes` da istenir; her agent yalnız kendi baktığı dosyalar değişince bir kez istenir.
+Bu repoyu geliştirirken dört bakım agent'ı kullanılır: `kit-doc-sync`, `kit-agent-linter`, `kit-release-notes`,
+`kit-prompt-sync`. Kaynakları `.claude/agents/`, Codex karşılıkları `.codex/agents/*.toml` altındadır.
+Claude'un `sonnet`/`opus` model adları Codex'e taşınmaz; Codex agent'ları oturumun modelini devralır. İlk üçü
+`read-only`, yalnız iki profil prompt'unu güncelleyebilen `kit-prompt-sync` ise `workspace-write` kullanır.
+Bakım araçları yalnız bu repo içindir; `install-codex.sh` bunları global olarak kurmaz ve tüketici projelerin
+`Project profile` alanlarına yeni bir gereksinim eklenmez.
 
-CI (`.github/workflows/check.yml`) Codex çıktısının güncelliğini, kanca testlerini ve manifestleri doğrular.
+Yalnız `.claude` değişikliklerini aktarmak veya düzenlerken otomatik izlemek için:
+
+```bash
+python3 scripts/sync-claude-codex.py         # .claude → .codex
+python3 scripts/sync-claude-codex.py --check # güncel değilse hata koduyla çıkar; dosya yazmaz
+python3 scripts/sync-claude-codex.py --watch # 1 saniyede bir kontrol eder; Ctrl+C ile durur
+```
+
+Betik mevcut agent metadata'sını, `.claude/settings.json` içindeki kanca tanımlarını ve bakım kancasını çevirir.
+Her Claude özelliği için genel dönüştürücü değildir: desteklenmeyen yeni dosya türü veya ayarda hata verir.
+`.codex/.claude-sync.json` kaynak ve çıktı özetlerini izler; özel Codex dosyaları korunur, elle değiştirilmiş
+üretilen dosyada çakışma bildirilir. Değişiklikleri kaynak `.claude` dosyasında yapıp yeniden üret.
+
+Claude'da `.claude/settings.json`, Codex'te üretilen `.codex/hooks.json` yerel `Stop` kancasını kaydeder.
+Codex kancası `.codex/hooks/kit-review-gate.py` dosyasını çalıştırır. Kit kaynakları değiştiğinde ilgili bakım
+agent'larının çalıştırılmasını ister; changelog güncellenmeden kaynak değişirse `kit-release-notes` da istenir.
+Bu bir hatırlatıcıdır; agent'ların çalıştığını veya `PASS` verdiğini kendi başına kanıtlamaz.
+Codex'te proje ve kanca için normal güven arayüzündeki onay gerekir; dönüşüm betiği güven kaydı yazmaz.
+Yerel agent keşfi veya `Stop` kancası desteği olmayan eski istemcilerde aynı çalışma davranışı garanti edilmez.
+
+CI (`.github/workflows/check.yml`) iki Codex çıktısının güncelliğini, dönüşüm/kanca testlerini ve manifestleri doğrular.
 Tasarım kararları ve bilinen sınırlar: [docs/inventory.md](docs/inventory.md).
