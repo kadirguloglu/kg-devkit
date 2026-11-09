@@ -17,6 +17,9 @@ ile seviye seçilir. Bu dosya kullanıcıya dönük etkiyi özetler; taslağı `
 - **Düzeltilen:** `Stop` kancasının özeti artık `origin/main`'e göre diff'ten değil, bakılan klasörlerdeki izlenen dosyaların içeriğinden
   hesaplanır; dal veya `origin/main` ilerlemesi (ör. PR merge'ü) boşuna tetiklemez. Özet yoksa (yeni klon) başlangıç HEAD'deki
   commit'li içeriktir.
+- **Doküman/Altyapı:** Yeni bakım agent'ı `kit-prompt-sync` (`.claude/agents/`, plugin'e girmez): profil gereksinimi değişince yalnız
+  `docs/prompts/generate-project-profile.md` ve `docs/prompts/project-readiness-report.md` dosyalarını günceller. `Stop` kancası
+  `plugins/kg-devkit/`, `rules/`, `docs/project-profile-template.md` veya `docs/agent-requirements.md` değişince onu da ister (yalnız bu repoda).
 
 ## 0.8.1 – 2026-11-06 ([#13](https://github.com/kadirguloglu/kg-devkit/pull/13))
 - **Değişen:** `dependency-supply-chain-reviewer` modeli `sonnet` → `opus` (diğer güvenlik reviewer'larıyla aynı katman). Agent log satırları profilin rapor dilini izler (Türkçe dışıysa aynı iki satır o dilde); altı reviewer'a ortak

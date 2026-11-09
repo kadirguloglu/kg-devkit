@@ -44,9 +44,9 @@ halidir. Projeye özgü bilgi (komutlar, yollar, cluster adları, kural belgeler
   `kit-doc-sync` (README/doküman/prompt kaynakla uyumlu mu), `kit-agent-linter` (agent dosyaları: sızıntı, yetki, eşlik, mekanik
   kontroller; CI betiği yerine agent yapar) ve `kit-release-notes` (sürüm notu ve `[minor]`/`[major]` önerisi; çıktısı `CHANGELOG.md` girdisi olarak kullanılır). Bu üçü salt-okuma
   çalışır, düzeltmeyi ana oturum yapar. `kit-prompt-sync` agent/skill/kanca/kural değişiminde profil gereksinimi değiştiyse yalnız
-  `docs/prompts/generate-project-profile.md` ve `docs/prompts/project-readiness-report.md` dosyalarını günceller (`Edit` aracı vardır, başka dosyaya dokunmaz; elle çağrılır, `Stop` kancası istemez).
+  `docs/prompts/generate-project-profile.md` ve `docs/prompts/project-readiness-report.md` dosyalarını günceller (`Edit` aracı vardır, başka dosyaya dokunmaz; `Stop` kancası `plugins/kg-devkit/` altındaki herhangi bir dosya, kural, profil şablonu veya `agent-requirements.md` değişince ister).
 - **Otomatik tetik:** `.claude/settings.json` `Stop` kancası `.claude/hooks/kit-review-gate.py` çalıştırır: agent dosyaları değiştiyse
-  `kit-agent-linter`, agent/skill/kural/kanca/betik/workflow/doküman değiştiyse `kit-doc-sync` çalıştırılması istenir. Her agent için ayrı, yalnız
+  `kit-agent-linter`, agent/skill/kural/kanca/betik/workflow/doküman değiştiyse `kit-doc-sync` çalıştırılması istenir. Profil gereksinimi kaynakları (plugin, kural, şablon, `agent-requirements.md`) değiştiyse `kit-prompt-sync` da istenir. Her agent için ayrı, yalnız
   baktığı dosyaların içeriğinden hesaplanan özet tutulur (`.git/kit-review-gate/state.json`): commit atmak veya kanca betiğini düzenlemek
   tetiklemez, ilgili dosyalar değişince o agent bir kez istenir. Kaynak (plugin/kural/betik/workflow) değişip `CHANGELOG.md` son çalıştırmadan
   beri değişmediyse `kit-release-notes` da istenir (özet yoksa, ör. yeni klonda, başlangıç HEAD'deki commit'li içeriktir; dal ve `origin/main` ilerlemesi tetiklemez). Yalnız bu repoda geçerlidir.
