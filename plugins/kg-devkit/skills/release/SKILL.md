@@ -11,30 +11,39 @@ argument-hint: "[deploy]"
 When the user types `/release`, finish the current change and commit + push it. The invocation authorizes ONLY a
 commit and a push to the current branch for this change. A `deploy` argument also authorizes deploying to
 production; without it, do not deploy. The repo's `AGENTS.md`/`CLAUDE.md` limits and its `Project profile`
-(`Release` and `Production` entries: changelog file and versioning, commit style, commands, health URLs) apply:
+(`Release`: changelog, versioning and commit style; `Production`: deploy/status commands, target and health URLs) apply:
 no hook bypass, no force-push, no database reset, no public sharing. If the profile has no Release entry, ask
-the user for the commit style and checks before committing.
+the user for the commit style and checks before committing. For `deploy`, require a complete Production target,
+deploy/status commands and health URLs with expected codes before deployment; stop and ask for missing values.
+Use legacy Release deploy/health values only when Production omits them; stop on conflicting values.
 
-1. **Scope.** `git status --short`, `git diff --stat` (staged, unstaged, untracked). Do not claim the user's
-   unrelated changes; ask if unsure. Confirm with `git add -n` that secret files (secret manifests, deployment-
-   secret files, `.env*`, anything the profile lists) do not enter the commit.
+1. **Scope.** `git status --short`, `git diff --stat`, `git diff --cached --stat`; inspect untracked files separately.
+   Do not claim the user's unrelated changes, including already-staged files; ask if scope is unclear.
+   Stage only explicit, reviewed paths for this change. Before committing, inspect the complete final index with
+   `git diff --cached --name-status` and the staged diff, without printing secret values. Reject secret manifests,
+   deployment-secret files, `.env*` and anything the profile forbids. A `git add -n` dry run does not audit the index.
+   Do not unstage or overwrite unrelated user changes without permission; stop if they would enter this commit.
+   Repeat the index check after any staging changes, including those made by checks or hooks.
 2. **Changelog.** If user-visible behavior changed, make sure the profile's changelog has an entry dated today
    with the version bump the profile prescribes (feature → minor, improvement/fix → patch), written in user
    language. Refactor/test/docs/tooling-only changes add none.
 3. **Checks** (record real commands and counts):
    - Only the change's own tests and their connections, via the profile's focused-test command. Build backend
      sources if they changed (zero warnings if the profile demands it). The FULL suite runs only if the user asked
-     or the `deploy` argument was given (the profile's deploy command may run it itself).
+     or the `deploy` argument was given, or the profile explicitly requires it for this change
+     (the profile's deploy command may run it itself).
    - DTO/endpoint change: regenerate API types and run the contract snapshot test as the profile prescribes.
    - Frontend change: the profile's lint, typecheck and build. Rerun a failing test alone to tell load-induced
-     flakiness from a real defect; fix real ones, never loosen assertions.
+     flakiness from a real defect; an isolated pass alone does not prove flakiness. Record and investigate the
+     original failure; fix real ones, never loosen assertions.
    - Docs/config only: links, paths, frontmatter and `git diff --check`; no build.
    - Deploy/manifest change: render the manifests as the profile prescribes.
 4. **Independent review per the profile's finish gate.** The gate decides which reviewer is mandatory; a triggered
-   reviewer must return a passing verdict before any commit; an untriggered one is not run (run it when in doubt).
+   reviewer must return a passing verdict before any commit; do not run untriggered reviewers. Resolve uncertain
+   triggers against the gate. If required review is unavailable, FAIL or UNCLEAR, report it as blocked and do not commit.
    Give the diff and command evidence; fix every finding or report it with reasoning, and rerun affected checks.
 5. **Commit + push.** Follow the profile's commit style (language, prefix convention, body: what/why and related
-   document section) and end with the attribution line the session provides. State the target branch before
+   document section); include the session's attribution line if one was supplied, never invent one. State the target branch before
    pushing. If a hook fails, fix the cause; do not skip it.
 6. **Deploy (only `/release deploy`).** Run the profile's deploy command, then its status command; verify the
    profile's health URLs return the expected codes. On failure leave the rollback decision to the user; if you

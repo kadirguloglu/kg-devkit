@@ -30,6 +30,11 @@ olarak kurmaz. Tüketici projelerin `Project profile` sözleşmesi değişmez.
   `disable-model-invocation: true` ile yalnız açıkça çağrılır. `release` çağrıldığında commit+push yetkisi verir
   (`deploy` argümanıyla ayrıca canlı deploy); `rollback` canlı geri alma için ayrıca açık onay ister; `live-check`
   salt-okumadır; `add-migration`, `verify-change` ve `browser-test` commit/push/deploy/veritabanı yetkisi vermez.
+- **Skill doğrulama sınırları:** `release` son index'i denetler; dry-run stage edilmiş secret dosyalarını doğrulamaz.
+  `rollback`, başarılı release ve image digest → commit/revision eşlemesini, gerçek şema uyumluluğunu ve onaylanan
+  hedefle çalışan image eşleşmesini doğrular; eksik kanıtla uygulamaz. `live-check` süre sınırlı komutlar ve restart
+  karşılaştırması kullanır. Deploy/sağlık değerleri `Production`'dan, migration dizini `Persistence`'dan okunur;
+  eski `Release` deploy/sağlık değerleri yalnız Production'da eksikse kullanılır, çelişkide işlem durur.
 - **Kapsam:** `scope-advisor` tek müşterili projede `NOT-APPLICABLE` döner ve durur; `tenant-security-reviewer` kiracı yoksa
   durmaz, düz yetki/sahiplik incelemesine geçer.
 - **Otomatik sürüm:** `main`'e her push'ta `.github/workflows/bump-version.yml`, `scripts/bump-version.py` ile

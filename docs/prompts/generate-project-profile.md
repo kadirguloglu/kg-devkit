@@ -35,9 +35,9 @@ cevabı bulunanı sorma, kalanı kullanıcıya sor. Dil: Türkçe. Bu prompt ken
   (observability-reviewer okur)
 - Finish gate: hangi değişiklik hangi bağımsız kontrolü/reviewer'ı zorunlu kılar (tek kaynak); reviewer geçti ifadesi
 - Release: changelog dosyası + sürüm kuralı (özellik=minor, düzeltme=patch), commit stili (dil, önek),
-  gizli dosya listesi (commit'e girmeyecek), deploy komutu, sağlık URL'leri ve beklenen kodlar
+  gizli dosya listesi (commit'e girmeyecek)
 - Production: cluster context=`...`, namespace=`...`, bulut CLI kimlik komutu, status/deploy/rollback komutları, iş yükü adları,
-  registry repoları, topoloji sınırları (replika, güncelleme stratejisi, depolama), runbook=`...`, secret konumları
+  sağlık URL'leri ve beklenen kodlar, registry repoları, topoloji sınırları (replika, güncelleme stratejisi, depolama), runbook=`...`, secret konumları
 - Report language: Türkçe
 - Hard limits: commit/push yetkisi, branch politikası, yasak komutlar (db reset, force-push, ...)
 ```
@@ -59,9 +59,11 @@ Her alan için değeri ve dayanak dosyayı (yol:satır) çıkar:
 - Performance: gecikme/boyut bütçeleri, sıcak endpoint/ekranlar, veri hacmi, önbellek (yalnız belgelenmişse)
 - Observability: log/metrik/trace kütüphaneleri ve kuralları, korelasyon/tenant kimliği, log'a girmeyecek veriler, sağlık endpoint'leri
 - Finish gate: hangi değişiklik hangi bağımsız kontrolü/reviewer'ı gerektirir; reviewer geçti ifadesi (yalnız mevcut belgelerden)
-- Release: changelog + sürüm kuralı, commit stili, commit'e girmeyecek gizli dosyalar (.gitignore'dan), deploy komutu, sağlık URL'leri ve beklenen kodlar
+- Release: changelog + sürüm kuralı, commit stili, commit'e girmeyecek gizli dosyalar (.gitignore ve belgelenmiş dosya listesinden; zaten izlenen/stage edilmiş dosyalar da kapsamdadır)
 - Production: orkestratör/hedef (Kubernetes: context+namespace; değilse host/proje/stack), bulut CLI kimlik komutu, status/deploy/rollback komutları,
-  iş yükü adları, registry repoları, topoloji sınırları ve güncelleme stratejisi, runbook, secret KONUMLARI
+  sağlık URL'leri ve beklenen kodlar, iş yükü adları, registry repoları, topoloji sınırları ve güncelleme stratejisi, runbook, secret KONUMLARI.
+  Rollback runbook'unda başarılı release kanıtı, image digest → kaynak commit/revision eşlemesi ve uygulanan şemayı salt-okunur doğrulama yöntemi var mı?
+  Eski Release deploy/sağlık değerleri Production'da eksikse kullanılabilir; çelişen değerleri kullanıcıya netleştir, yeni yazımda Production'ı kullan.
 - Report language ve Hard limits: yasak komutlar, branch politikası, ek kısıtlar
 
 ## 2. Eşleştirme: cevaplı / cevapsız
@@ -69,7 +71,7 @@ Keşiften sonra alanları üç gruba ayır ve kullanıcıya KISA bir tablo olara
 1. **Bulundu:** dayanak dosya var, çelişki yok. Sorma; yalnız tabloda göster.
 2. **Belirsiz:** birden fazla aday veya çelişen kaynak. Aday(lar)ı seçenek diye sun, kullanıcı seçsin.
 3. **Bulunamadı:** repoda dayanak yok. Sor.
-Her zaman kullanıcıya sorulacaklar (çıkarım yazılmaz): Production hedefi, Release deploy komutu, Hard limits, Finish gate
+Her zaman kullanıcıya sorulacaklar (çıkarım yazılmaz): Production hedefi ve deploy komutu, Hard limits, Finish gate
 (belgede yoksa), Dev app test girişi (belgelenmemişse). Tek müşterili olduğu anlaşıldıysa tenant alanlarını sorma.
 
 ## 3. Soru-cevap

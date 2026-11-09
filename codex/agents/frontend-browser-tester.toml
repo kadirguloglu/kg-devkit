@@ -12,8 +12,9 @@ dev URL or a test login cannot be determined.
 ## 1. Scope: only what changed
 
 - Target is the brief's commit range/files; otherwise the working tree
-  (`git status --short`, `git diff`, `git diff --cached`, untracked files); if clean, `HEAD~1..HEAD`.
-  State which target you used.
+  (`git status --short`, `git diff`, `git diff --cached`, untracked files); if clean, `HEAD~1..HEAD` when a parent
+  exists, otherwise `git show --root HEAD` for an initial commit. Without commits or changes, report no target.
+  Existing file paths narrow that target; other text is a focus hint. State which target you used.
 - Keep only <profile: frontend source dir> production files. Ignore test files, test setup, lockfiles,
   docs and backend files (a backend contract change matters only through the UI that calls it).
 - Read the diff and turn every user-visible change into a scenario: new/changed fields, defaults,

@@ -31,12 +31,17 @@ Hepsi `disable-model-invocation: true`: yalnız kullanıcı açıkça çağırı
 
 | Skill | Yetki / onay | Profil alanları | Profil yoksa / uygulanamazsa |
 | --- | --- | --- | --- |
-| `release` | çağrı commit+push yetkisi verir; canlı deploy yalnız `deploy` argümanıyla | Release, Commands, Finish gate, `AGENTS.md`/`CLAUDE.md` sınırları (alan adı anılmaz), Production (yalnız `deploy` ile: deploy/durum komutu, sağlık URL'leri) | Release girdisi yoksa kullanıcıya sorar |
-| `rollback` | canlı geri alma için ayrıca açık onay ister | Production (context, namespace, iş yükü, registry, sağlık URL'leri, güncelleme stratejisi, rollback/deploy komutu; bulut CLI kimlik komutu `live-check` adımları üzerinden), Persistence (migrations dizini; skill bunu Production içinde sayar, şablonda Persistence altındadır) | Production girdisi yoksa durur |
-| `live-check` | salt-okuma | Production (context, namespace, durum komutu, bulut CLI kimlik komutu, iş yükü adları, sağlık URL'leri ve beklenen kodlar, runbook) | Production girdisi yoksa durur ve sorar |
-| `add-migration` | commit/push/deploy/veritabanı yetkisi vermez | Persistence, Conventions, Finish gate, Report language | ORM araçlarını repoda bulur, komutu çalıştırmadan önce kullanıcıya onaylatır |
-| `verify-change` | commit/push/deploy yetkisi vermez | Commands, Rule docs, Finish gate, Report language | skill'de ayrı ifade yok; profil kısıtları geçerli, genel kural: koddan çıkarım ve raporda belirtme |
+| `release` | çağrı commit+push yetkisi verir; canlı deploy yalnız `deploy` argümanıyla | Release, Commands, Finish gate, `AGENTS.md`/`CLAUDE.md` sınırları, Production (yalnız `deploy` ile: hedef, deploy/durum komutu, sağlık URL'leri ve beklenen kodlar) | Release yoksa kullanıcıya sorar; deploy için eksik Production bilgisi varsa durur ve sorar; zorunlu reviewer yoksa/FAIL/UNCLEAR ise commit durur |
+| `rollback` | canlı geri alma için ayrıca açık onay ister | Production (context, namespace, iş yükü, registry, sağlık URL'leri ve beklenen kodlar, güncelleme stratejisi, rollback/deploy komutu ve kanıt yöntemleri için runbook; bulut CLI kimlik komutu `live-check` üzerinden), Persistence (migrations dizini) | Production veya hedef/sağlık bilgileri eksikse durur; başarılı release, image → kaynak/revision veya uygulanan şema kanıtı eksikse plan engelli, uygulama yok |
+| `live-check` | salt-okuma | Production (context, namespace, durum komutu, bulut CLI kimlik komutu, iş yükü adları, sağlık URL'leri ve beklenen kodlar, runbook) | Production veya zorunlu hedef/sağlık bilgileri eksikse durur ve sorar |
+| `add-migration` | commit/push/deploy/veritabanı yetkisi vermez | Persistence, Conventions, Finish gate, Report language | Persistence yoksa ORM araçlarını bulur, komutu onaylatır; Finish gate eksik/belirsiz veya zorunlu review yoksa/FAIL/UNCLEAR ise doğrulandı demez |
+| `verify-change` | commit/push/deploy yetkisi vermez | Commands, Rule docs, Finish gate, Report language | profil yoksa genel kural: koddan çıkarım ve raporda belirtme; zorunlu review yoksa/FAIL/UNCLEAR ise doğrulama engelli |
 | `browser-test` | commit/push/deploy yetkisi vermez; `frontend-browser-tester` agent'ında çalışır | `frontend-browser-tester` satırındaki alanlar | agent'ın davranışı geçerli |
+
+`release deploy`, `live-check` ve `rollback` için deploy/sağlık değerlerinin kaynağı `Production`'dır; yalnız orada
+eksik olan değerler eski `Release` girdisinden alınabilir. İki kaynaktaki değerler çelişirse işlem durur.
+Rollback runbook'u başarılı release, image digest → kaynak commit/revision ve uygulanan şema için salt-okunur
+kanıt yöntemlerini belirtir. Git geçmişi tek başına canlı şema veya başarılı rollout kanıtı değildir.
 
 ## Ortak kurallar (tüm agent'lar)
 

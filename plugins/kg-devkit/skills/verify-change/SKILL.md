@@ -14,7 +14,8 @@ report language). This skill grants no authority to commit, push, deploy or rese
 1. `git status --short`, `git diff --stat`, `git diff --cached --stat` to find the scope. Tell staged, unstaged
    and untracked files apart; never claim or delete the user's changes. Read the relevant diff; open large
    generated files only if the changed schema/contract requires it. If the working tree is clean, the target is
-   the last commit (`git diff --stat HEAD~1..HEAD`, `git show`); state which target you used.
+   the last commit (`git show --stat HEAD`, `git show HEAD`; use `--root` for an initial commit). If no commit
+   and no working-tree change exist, report that there is no target. State which target you used.
 2. Compare the changed behavior with its callers and contract. Read the profile's path-matched rule documents and
    only the relevant sections of the technical documents. Verify document claims against concrete code; do not
    treat an old decision record as current behavior.
@@ -24,7 +25,8 @@ report language). This skill grants no authority to commit, push, deploy or rese
    - Backend behavior: build plus focused regression; widen to affected groups for shared infrastructure/contracts.
    - Frontend behavior: lint/typecheck/build plus the related tests; widen if shared auth/cache/UI helpers changed.
    - Anything the profile's finish gate names (schema, security, tenancy, storage, ...): the required independent
-     reviewer must pass; do not call reviewers the gate does not trigger.
+     reviewer must pass; do not call reviewers the gate does not trigger. If a required reviewer is unavailable,
+     FAIL or UNCLEAR, report verification as blocked, not passed.
 4. Use a YAML/CLI validator when one exists; otherwise state the limit of the static check. Do not install new
    dependencies or plugins. Do not repeat checks that already passed for this same change without reason.
 5. Review the final diff. Investigate why a failed check failed; do not loosen assertions or pull unrelated

@@ -23,16 +23,19 @@ ask the user to confirm the command before running it.
    migration command with a name that follows existing naming (`Add…`/`Change…`). Prefer the project's wrapper over
    raw tool calls, since wrappers often clean stray folders.
 4. **Inspect the output.** The migration and the generated model artifacts the profile lists (EF Core: designer and model snapshot) must change together. `Up` must contain only the
-   intended difference (unrelated column/index changes mean the model needs another look) and `Down` must be able
-   to undo it. For data-transforming migrations, write down the effect on existing rows (default, NULL, index build time).
+   intended difference (unrelated column/index changes mean the model needs another look). Assess schema reversal
+   and data restoration separately: recreating a dropped column does not restore its values. Document lossy or
+   irreversible `Up`/`Down` operations and follow the profile's rollback policy; never claim data recovery without
+   evidence. For data-transforming migrations, record effects on existing rows (default, NULL, index build time).
 5. **Permissions**, if the change adds one: follow the profile's chain (constant and catalog, permission seed,
    migration, read-only role lists, frontend permission codes).
 6. **Contract.** If DTOs/endpoints changed too, regenerate the API types/OpenAPI with the profile's command; the
    generated files belong in the commit.
 7. **Verify.** Build the backend and run the focused tests for the area (schema tests may need Docker). Apply the
    migration to the local database ONLY if the user asks. Never reset the database.
-8. **Gate.** Apply the profile's finish gate: schema/migration/query/delete changes need the database reviewer's
-   passing verdict; permission or tenant scope changes also need the security reviewer. Give them the diff and
-   command output.
+8. **Gate.** Use the profile's Finish gate as the single source of reviewer names and triggers (including schema,
+   migration and permission/tenant changes). Give required reviewers the diff and command output. Missing or
+   ambiguous gate rules must be clarified before declaring verification complete. Required review that is
+   unavailable, FAIL or UNCLEAR blocks a verified handoff; do not invent a passing verdict.
 9. **Report** (profile's report language): migration name and files, `Up`/`Down` summary, effect on existing data,
    commands run and counts, checks that could not run (for example no Docker), reviewer verdicts.

@@ -5,6 +5,16 @@ ile seviye seçilir. Bu dosya kullanıcıya dönük etkiyi özetler; taslağı `
 (bkz. [docs/inventory.md](docs/inventory.md)). Kategoriler: **Kırıcı**, **Eklenen**, **Değişen**, **Düzeltilen**, **Doküman/Altyapı**.
 
 ## Yayınlanmadı (öneri: patch)
+- **Düzeltilen:** `release` commit öncesinde nihai staged dosyaları ve diff'i denetler; `git add -n` ile zaten
+  stage edilmiş secret dosyalarını güvenli saymaz. Eksik deploy hedefi veya geçmeyen zorunlu review ile ilerlemez.
+  `rollback` hedef digest/kaynak commit/revision eşlemesi, başarılı release ve uygulanan şema kanıtı ister;
+  hedefi belirtmeyen undo kullanmaz, çalışan image'ları doğrular ve migration geçmişini körlemesine revert etmez.
+  `live-check` timeout, restart ölçüm karşılaştırması ve beklenen DNS topolojisini kullanır. Migration şema geri
+  dönüşü ile veri kurtarmayı ayırır; reviewer tetikleyicileri Finish gate'ten gelir. İlk commit için doğrulama ve
+  tarayıcı hedef seçimi düzeltildi; Codex tarayıcı hedef ayrımı kaynak skill ile eşlendi.
+- **Doküman/Altyapı:** Deploy/sağlık değerleri profil şablonu ve iki tüketici prompt'unda `Production` altında
+  birleştirildi; eski `Release` değerleri yalnız Production'da eksikse kullanılır, çelişki netleştirilir.
+  Rollback migration dizinini `Persistence`'dan okur; runbook'ta aranacak kanıt yöntemleri belgelendi.
 - **Doküman/Altyapı:** `.claude` altındaki dört bakım agent'ı ve `Stop` kancası için yerel `.codex` karşılıkları
   eklendi. `scripts/sync-claude-codex.py`, tek seferlik dönüşüm, `--check` ve bir saniyelik `--watch` modlarıyla
   kaynak değişikliklerini aktarır; özel Codex dosyalarını korur, elle değiştirilmiş çıktıda veya desteklenmeyen
