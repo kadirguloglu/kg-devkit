@@ -14,14 +14,15 @@ database data, DNS, volumes or secrets.
 1. **Current state.** Run the `$live-check` steps (read-only): running image tags and rollout history
    of every workload. Prove that the problem started after the latest rollout; if it did not, do not recommend rollback.
 2. **Target tag.** The given tag or the previous one from rollout history; confirm it exists in the registry for
-   each image repository. All images are kept on the same tag unless the profile says otherwise.
+   each image repository. All images are kept on the same tag unless the profile says otherwise. If workloads talk to each other, check
+   that the target tags are mutually compatible, since one-at-a-time rollback leaves a mixed-version window.
 3. **Schema compatibility (gate).** List migrations between target and current (`git log --stat <target>..<current>
    -- <migrations dir>`). If any drops columns/tables, narrows types or transforms data, do NOT roll back; present
    the situation and the options (fix forward, hotfix deploy). Additive-only migrations (nullable column, new
    table) may be compatible with the old image; explain why. Never run a reverse migration against the live database.
 4. **Plan and approval.** Write the exact commands, expected downtime (per the profile's update strategy) and
    affected components; get explicit approval. Do not proceed to step 5 without it.
-5. **Execute (after approval).** One workload at a time, with the profile's rollback
+5. **Execute (after approval).** One workload at a time (state the order and the mixed-version window in the plan), with the profile's rollback
    command (Kubernetes: `kubectl --context <ctx> -n <ns> rollout undo deployment/<name> [--to-revision=N]`, then
    `rollout status --timeout=600s` for each; compose or plain host: redeploy the target tag with the profile's deploy
    command). The plugin's guard hook asks for confirmation again on these commands; that is expected.

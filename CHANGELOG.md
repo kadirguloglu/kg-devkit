@@ -12,6 +12,9 @@ ile seviye seçilir. Bu dosya kullanıcıya dönük etkiyi özetler; taslağı `
   CI'a eklendi. Codex bakım agent'ları oturum modelini devralır; üçü salt-okuma, prompt güncelleyen agent
   `workspace-write` kullanır. Codex kancası normal proje/kanca güven onayına bağlıdır ve Claude'dan ayrı durum
   tutar; reviewer başarısını doğrulamaz. Bakım araçları global kuruluma girmez; tüketici profil gereksinimleri değişmez.
+- **Düzeltilen:** Skill netleştirmeleri: `rollback` birden çok workload'ı tek tek geri alırken oluşan karışık sürüm penceresini plana ve hedef tag uyumluluk kontrolüne ekledi; `browser-test` hedef argümanında dosya yolu ile serbest notu ayırt eder (yol yoksa not sayılır); `add-migration` tekrar eden son satırı kaldırıp adı ilk cümleye taşıdı.
+
+## 0.8.6 – 2026-11-09 ([#18](https://github.com/kadirguloglu/kg-devkit/pull/18))
 - **Doküman/Altyapı:** Yeni bakım agent'ı `kit-prompt-sync` (`.claude/agents/`, plugin'e girmez): profil gereksinimi değişince yalnız
   `docs/prompts/generate-project-profile.md` ve `docs/prompts/project-readiness-report.md` dosyalarını günceller. `Stop` kancası
   `plugins/kg-devkit/`, `rules/`, `docs/project-profile-template.md` veya `docs/agent-requirements.md` değişince onu da ister (yalnız bu repoda).
