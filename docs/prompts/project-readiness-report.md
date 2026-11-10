@@ -48,9 +48,9 @@ agent çıkarım yapmaz -> DURUR; koşul yok -> UYGULANAMAZ.
 | `devops-operator` | Production (hedef, secret konumları, registry, topoloji, runbook), Hard limits | DURUR |
 | `live-check` | Production (context, namespace, durum komutu, bulut CLI kimlik komutu, iş yükleri, sağlık URL'leri + beklenen kodlar, runbook) | Production veya zorunlu hedef/sağlık bilgileri yoksa DURUR |
 | `rollback` | Production (hedef, rollback/deploy komutu, sağlık URL'leri + beklenen kodlar, iş yükleri, registry, kanıt yöntemlerini belirten runbook), Persistence (migrations dizini) | Production veya hedef/sağlık bilgileri yoksa DURUR; başarılı release, image → kaynak/revision ve uygulanan şema kanıtı eksikse uygulama DURUR |
-| `release` | Release, Commands, Finish gate, `AGENTS.md`/`CLAUDE.md` sınırları; `deploy` ile Production (hedef, deploy/durum komutu, sağlık URL'leri + beklenen kodlar) | Release yoksa sorar; deploy için Production bilgileri eksikse DURUR; zorunlu review yoksa/FAIL/UNCLEAR ise commit DURUR |
-| `add-migration` | Persistence, Conventions, Finish gate, Report language | Persistence yoksa ORM aracını bulur, çalıştırmadan önce onaylatır; Finish gate eksik/belirsiz veya zorunlu review yoksa/FAIL/UNCLEAR ise doğrulama DURUR |
-| `verify-change` | Commands, Rule docs, Finish gate, Report language | ÇIKARIM; zorunlu review yoksa/FAIL/UNCLEAR ise doğrulama DURUR |
+| `release` | Release, Commands, Finish gate, `AGENTS.md`/`CLAUDE.md` sınırları; `deploy` ile Production (hedef, deploy/durum komutu, sağlık URL'leri + beklenen kodlar) | Release yoksa sorar; deploy için Production bilgileri eksikse DURUR; Finish gate yoksa kit'in varsayılan gate tablosu kullanılır; zorunlu review yoksa/FAIL/UNCLEAR ise commit DURUR |
+| `add-migration` | Persistence, Conventions, Finish gate, Report language | Persistence yoksa ORM aracını bulur, çalıştırmadan önce onaylatır; Finish gate yoksa kit'in varsayılan gate tablosu kullanılır; gate belirsizse veya zorunlu review yoksa/FAIL/UNCLEAR ise doğrulama DURUR |
+| `verify-change` | Commands, Rule docs, Finish gate, Report language | ÇIKARIM; Finish gate yoksa kit'in varsayılan gate tablosu kullanılır; zorunlu review yoksa/FAIL/UNCLEAR ise doğrulama DURUR |
 
 Deploy/sağlık değerlerini Production'da ara; yalnız orada eksik olan değerler eski Release girdisinden alınabilir.
 İki kaynaktaki değerler çelişirse ilgili işlem DURUR. Rollback için başarılı release kanıtı, image digest → kaynak
@@ -58,7 +58,7 @@ commit/revision eşlemesi ve uygulanan şemanın salt-okunur doğrulama yöntemi
 tek başına canlı şema kanıtı sayma. Gerekli reviewer yoksa veya sonucu FAIL/UNCLEAR ise doğrulamayı geçmiş gösterme.
 
 Her agent ve skill ayrıca profildeki `Report language`'ı izler; `Hard limits` yalnız matriste yazan satırlarda okunur ve yalnız kısıt ekler. Commit/push yok (yalnız `release` kullanıcı
-çağırınca commit+push yapar). Plugin kancası canlıyı değiştiren komutları onaya düşürür (yalnız Claude'da).
+çağırınca commit+push yapar). Plugin kancası canlıyı değiştiren veya secret okuyan komutları ve `git push --force`/`reset --hard`/`clean -f` komutlarını onaya düşürür (yalnız Claude'da).
 
 ## 3. Eşleştirme ve soru-cevap
 Keşif bulgularını matrisle eşleştirip her agent/skill için durumu belirle. Şunlar kaynaktan çözülemezse sor (çözülürse sorma):

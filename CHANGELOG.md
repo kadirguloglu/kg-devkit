@@ -4,7 +4,37 @@ Sürümler `main`'e her push'ta otomatik artar (`bump-version.yml`): varsayılan
 ile seviye seçilir. Bu dosya kullanıcıya dönük etkiyi özetler; taslağı `kit-release-notes` agent'ı çıkarır
 (bkz. [docs/inventory.md](docs/inventory.md)). Kategoriler: **Kırıcı**, **Eklenen**, **Değişen**, **Düzeltilen**, **Doküman/Altyapı**.
 
-## Yayınlanmadı (öneri: patch)
+## Yayınlanmadı (öneri: minor)
+- **Değişen:** Güvenlik kancası (`guard-infra.py`) yeniden yazıldı: komutu belirteçlere ayırır. Artık onaya düşenler:
+  fiilden önce bayrak taşıyan komutlar (`helm -n prod uninstall`, `terraform -chdir=… destroy`, `docker --context prod compose up`),
+  çok satırlı `kubectl`, `bash -c`/`ssh`/`$(…)` içindeki komutlar, bulut secret okuma (`aws secretsmanager get-secret-value`,
+  `gcloud secrets versions access`, `az keyvault secret show`, `vault`, `sops`), bulut `stop/deploy/sync` işlemleri, Prisma/Alembic/
+  Django/Rails/Flyway migration'ları, `helmfile`/`pulumi`/`argocd`/`flux`/`ansible-playbook`, `git push --force`, `git reset --hard`,
+  `git clean -f` ve secret görünümlü dosyanın `git add` edilmesi. Artık sorulmayanlar: tırnak içinde geçen komut adları
+  (`grep 'kubectl apply'`, commit mesajları), bayrak değerleri (`-l run=api`), `--help`, `--dry-run=client`, `gcloud run … describe`
+  gibi salt-okuma komutları. Onay mesajında komutu çalıştıran agent yazar. `KG_GUARD_LOCAL_COMPOSE=allow` yerel
+  `docker compose` onayını, `KG_GUARD_DISABLE=git,migrate,deploytools` adı verilen grupları kapatır. Kancaya 5 sn zaman aşımı
+  ve `python` yedeği eklendi.
+- **Değişen:** Agent'ların "çalışmaya başladım / çalışmam tamamlandı" satırları Claude'da kaldırıldı; yerine her agent
+  çalıştırmasını model bağlamına girmeden `agent-runs.jsonl` dosyasına yazan `agent_run_log.py` kancası geldi (yalnız agent türü,
+  zaman, `VERDICT`/`STATUS`; `KG_AGENT_LOG=off` kapatır). Codex çıktısında satırlar korunur.
+- **Değişen:** `verify-change` artık model tarafından da çağrılabilir (yetki vermez). `scope-advisor` yalnız profilde
+  `Scope mechanisms` varken ve istek limit/varsayılan/kural/format/izin/bildirim değiştirirken çağrılır; kullanıcıya sorulacak
+  soruyu raporunun sonunda `ACTION FOR MAIN SESSION` bloğuyla verir.
+- **Eklenen:** Profilde `Finish gate` yoksa `release`, `verify-change` ve `add-migration` kit'in varsayılan gate tablosunu
+  kullanır (`references/finish-gate-default.md`); reviewer'lara kanıt tek pakette, dosya yoluyla ve aynı turda verilir
+  (`references/review-packet.md`). Reviewer `description`'ları çağıranın vereceği girdiyi söyler; diff verilmeyen reviewer
+  `NEEDS: diff` + `VERDICT: UNCLEAR` döner. Yazar agent'lar raporu `STATUS: DONE/PARTIAL/BLOCKED` satırlarıyla bitirir.
+- **Eklenen:** `rules/` altındaki üç kural plugin içinde `test-discipline`, `docs-maintenance`, `ops-safety` skill'leri olarak da
+  gelir (kurallardan üretilir); ayrı symlink kurulumu artık isteğe bağlıdır. `tenant-security-reviewer` girdi işleme
+  (enjeksiyon, XSS), gömülü secret ve kriptografi maddelerini de inceler ve kiracısız projelerde de kullanılır.
+- **Düzeltilen:** `rollback`, model tarafından yüklenemeyen `/kg-devkit:live-check` yerine o skill'in dosyasını okur.
+  `browser-test` sonucu bekleyerek çalışır (`background: false`); servis başlatma komutu reddedilirse agent `STATUS: BLOCKED`
+  döner. Skill'lere "profil sınır ekleyebilir, skill'deki sınırı kaldıramaz" kuralı eklendi. `frontend-browser-tester` için
+  `maxTurns: 100`; `live-check` sırasında `Edit`/`Write` araçları kapalı.
+- **Doküman/Altyapı:** `scripts/lint_plugin.py` (agent/skill mekanik kuralları, CI), genişletilmiş kanca testleri (228 komut
+  örneği, uçtan uca, süre sınırı), `plugins/kg-devkit/evals/` altında beş davranış testi vakası, `plugin.json`'a lisans/depo/anahtar
+  kelimeler. Mimari analiz raporları `docs/analysis/` altında.
 - **Düzeltilen:** `release` commit öncesinde nihai staged dosyaları ve diff'i denetler; `git add -n` ile zaten
   stage edilmiş secret dosyalarını güvenli saymaz. Eksik deploy hedefi veya geçmeyen zorunlu review ile ilerlemez.
   `rollback` hedef digest/kaynak commit/revision eşlemesi, başarılı release ve uygulanan şema kanıtı ister;

@@ -5,10 +5,8 @@ model: sonnet
 tools: Read, Edit, Write, Bash, Grep, Glob
 ---
 
-Logging: your first output line is `frontend-test-developer çalışmaya başladım.` and the last line of your final report is `frontend-test-developer çalışmam tamamlandı.` (state it even when the task failed or was blocked); if the profile names a report language other than Turkish, write the same two lines in that language.
-
-You design tests for the assigned frontend change. First read the `Project profile` section of the repo's
-`AGENTS.md` (or `CLAUDE.md`): frontend test location, test rule document, focused/full test commands.
+You design tests for the assigned frontend change. Start from the `Project profile` section of the repo's `AGENTS.md`/`CLAUDE.md` (normally already in your
+context; open the file only when the section is not visible): frontend test location, test rule document, focused/full test commands.
 Without a profile, infer them from `package.json` and the existing tests, and say so. Read the actual diff
 and changed behavior.
 
@@ -25,5 +23,18 @@ and changed behavior.
 
 Return test files/scenarios, exact commands/counts, defects and remaining coverage limits, in the language the
 profile names for reports (default: the language of the user's request).
+
+End the report with these lines (a report without `STATUS:` is treated as `PARTIAL`):
+
+```
+STATUS: DONE | PARTIAL | BLOCKED
+CHANGED: <paths>
+CHECKS: <command> -> <result and counts>      (one line per command actually run)
+NOT RUN: <check> - <reason>                   (omit only if nothing was skipped)
+HANDOFF: <what the next agent or the main session must do>
+```
+
+`DONE` only when every check this definition requires ran and passed; a failed or skipped required check is
+`PARTIAL`; `BLOCKED` when you could not proceed.
 
 The profile's `Hard limits` (forbidden commands, branch policy, commit/push permission) apply in addition to the rules above; they can only add restrictions, never lift a rule written here.

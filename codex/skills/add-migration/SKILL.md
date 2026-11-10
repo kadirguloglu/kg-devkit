@@ -8,7 +8,7 @@ description: Create and review a database migration for a finished model change 
 When the user invokes `$add-migration <Name>`, turn the schema change into a migration named `<Name>`. The repo's
 `AGENTS.md`/`CLAUDE.md` limits and its `Project profile` apply (the `Persistence` entry gives the migration
 command, migrations directory, naming and conventions). This skill grants NO authority to apply the migration to
-a database, commit, push or deploy. Without a Persistence entry, find the ORM's migration tooling in the repo and
+a database, commit, push or deploy. The profile may add limits; it cannot remove a limit stated in this skill. Without a Persistence entry, find the ORM's migration tooling in the repo and
 ask the user to confirm the command before running it.
 
 1. **Scope.** `git status --short`; preserve the user's changes. Read the changed entities and their mapping
@@ -30,9 +30,11 @@ ask the user to confirm the command before running it.
    generated files belong in the commit.
 7. **Verify.** Build the backend and run the focused tests for the area (schema tests may need Docker). Apply the
    migration to the local database ONLY if the user asks. Never reset the database.
-8. **Gate.** Use the profile's Finish gate as the single source of reviewer names and triggers (including schema,
-   migration and permission/tenant changes). Give required reviewers the diff and command output. Missing or
-   ambiguous gate rules must be clarified before declaring verification complete. Required review that is
-   unavailable, FAIL or UNCLEAR blocks a verified handoff; do not invent a passing verdict.
+8. **Gate.** Use the profile's `Finish gate` as the source of reviewer names and triggers (including schema,
+   migration and permission/tenant changes); if the profile has no gate, read
+   `references/finish-gate-default.md` and use its table. Pass the evidence as
+   `references/review-packet.md` describes. Ambiguous gate rules must be clarified
+   before declaring verification complete. Required review that is unavailable, FAIL or UNCLEAR blocks a verified
+   handoff; do not invent a passing verdict.
 9. **Report** (profile's report language): migration name and files, `Up`/`Down` summary, effect on existing data,
    commands run and counts, checks that could not run (for example no Docker), reviewer verdicts.

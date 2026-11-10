@@ -9,8 +9,12 @@ danışmanlığı) bölümünü kullan. Do not open a public issue; use **Securi
   herkesin Claude Code/Codex oturumunda çalışır. Bu yüzden bu yollardaki her değişiklik `CODEOWNERS` ile sahibinin
   incelemesinden geçer.
 - **Agent'lar çalıştıkları reponun `AGENTS.md` dosyasını okur ve uyar.** Güvenmediğin bir repoda kit'i kullanma.
-- **`hooks/guard-infra.py` bir ikinci kilittir, güvenlik sınırı değildir.** Canlı ortamı değiştiren `kubectl`/`helm`/
-  `terraform` komutlarını onaya düşürür (regex tabanlı); her komutu yakalamayı garanti etmez.
+- **`hooks/guard-infra.py` bir ikinci kilittir, güvenlik sınırı değildir.** Canlı ortamı değiştiren veya secret okuyan
+  `kubectl`/`oc`/`helm`/`terraform`/`docker`/bulut CLI/migration/dağıtım aracı komutlarını ve `git push --force`,
+  `git reset --hard`, `git clean -f` ile secret görünümlü dosyanın stage'lenmesini onaya düşürür (komut metnini
+  belirteçlere ayırarak); her komutu yakalamayı garanti etmez. Takma ad, değişken, betik ve MCP çağrıları görünmez.
+- **`hooks/agent_run_log.py` yalnız meta veri yazar** (agent türü, zaman, `VERDICT`/`STATUS` değeri); prompt, komut veya
+  rapor metni kaydetmez. Dosya yerelde, plugin veri dizininde kalır; `KG_AGENT_LOG=off` ile kapatılır.
 - **Yazma yetkisi** yalnız repo sahibi ve belirlenen collaborator'dadır. Dışarıdan katkı fork + PR iledir.
 
 ## Katkı vermeden önce / Before contributing

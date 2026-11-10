@@ -2,10 +2,10 @@
 name: browser-test
 description: Test only the new or changed frontend behavior in Chrome, when the user explicitly asks for a browser check of the current diff or a commit range.
 disable-model-invocation: true
-user-invocable: true
 argument-hint: "[commit range | file | focus note]"
 context: fork
 agent: frontend-browser-tester
+background: false
 ---
 
 # Browser test of a change
@@ -15,10 +15,6 @@ Scope, environment, data and report rules live in the agent definition; this ski
 
 Target: $ARGUMENTS
 
-- Empty target: take the working-tree changes; if the tree is clean, use `HEAD~1..HEAD` when the parent exists,
-  otherwise `git show --root HEAD` for an initial commit. If there are no commits or changes, report no target.
-- A commit range (`abc123..HEAD`, `HEAD~3..HEAD`): take the frontend diff of that range.
-- An existing file path (check that it exists): narrow the scope to that file. Anything else is a free-text note
-  (for example "default interest start date"): use it as a focus hint within the default target above.
+An empty target means the default target defined in the agent's scope rules (working tree, else the last commit).
 
-Do not change code or commit/push; report any defect with repro steps.
+Do not change code or commit/push; report any defect with repro steps. The profile may add limits; it cannot remove a limit stated in this skill.

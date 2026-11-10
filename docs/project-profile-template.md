@@ -4,6 +4,9 @@ Her projenin `AGENTS.md` (veya `CLAUDE.md`) dosyasına `## Project profile` baş
 kg-devkit agent ve skill'leri önce bu bölümü okur; yoksa `package.json`/README'den çıkarım yapar ve raporda söyler.
 Yalnız ilgili alanları doldur, kullanılmayanı sil.
 
+Claude Code `AGENTS.md` dosyasını yalnız aynı dizinde veya üstünde `CLAUDE.md` yokken kendiliğinden okur. İkisi de
+varsa ve profil `AGENTS.md` içindeyse `CLAUDE.md`'ye `@AGENTS.md` satırını ekle; aksi halde ana oturum profili görmez.
+
 ```markdown
 ## Project profile
 
@@ -27,6 +30,7 @@ Yalnız ilgili alanları doldur, kullanılmayanı sil.
 - Observability: log/metrik/trace kütüphaneleri ve kuralları, korelasyon/tenant kimliği, log'a girmeyecek veriler, sağlık endpoint'leri
   (observability-reviewer okur)
 - Finish gate: hangi değişiklik hangi bağımsız kontrolü/reviewer'ı zorunlu kılar (tek kaynak); reviewer geçti ifadesi
+  (yazılmazsa kit'in varsayılan gate tablosu kullanılır)
 - Release: changelog dosyası + sürüm kuralı (özellik=minor, düzeltme=patch), commit stili (dil, önek),
   gizli dosya listesi (commit'e girmeyecek)
 - Production: cluster context=`...`, namespace=`...`, bulut CLI kimlik komutu, status/deploy/rollback komutları, iş yükü adları,

@@ -6,7 +6,32 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/guard-infra.py\""
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/guard-infra.py\" || python \"${CLAUDE_PLUGIN_ROOT}/hooks/guard-infra.py\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/agent_run_log.py\" \"${CLAUDE_PLUGIN_DATA}\" || python \"${CLAUDE_PLUGIN_ROOT}/hooks/agent_run_log.py\" \"${CLAUDE_PLUGIN_DATA}\"",
+            "timeout": 5,
+            "async": true
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/agent_run_log.py\" \"${CLAUDE_PLUGIN_DATA}\" || python \"${CLAUDE_PLUGIN_ROOT}/hooks/agent_run_log.py\" \"${CLAUDE_PLUGIN_DATA}\"",
+            "timeout": 5,
+            "async": true
           }
         ]
       }

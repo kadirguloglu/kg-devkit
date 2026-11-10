@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Claude kaynaklarından (plugins/kg-devkit) Codex çıktısını üretir: codex/agents/*.toml ve codex/skills/*.
 
+Önce rules/*.md dosyalarından plugin'in disiplin skill'lerini üretir (RULE_SKILLS): kuralın tek kaynağı rules/ altıdır,
+plugins/kg-devkit/skills/{test-discipline,docs-maintenance,ops-safety}/SKILL.md elle düzenlenmez.
+
 Tek kaynak Claude tarafıdır; codex/ elle düzenlenmez. Yalnız standart kütüphane (Python 3.11+).
 Repo bakım dosyaları için sync-claude-codex.py de çalıştırılır (.claude/ -> .codex/).
 Kullanım: python3 scripts/build-codex.py          # codex/ ve .codex/ yeniden üretir
@@ -50,17 +53,28 @@ Take the commit range, file or focus note from the user's invocation as the targ
 Call the `frontend-browser-tester` role through the available sub-agent tool, passing the target and limits in the task text.
 If the sub-agent tool/role is unavailable, read the definition and do the same check in the main session, and report that limitation.
 
-- Empty target: take the working-tree changes; if the tree is clean, use `HEAD~1..HEAD` when the parent exists,
-  otherwise `git show --root HEAD` for an initial commit. If there are no commits or changes, report no target.
-- A commit range (`abc123..HEAD`, `HEAD~3..HEAD`): take the frontend diff of that range.
-- An existing file path (check that it exists): narrow the scope to that file. Anything else is a free-text note:
-  use it as a focus hint within the default target above.
+An empty target means the default target defined in the agent's scope rules (working tree, else the last commit).
 
-Do not change code or commit/push; report any defect with repro steps.
+Do not change code or commit/push; report any defect with repro steps. The profile may add limits; it cannot remove a limit stated in this skill.
 """,
 }
 
-SKILL_NAMES = "verify-change|add-migration|release|rollback|live-check|browser-test"
+SKILL_NAMES = "|".join(sorted(os.path.basename(os.path.dirname(p)) for p in glob.glob(os.path.join(SRC, "skills", "*", "SKILL.md"))))
+
+# rules/<kural>.md -> plugin skill'i (ad, açıklama). Plugin kural taşıyamadığı için aynı metin skill olarak dağıtılır.
+RULE_SKILLS = {
+    "kg-test-discipline": ("test-discipline", "Rules for writing, changing or running tests - focused selection, real fixtures over mocks, never weakening assertions, exact reporting. Use before adding, editing or running tests, or when a test fails."),
+    "kg-documentation-maintenance": ("docs-maintenance", "Rules for editing project documentation (docs, README, ADR) - verify every claim against code, keep section ids and history, docs-only verification. Use before changing documentation files."),
+    "kg-ops-safety": ("ops-safety", "Safety rules for deploy, container, CI workflow and infrastructure files and for commands against live environments - secrets, explicit approval, explicit targets, cost. Use before editing such files or running infrastructure commands."),
+}
+
+# Codex'te SubagentStart/Stop kancası yoktur; agent çalıştırma izi orada metin satırlarıyla tutulur.
+CODEX_LOGGING = (
+    "Logging: your first output line is `{name} çalışmaya başladım.` and the last line of your final report is "
+    "`{name} çalışmam tamamlandı.` (state it even when the task failed or was blocked); if the profile names a report "
+    "language other than Turkish, write the same two lines in that language.\n\n"
+)
+PLUGIN_REF = "${CLAUDE_PLUGIN_ROOT}/references/"
 
 
 def split_md(path):
@@ -73,7 +87,34 @@ def split_md(path):
     return meta, parts[2].strip() + "\n"
 
 
+def rule_skills():
+    """rules/*.md -> {plugin'e göre yol: içerik}. Kural gövdesi ve `paths` aynen taşınır."""
+    out = {}
+    for rule, (name, desc) in RULE_SKILLS.items():
+        _, front, body = open(os.path.join(ROOT, "rules", rule + ".md"), encoding="utf-8").read().split("---", 2)
+        out[os.path.join("skills", name, "SKILL.md")] = (
+            f"---\nname: {name}\ndescription: {desc}\nuser-invocable: false\n{front.strip()}\n---\n{body}"
+        )
+    return out
+
+
+def sync_rule_skills(check):
+    stale = []
+    for rel, content in rule_skills().items():
+        p = os.path.join(SRC, rel)
+        if not os.path.exists(p) or open(p, encoding="utf-8").read() != content:
+            stale.append(rel)
+            if not check:
+                os.makedirs(os.path.dirname(p), exist_ok=True)
+                open(p, "w", encoding="utf-8").write(content)
+    if stale and check:
+        print("plugin disiplin skill'leri rules/ ile eşit değil:", *stale, sep="\n - ")
+        sys.exit(1)
+
+
 def codexify(text):
+    text = text.replace("`${CLAUDE_PLUGIN_ROOT}/skills/live-check/SKILL.md`", "the `live-check` skill's `SKILL.md` (sibling skill directory)")
+    text = text.replace(PLUGIN_REF, "references/")
     text = re.sub(r"`?/kg-devkit:(" + SKILL_NAMES + r")`?", r"`$\1`", text)
     text = re.sub(r"(?<![\w/])/(" + SKILL_NAMES + r")\b", r"$\1", text)
     return text
@@ -100,21 +141,28 @@ def build():
         out = f"name = {toml_str(meta['name'])}\ndescription = {toml_str(meta['description'])}\n"
         if read_only:
             out += 'sandbox_mode = "read-only"\n'
-        out += 'developer_instructions = """\n' + codexify(body).rstrip("\n") + '"""\n'
+        out += 'developer_instructions = """\n' + CODEX_LOGGING.format(name=name) + codexify(body).rstrip("\n") + '"""\n'
         files[f"agents/{name}.toml"] = out
     for sk in sorted(glob.glob(os.path.join(SRC, "skills", "*", "SKILL.md"))):
         name = sk.split(os.sep)[-2]
         meta, body = split_md(sk)
+        uses_refs = PLUGIN_REF in body
         body = SKILL_BODY_OVERRIDES.get(name, codexify(body))
+        if "${CLAUDE_PLUGIN_ROOT}" in body:
+            sys.exit(f"{name}: Codex karşılığı olmayan ${{CLAUDE_PLUGIN_ROOT}} yolu")
         files[f"skills/{name}/SKILL.md"] = (
             f"---\nname: {meta['name']}\ndescription: {meta['description']}\n---\n\n{body.lstrip()}"
         )
+        if uses_refs:  # Codex skill'i kendi dizininden okur: ortak referanslar yanına kopyalanır
+            for ref in sorted(glob.glob(os.path.join(SRC, "references", "*.md"))):
+                files[f"skills/{name}/references/{os.path.basename(ref)}"] = open(ref, encoding="utf-8").read()
         if meta.get("disable-model-invocation") == "true":
             files[f"skills/{name}/agents/openai.yaml"] = "policy:\n  allow_implicit_invocation: false\n"
     return files
 
 
 def main():
+    sync_rule_skills("--check" in sys.argv)
     files = build()
     maintenance = subprocess.run([
         sys.executable, os.path.join(ROOT, "scripts", "sync-claude-codex.py"),

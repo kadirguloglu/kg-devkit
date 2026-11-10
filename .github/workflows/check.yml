@@ -20,8 +20,10 @@ jobs:
         run: python3 scripts/build-codex.py --check
       - name: Claude → Codex bakım senkronizasyonu
         run: python3 scripts/test_sync_claude_codex.py
-      - name: Altyapı kancası kuralları
+      - name: Plugin kancaları (kurallar, uçtan uca, süre sınırı)
         run: python3 scripts/test_guard_infra.py
+      - name: Agent ve skill mekanik kuralları
+        run: python3 scripts/lint_plugin.py
       - name: Betik sözdizimi
         run: bash -n scripts/install-codex.sh
       - uses: actions/setup-node@v4

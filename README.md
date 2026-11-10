@@ -2,7 +2,7 @@
 
 Project-agnostic agents, skills and rules for **Claude Code** and **Codex**: developers, test developers, reviewers
 (database, tenant security), an architecture advisor, a scope advisor, and release/rollback/live-check/migration skills.
-A Claude-only safety hook asks for approval before `kubectl`/`helm`/`terraform`/`docker`/cloud-CLI mutations, database migration applies and secret reads (best-effort, fail-open without `python3`).
+A Claude-only safety hook asks for approval before `kubectl`/`helm`/`terraform`/`docker`/cloud-CLI mutations, database migration applies, secret reads and destructive git commands (best-effort, fail-open without Python).
 Nothing project-specific is baked in: each repo describes itself in a `## Project profile` section of its `AGENTS.md`
 (see the [template](docs/project-profile-template.md)), and the agents read it first. License: MIT.
 
@@ -14,6 +14,7 @@ agent'lara gömülmez; her repo `AGENTS.md` içindeki `## Project profile` böl�
 - [Project profile şablonu](docs/project-profile-template.md) – kendi reponda doldurulacak bölüm.
 - [Tasarım kararları ve sınırlar](docs/inventory.md).
 - [Değişiklik günlüğü](CHANGELOG.md) – sürüm sürüm kullanıcıya dönük değişiklikler.
+- [Mimari analiz raporları](docs/analysis/00-executive-summary.md) – agent/skill/hook incelemesi, bulgular ve uygulama durumu.
 - [Proje hazırlık raporu prompt'u](docs/prompts/project-readiness-report.md) – bir projenin kit agent/skill'lerine ne kadar hazır olduğunu (dolu/eksik profil alanı, hangi agent çalışır/durur) raporlatmak için.
 - [Project profile üreten prompt](docs/prompts/generate-project-profile.md) – yeni projenin `## Project profile` bölümünü repodan çıkarttırmak için.
 
@@ -46,14 +47,26 @@ agent'ı/skill'i plugin'i ezer. Betikler yalnız sembolik bağ kurar, var olan d
   `performance-reviewer`, `observability-reviewer`. Riskli işler için `devops-operator`, `database-reviewer`,
   `tenant-security-reviewer`, `api-contract-reviewer` ve `dependency-supply-chain-reviewer` `opus`, diğerleri `sonnet` modelini kullanır. `tenant-security-reviewer` ve `scope-advisor`
   çok kiracılı projeler içindir (tek müşterili projede `scope-advisor` `NOT-APPLICABLE` döner). Ayrıntı: [agent gereksinimleri](docs/agent-requirements.md).
-- **Skill'ler** (yalnız açıkça çağrılır): `browser-test`, `verify-change`, `add-migration`, `release`, `rollback`, `live-check`
-- **Kurallar** (`rules/`, ilgili dosyalara girilince yüklenir): `kg-test-discipline`, `kg-documentation-maintenance`,
-  `kg-ops-safety`. Plugin kural taşımadığı için `~/.claude/rules` altına bağlanır; Codex bunları okumaz.
-- **Güvenlik kancası** (yalnız Claude): `hooks/guard-infra.py`, canlı ortamı değiştiren `kubectl`/`oc`/`helm`/`terraform`/`tofu` komutlarını
-  ve secret okumayı; ayrıca `docker`/`docker compose`, `dotnet ef database update|drop` ve bulut CLI'larının (`doctl`, `gcloud`, `az`, `oci`, `aws`)
-  oluşturma/silme komutlarını kullanıcı onayına düşürür (bloklamaz). Yalnız Bash komut metnine bakar: kabuk kısayolu/fonksiyon, betik içinde
-  çağrılan komutlar ve MCP araçları görünmez; `python3` yoksa (ör. Windows) sessizce geçer. Plugin ile birlikte gelir; Codex'te yoktur,
-  orada yalnız agent metin kuralları geçerlidir.
+- **Skill'ler:** yalnız açıkça çağrılanlar `browser-test`, `add-migration`, `release`, `rollback`, `live-check`; `verify-change`
+  yetki vermediği için model iş bitiminde kendiliğinden de çağırabilir. Reviewer tetikleme profilin `Finish gate` alanından,
+  o yoksa kit'in varsayılan tablosundan (`references/finish-gate-default.md`) gelir.
+- **Kurallar** (`rules/` tek kaynak): `kg-test-discipline`, `kg-documentation-maintenance`, `kg-ops-safety`. Plugin içinde
+  `test-discipline`, `docs-maintenance`, `ops-safety` skill'leri olarak gelir (model ilgili dosyalarla çalışırken yükler; Codex'te
+  de skill olarak kurulur). İstersen aynı kuralları `~/.claude/rules` altına da bağlayabilirsin (`install-claude-rules.sh`).
+- **Güvenlik kancası** (yalnız Claude): `hooks/guard-infra.py`, canlı ortamı değiştiren `kubectl`/`oc`/`helm`/`terraform`/`tofu`
+  komutlarını ve secret okumayı (küme, bulut secret servisleri, `vault`, `sops`); `docker`/`docker compose`, migration uygulama
+  (`dotnet ef`, Prisma, Alembic, Django, Rails, Flyway…), dağıtım araçları (`helmfile`, `pulumi`, `argocd`, `flux`, `ansible-playbook`…),
+  bulut CLI'larının (`doctl`, `gcloud`, `az`, `oci`, `aws`) oluşturma/değiştirme/silme/durdurma/dağıtım komutlarını; ayrıca
+  `git push --force`, `git reset --hard`, `git clean -f` ve secret görünümlü dosyanın `git add` edilmesini kullanıcı onayına
+  düşürür (bloklamaz; mesajda çalıştıran agent yazar). Fiilden önce gelen bayrakları, satır devamını ve `bash -c`/`ssh`/`sudo`
+  sarmalayıcılarını çözer; tırnak içindeki metni, `--help` ve `--dry-run=client` komutlarını sormaz. Yalnız Bash komut metnine
+  bakar: kabuk kısayolu/fonksiyon, değişken, betik içinde çağrılan komutlar ve MCP araçları görünmez; `python3`/`python` yoksa
+  sessizce geçer. Etkileşimsiz çalışmada (`claude -p`, `dontAsk`) onay isteyen komut reddedilir. Ayarlar:
+  `KG_GUARD_LOCAL_COMPOSE=allow` (uzak hedefi olmayan `docker compose` sorulmaz), `KG_GUARD_DISABLE=git,migrate,deploytools`
+  (adı verilen grupları kapatır). Plugin ile birlikte gelir; Codex'te yoktur, orada yalnız agent metin kuralları geçerlidir.
+- **Çalışma kaydı** (yalnız Claude): `hooks/agent_run_log.py` her agent çalıştırmasını plugin veri dizinindeki
+  `agent-runs.jsonl` dosyasına yazar (yalnız agent türü, zaman ve `VERDICT`/`STATUS` değeri; prompt veya rapor metni yok).
+  Özet: `python3 <plugin>/hooks/agent_run_log.py --summary ~/.claude/plugins/data/<kg-devkit dizini>`; kapatmak için `KG_AGENT_LOG=off`.
 
 ## Sürümleme
 
@@ -67,11 +80,13 @@ Tek kaynak Claude tarafıdır. Plugin dağıtımı `codex/`, bu reponun bakım a
 üretilen dosyalar elle düzenlenmez. Python 3.11+ yeterlidir; dönüşüm betikleri ek paket gerektirmez.
 
 ```bash
-python3 scripts/build-codex.py            # codex/ ve .codex/ çıktılarını güncelle
-python3 scripts/build-codex.py --check    # iki çıktının da güncelliğini denetle
-python3 scripts/test_guard_infra.py       # güvenlik kancası kural testleri
+python3 scripts/build-codex.py            # kural skill'lerini, codex/ ve .codex/ çıktılarını güncelle
+python3 scripts/build-codex.py --check    # üretilen dosyaların güncelliğini denetle
+python3 scripts/test_guard_infra.py       # kanca testleri (kurallar, uçtan uca, süre sınırı, çalışma kaydı)
+python3 scripts/lint_plugin.py            # agent/skill mekanik kuralları
 python3 scripts/test_sync_claude_codex.py # bakım dönüşümü ve kanca testleri
 claude plugin validate . && claude plugin validate plugins/kg-devkit
+claude plugin eval plugins/kg-devkit --trust-plugin --allow-tools Bash --runs 1 --no-publish   # davranış testleri (ücretli, elle)
 ```
 
 Bu repoyu geliştirirken dört bakım agent'ı kullanılır: `kit-doc-sync`, `kit-agent-linter`, `kit-release-notes`,
@@ -101,5 +116,5 @@ Bu bir hatırlatıcıdır; agent'ların çalıştığını veya `PASS` verdiğin
 Codex'te proje ve kanca için normal güven arayüzündeki onay gerekir; dönüşüm betiği güven kaydı yazmaz.
 Yerel agent keşfi veya `Stop` kancası desteği olmayan eski istemcilerde aynı çalışma davranışı garanti edilmez.
 
-CI (`.github/workflows/check.yml`) iki Codex çıktısının güncelliğini, dönüşüm/kanca testlerini ve manifestleri doğrular.
+CI (`.github/workflows/check.yml`) üretilen dosyaların güncelliğini, dönüşüm/kanca testlerini, agent/skill lint'ini ve manifestleri doğrular.
 Tasarım kararları ve bilinen sınırlar: [docs/inventory.md](docs/inventory.md).

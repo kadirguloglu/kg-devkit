@@ -34,6 +34,7 @@ cevabı bulunanı sorma, kalanı kullanıcıya sor. Dil: Türkçe. Bu prompt ken
 - Observability: log/metrik/trace kütüphaneleri ve kuralları, korelasyon/tenant kimliği, log'a girmeyecek veriler, sağlık endpoint'leri
   (observability-reviewer okur)
 - Finish gate: hangi değişiklik hangi bağımsız kontrolü/reviewer'ı zorunlu kılar (tek kaynak); reviewer geçti ifadesi
+  (yazılmazsa kit'in varsayılan gate tablosu kullanılır)
 - Release: changelog dosyası + sürüm kuralı (özellik=minor, düzeltme=patch), commit stili (dil, önek),
   gizli dosya listesi (commit'e girmeyecek)
 - Production: cluster context=`...`, namespace=`...`, bulut CLI kimlik komutu, status/deploy/rollback komutları, iş yükü adları,
