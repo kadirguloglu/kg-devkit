@@ -6,7 +6,7 @@ projenin kök dizininde Claude Code veya Codex'e ver (kg-devkit reposunu açman 
 sorar, sonra bölümü yazar.
 
 ````markdown
-Görev: Bu reponun AGENTS.md dosyasına (yoksa oluştur; CLAUDE.md varsa yalnız oku) `## Project profile` bölümünü ekle veya
+Görev: Bu reponun AGENTS.md dosyasına (yoksa oluştur; CLAUDE.md varsa yalnız oku, yalnız `@AGENTS.md` satırı eksikse bölüm 4'e göre ekletmeyi öner) `## Project profile` bölümünü ekle veya
 güncelle. Şablon aşağıda (## 0). Bölüm dışındaki içeriği değiştirme. Bunu SORU-CEVAP olarak yürüt: önce repodan çıkar,
 cevabı bulunanı sorma, kalanı kullanıcıya sor. Dil: Türkçe. Bu prompt kendi içinde eksiksizdir: kg-devkit reposundaki dosyalara ihtiyaç duymaz.
 
@@ -73,7 +73,7 @@ Keşiften sonra alanları üç gruba ayır ve kullanıcıya KISA bir tablo olara
 2. **Belirsiz:** birden fazla aday veya çelişen kaynak. Aday(lar)ı seçenek diye sun, kullanıcı seçsin.
 3. **Bulunamadı:** repoda dayanak yok. Sor.
 Her zaman kullanıcıya sorulacaklar (çıkarım yazılmaz): Production hedefi ve deploy komutu, Hard limits, Finish gate
-(belgede yoksa), Dev app test girişi (belgelenmemişse). Tek müşterili olduğu anlaşıldıysa tenant alanlarını sorma.
+(belgede yoksa sor; kullanıcı istemezse alanı yazma, kit'in varsayılan gate tablosu kullanılır), Dev app test girişi (belgelenmemişse). Tek müşterili olduğu anlaşıldıysa tenant alanlarını sorma.
 
 ## 3. Soru-cevap
 - Soruları gruplar halinde ve en çok 4 soruyla sor (AskUserQuestion varsa onu kullan: cevaplanabilir seçenekler + "Diğer").
@@ -88,7 +88,9 @@ Her zaman kullanıcıya sorulacaklar (çıkarım yazılmaz): Production hedefi v
 - Production'ı agent'ın açıkça kullanabileceği biçimde yaz (Kubernetes: context+namespace; "geçerli context"e güvenme).
 - `Hard limits` yalnız ek kısıt koyar; agent'ların commit/push yapmama kuralını gevşetemez, bunu tekrar yazma.
   `release` skill'i yalnız kullanıcı `/release` çağırınca commit+push yapar; profile "onaysız" ifadesi koyma.
-- Plugin kancası `guard-infra` canlıyı değiştiren komutları onaya düşürür; profilde bu komutlar "onaysız çalıştırılabilir" yazılmaz.
+- Plugin kancası `guard-infra` canlıyı değiştiren, secret okuyan, migration/dağıtım aracı çalıştıran ve `git push --force`/`reset --hard`/`clean -f`/secret dosyası `git add` komutlarını onaya düşürür; profilde bu komutlar "onaysız çalıştırılabilir" yazılmaz.
+- Hem `AGENTS.md` hem `CLAUDE.md` varsa ve profil `AGENTS.md` içindeyse, `CLAUDE.md`'de `@AGENTS.md` satırı yoksa kullanıcıdan onay al ve yalnız bu satırı ekle;
+  aksi halde ana oturum profili görmez. Profil skill'lerdeki sınırları kaldıramaz, yalnız ekler.
 
 ## 5. Doğrulama ve teslim
 - Yazdığın her yolun repoda var olduğunu, her komutun package.json/Makefile/CI'da geçtiğini kontrol et (çalıştırma).

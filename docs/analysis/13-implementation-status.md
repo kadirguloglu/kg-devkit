@@ -77,7 +77,7 @@ birim testleriyle doğrulandı.
 | --- | ---: | ---: | --- |
 | Skill / agent / kanca olayı | 6 / 15 / 1 | 9 / 15 / 3 | +3 disiplin skill'i (kurallardan), +2 kayıt olayı |
 | `plugin details` sürekli bağlam (tahmin) | ~1.465 tok | **~2.124 tok** | **Arttı.** Kaynak: uzayan `description`'lar (tetik + girdi) ve 3 yeni skill açıklaması. Araç 5 manuel skill'i (~320 tok) de sayıyor; deney D-03'e göre onlar bağlamda değil |
-| Kanca kural testi örneği | 106 | 228 (+10 kör nokta) | `scripts/test_guard_infra.py` |
+| Kanca kural testi örneği | 106 | 242 (+10 kör nokta) | `scripts/test_guard_infra.py` |
 | Analizdeki 115 ek senaryoda doğru karar | 26 | 115 | Senaryoları bu çalışma yazdı (bağımsız değil) |
 | Kanca en kötü durum (100 KB tek satır) | 20,8 sn | < 0,1 sn | Testte 2 sn eşiği |
 | Kanca süreç süresi | ~23 ms | ~27 ms | Her Bash çağrısı |

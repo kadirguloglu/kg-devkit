@@ -185,6 +185,21 @@ ASK = [
     'git add .env',
     'git add k8s/secret.yaml',
     'git add config/secrets.json certs/tls.key',
+    # kancanın koruduğu her araç/fiil için en az bir örnek
+    'liquibase update',
+    'npx knex migrate:latest',
+    'npx sequelize-cli db:migrate',
+    'npx typeorm migration:run',
+    'skaffold run',
+    'podman rm x',
+    'nerdctl compose up -d',
+    'terraform untaint a.b',
+    'oc adm drain node1',
+    'vault write secret/x v=1',
+    'vault delete secret/x',
+    'sops exec-env secrets.yaml env',
+    'git push --mirror origin',
+    'git push origin +main',
 ]
 PASS = [
     'kubectl get pods -n prod',

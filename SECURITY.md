@@ -13,7 +13,7 @@ danışmanlığı) bölümünü kullan. Do not open a public issue; use **Securi
   `kubectl`/`oc`/`helm`/`terraform`/`docker`/bulut CLI/migration/dağıtım aracı komutlarını ve `git push --force`,
   `git reset --hard`, `git clean -f` ile secret görünümlü dosyanın stage'lenmesini onaya düşürür (komut metnini
   belirteçlere ayırarak); her komutu yakalamayı garanti etmez. Takma ad, değişken, betik ve MCP çağrıları görünmez.
-- **`hooks/agent_run_log.py` yalnız meta veri yazar** (agent türü, zaman, `VERDICT`/`STATUS` değeri); prompt, komut veya
+- **`hooks/agent_run_log.py` yalnız meta veri yazar** (olay, oturum ve agent kimliği/türü, izin modu, zaman, `VERDICT`/`STATUS` değeri); prompt, komut veya
   rapor metni kaydetmez. Dosya yerelde, plugin veri dizininde kalır; `KG_AGENT_LOG=off` ile kapatılır.
 - **Yazma yetkisi** yalnız repo sahibi ve belirlenen collaborator'dadır. Dışarıdan katkı fork + PR iledir.
 

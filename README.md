@@ -65,7 +65,8 @@ agent'ı/skill'i plugin'i ezer. Betikler yalnız sembolik bağ kurar, var olan d
   `KG_GUARD_LOCAL_COMPOSE=allow` (uzak hedefi olmayan `docker compose` sorulmaz), `KG_GUARD_DISABLE=git,migrate,deploytools`
   (adı verilen grupları kapatır). Plugin ile birlikte gelir; Codex'te yoktur, orada yalnız agent metin kuralları geçerlidir.
 - **Çalışma kaydı** (yalnız Claude): `hooks/agent_run_log.py` her agent çalıştırmasını plugin veri dizinindeki
-  `agent-runs.jsonl` dosyasına yazar (yalnız agent türü, zaman ve `VERDICT`/`STATUS` değeri; prompt veya rapor metni yok).
+  `agent-runs.jsonl` dosyasına yazar (yalnız olay, oturum ve agent kimliği/türü, izin modu, zaman ve `VERDICT`/`STATUS` değeri;
+  prompt, komut veya rapor metni yok).
   Özet: `python3 <plugin>/hooks/agent_run_log.py --summary ~/.claude/plugins/data/<kg-devkit dizini>`; kapatmak için `KG_AGENT_LOG=off`.
 
 ## Sürümleme

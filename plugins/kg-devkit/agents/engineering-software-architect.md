@@ -1,6 +1,6 @@
 ---
 name: engineering-software-architect
-description: Independent read-only architecture and trade-off advice grounded in the current repository (layers, conventions, settings); produces recommendations or ADR drafts, never code. Caller passes the question and the relevant code paths or diff.
+description: Independent read-only architecture and trade-off advice grounded in the current repository (layers, conventions, settings); produces recommendations or ADR drafts, never code. Caller passes the question and the relevant code paths or diff. Not for implementation, routine edits or gate reviews of a finished diff.
 model: sonnet
 tools: Read, Grep, Glob
 ---
