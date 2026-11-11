@@ -88,7 +88,7 @@ Her zaman kullanıcıya sorulacaklar (çıkarım yazılmaz): Production hedefi v
 - Production'ı agent'ın açıkça kullanabileceği biçimde yaz (Kubernetes: context+namespace; "geçerli context"e güvenme).
 - `Hard limits` yalnız ek kısıt koyar; agent'ların commit/push yapmama kuralını gevşetemez, bunu tekrar yazma.
   `release` skill'i yalnız kullanıcı `/release` çağırınca commit+push yapar; profile "onaysız" ifadesi koyma.
-- Plugin kancası `guard-infra` canlıyı değiştiren, secret okuyan, migration/dağıtım aracı çalıştıran ve `git push --force`/`reset --hard`/`clean -f`/secret dosyası `git add` komutlarını onaya düşürür; profilde bu komutlar "onaysız çalıştırılabilir" yazılmaz.
+- Plugin kancası `guard-infra` canlıyı değiştiren, secret okuyan, migration/dağıtım aracı çalıştıran ve `git push --force`/`reset --hard`/`clean -f`/secret dosyası `git add` komutlarını, ayrıca bir kit agent'ının içinden gelen `git commit`/`push`/`merge`/`rebase`/`tag` komutlarını onaya düşürür (ana oturumun commit'i etkilenmez); profilde bu komutlar "onaysız çalıştırılabilir" yazılmaz.
 - Hem `AGENTS.md` hem `CLAUDE.md` varsa ve profil `AGENTS.md` içindeyse, `CLAUDE.md`'de `@AGENTS.md` satırı yoksa kullanıcıdan onay al ve yalnız bu satırı ekle;
   aksi halde ana oturum profili görmez. Profil skill'lerdeki sınırları kaldıramaz, yalnız ekler.
 

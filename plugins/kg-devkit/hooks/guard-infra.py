@@ -113,7 +113,7 @@ SECRET_FILE = re.compile(r"^(\.env(\..+)?|.*\.(pem|pfx|p12|key|kubeconfig)|id_(r
 SECRET_FILE_OK = re.compile(r"(example|sample|template|dist|\.pub$)")
 
 AGENT = [""]  # komutu çalıştıran agent türü (ana oturumda boş); main() doldurur
-AGENT_GIT_VERBS = {"commit", "push", "merge", "rebase", "tag", "cherry-pick", "revert"}
+AGENT_GIT_VERBS = {"commit", "push", "merge", "rebase", "tag"}
 LONG_TOKEN = re.compile(r"(\S{4096})\S+")
 LEGACY = re.compile(  # ayrıştırma başarısız olursa kaba, doğrusal zamanlı yedek
     r"\b(kubectl|oc|helm|terraform|tofu|terragrunt|doctl|gcloud|az|oci|aws|docker|docker-compose|dotnet|pulumi)\b"

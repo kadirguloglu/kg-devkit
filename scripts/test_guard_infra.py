@@ -321,7 +321,7 @@ def test_end_to_end():
     out = decision(cmd("TOKEN=abc123 helm -n prod upgrade a ./c", agent_type="kg-devkit:devops-engineer"))
     assert "kg-devkit:devops-engineer" in out["permissionDecisionReason"] and "abc123" not in json.dumps(out)
     # kg-devkit agent'ı içinden commit/push sorulur; ana oturumda ve başka plugin'in agent'ında sorulmaz
-    for text in ("git commit -m x", "git -C repo push origin feat", "cd app && git merge main", "git tag v1"):
+    for text in ("git commit -m x", "git -C repo push origin feat", "cd app && git merge main", "git rebase main", "git tag v1"):
         assert decision(cmd(text, agent_type="kg-devkit:backend-developer")), text
         assert decision(cmd(text)) is None, text
         assert decision(cmd(text, agent_type="other:helper")) is None, text

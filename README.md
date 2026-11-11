@@ -64,7 +64,7 @@ agent'ı/skill'i plugin'i ezer. Betikler yalnız sembolik bağ kurar, var olan d
   bakar: kabuk kısayolu/fonksiyon, değişken, betik içinde çağrılan komutlar ve MCP araçları görünmez; `python3`/`python` yoksa
   sessizce geçer. Etkileşimsiz çalışmada (`claude -p`, `dontAsk`) onay isteyen komut reddedilir. Ayarlar:
   `KG_GUARD_LOCAL_COMPOSE=allow` (uzak hedefi olmayan `docker compose` sorulmaz), `KG_GUARD_DISABLE=git,migrate,deploytools`
-  (adı verilen grupları kapatır). Plugin ile birlikte gelir; Codex'te yoktur, orada yalnız agent metin kuralları geçerlidir.
+  (adı verilen grupları kapatır; `git` grubu agent içi commit/push kuralını da içerir). Plugin ile birlikte gelir; Codex'te yoktur, orada yalnız agent metin kuralları geçerlidir.
 - **Çalışma kaydı** (yalnız Claude): `hooks/agent_run_log.py` her agent çalıştırmasını plugin veri dizinindeki
   `agent-runs.jsonl` dosyasına yazar (yalnız olay, oturum ve agent kimliği/türü, izin modu, zaman ve `VERDICT`/`STATUS` değeri;
   prompt, komut veya rapor metni yok).
