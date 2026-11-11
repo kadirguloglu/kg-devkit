@@ -36,21 +36,21 @@ agent çıkarım yapmaz -> DURUR; koşul yok -> UYGULANAMAZ.
 | `frontend-developer` | Layers/dirs, Commands, Rule docs, Hard limits | ÇIKARIM |
 | `frontend-test-developer` | Commands, Rule docs (testler), Hard limits | ÇIKARIM |
 | `database-reviewer` | Persistence, Conventions, Rule docs | ÇIKARIM |
-| `tenant-security-reviewer` | Security review, Conventions, Persistence (filtre bypass API'leri), teknik doküman bölümleri (güvenlik, depolama, arka plan işleri) | ÇIKARIM; kiracı yoksa düz yetki/sahiplik incelemesi |
+| `tenant-security-reviewer` | Security review, Conventions, Persistence (filtre bypass API'leri), teknik doküman bölümleri (güvenlik, depolama, arka plan işleri) | ÇIKARIM; kiracı yoksa düz yetki/sahiplik ve girdi işleme (enjeksiyon, XSS, secret) incelemesi |
 | `api-contract-reviewer` | API contract, Layers/dirs, Conventions (hata/Result) | ÇIKARIM |
 | `dependency-supply-chain-reviewer` | Dependencies, Hard limits | ÇIKARIM |
 | `performance-reviewer` | Performance, Layers/dirs, Commands | ÇIKARIM (bütçeyi varsayar, söyler) |
 | `observability-reviewer` | Observability, Conventions (hata), Rule docs | ÇIKARIM |
-| `scope-advisor` | Scope mechanisms, Report language | tek müşterili projede UYGULANAMAZ (`NOT-APPLICABLE`) |
+| `scope-advisor` | Scope mechanisms, Report language | `Scope mechanisms` yoksa çağrılmaz; yalnız limit/varsayılan/kural/format/izin/bildirim/isteğe bağlı akış değişikliğinde çağrılır; tek müşterili projede UYGULANAMAZ (`NOT-APPLICABLE`) |
 | `engineering-software-architect` | Layers/dirs, Conventions, Scope mechanisms, Rule docs, Finish gate | ÇIKARIM |
 | `frontend-browser-tester`, `browser-test` | Dev app (URL + yerel test girişi), Commands (start/status), Router/navigation files, Layers/dirs, Hard limits; Claude in Chrome eklentisi | URL veya test girişi yoksa DURUR |
 | `devops-engineer` | Production, Report language, Hard limits | Production yoksa yalnız statik dosyaya bakar; canlı komuttan önce hedefi sorar |
 | `devops-operator` | Production (hedef, secret konumları, registry, topoloji, runbook), Hard limits | DURUR |
 | `live-check` | Production (context, namespace, durum komutu, bulut CLI kimlik komutu, iş yükleri, sağlık URL'leri + beklenen kodlar, runbook) | Production veya zorunlu hedef/sağlık bilgileri yoksa DURUR |
 | `rollback` | Production (hedef, rollback/deploy komutu, sağlık URL'leri + beklenen kodlar, iş yükleri, registry, kanıt yöntemlerini belirten runbook), Persistence (migrations dizini) | Production veya hedef/sağlık bilgileri yoksa DURUR; başarılı release, image → kaynak/revision ve uygulanan şema kanıtı eksikse uygulama DURUR |
-| `release` | Release, Commands, Finish gate, `AGENTS.md`/`CLAUDE.md` sınırları; `deploy` ile Production (hedef, deploy/durum komutu, sağlık URL'leri + beklenen kodlar) | Release yoksa sorar; deploy için Production bilgileri eksikse DURUR; zorunlu review yoksa/FAIL/UNCLEAR ise commit DURUR |
-| `add-migration` | Persistence, Conventions, Finish gate, Report language | Persistence yoksa ORM aracını bulur, çalıştırmadan önce onaylatır; Finish gate eksik/belirsiz veya zorunlu review yoksa/FAIL/UNCLEAR ise doğrulama DURUR |
-| `verify-change` | Commands, Rule docs, Finish gate, Report language | ÇIKARIM; zorunlu review yoksa/FAIL/UNCLEAR ise doğrulama DURUR |
+| `release` | Release, Commands, Finish gate, `AGENTS.md`/`CLAUDE.md` sınırları; `deploy` ile Production (hedef, deploy/durum komutu, sağlık URL'leri + beklenen kodlar) | Release yoksa sorar; deploy için Production bilgileri eksikse DURUR; Finish gate yoksa kit'in varsayılan gate tablosu kullanılır; zorunlu review yoksa/FAIL/UNCLEAR ise commit DURUR |
+| `add-migration` | Persistence, Conventions, Finish gate, Report language | Persistence yoksa ORM aracını bulur, çalıştırmadan önce onaylatır; Finish gate yoksa kit'in varsayılan gate tablosu kullanılır; gate belirsizse veya zorunlu review yoksa/FAIL/UNCLEAR ise doğrulama DURUR |
+| `verify-change` | Commands, Rule docs, Finish gate, Report language | ÇIKARIM; Finish gate yoksa kit'in varsayılan gate tablosu kullanılır; zorunlu review yoksa/FAIL/UNCLEAR ise doğrulama DURUR |
 
 Deploy/sağlık değerlerini Production'da ara; yalnız orada eksik olan değerler eski Release girdisinden alınabilir.
 İki kaynaktaki değerler çelişirse ilgili işlem DURUR. Rollback için başarılı release kanıtı, image digest → kaynak
@@ -58,7 +58,9 @@ commit/revision eşlemesi ve uygulanan şemanın salt-okunur doğrulama yöntemi
 tek başına canlı şema kanıtı sayma. Gerekli reviewer yoksa veya sonucu FAIL/UNCLEAR ise doğrulamayı geçmiş gösterme.
 
 Her agent ve skill ayrıca profildeki `Report language`'ı izler; `Hard limits` yalnız matriste yazan satırlarda okunur ve yalnız kısıt ekler. Commit/push yok (yalnız `release` kullanıcı
-çağırınca commit+push yapar). Plugin kancası canlıyı değiştiren komutları onaya düşürür (yalnız Claude'da).
+çağırınca commit+push yapar). Plugin kancası canlıyı değiştiren veya secret okuyan komutları, migration/dağıtım araçlarını ve `git push --force`/`reset --hard`/`clean -f`/secret dosyası `git add` komutlarını, ayrıca bir kit agent'ının içinden gelen `git commit`/`push`/`merge`/`rebase`/`tag`/`cherry-pick`/`revert` komutlarını onaya düşürür (ana oturumun commit'i etkilenmez; yalnız Claude'da; `KG_GUARD_DISABLE`, `KG_GUARD_LOCAL_COMPOSE` ortam değişkenleri bazı grupları gevşetir).
+`test-discipline`, `docs-maintenance`, `ops-safety` kural skill'leri profil alanı gerektirmez; skill'lerdeki sınırları profil kaldıramaz, yalnız ekleyebilir.
+Agent'lar profili bağlamda görüyorsa dosyayı yeniden okumaz: hem `AGENTS.md` hem `CLAUDE.md` varsa ve profil `AGENTS.md` içindeyse `CLAUDE.md`'de `@AGENTS.md` satırı olmalı, yoksa ana oturum profili görmez (bunu uyarı olarak raporla).
 
 ## 3. Eşleştirme ve soru-cevap
 Keşif bulgularını matrisle eşleştirip her agent/skill için durumu belirle. Şunlar kaynaktan çözülemezse sor (çözülürse sorma):

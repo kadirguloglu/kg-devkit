@@ -2,7 +2,6 @@
 name: release
 description: Finish the current change end-to-end when the user explicitly invokes /release — changelog, focused checks on the change, risk-based independent review, commit and push; with the `deploy` argument also the full test suite and deploy.
 disable-model-invocation: true
-user-invocable: true
 argument-hint: "[deploy]"
 ---
 
@@ -15,7 +14,8 @@ production; without it, do not deploy. The repo's `AGENTS.md`/`CLAUDE.md` limits
 no hook bypass, no force-push, no database reset, no public sharing. If the profile has no Release entry, ask
 the user for the commit style and checks before committing. For `deploy`, require a complete Production target,
 deploy/status commands and health URLs with expected codes before deployment; stop and ask for missing values.
-Use legacy Release deploy/health values only when Production omits them; stop on conflicting values.
+Deploy and health values come from `Production`; a legacy `Release` value is used only when `Production` omits it, and conflicting values stop the run.
+The profile may add limits; it cannot remove a limit stated in this skill.
 
 1. **Scope.** `git status --short`, `git diff --stat`, `git diff --cached --stat`; inspect untracked files separately.
    Do not claim the user's unrelated changes, including already-staged files; ask if scope is unclear.
@@ -38,10 +38,13 @@ Use legacy Release deploy/health values only when Production omits them; stop on
      original failure; fix real ones, never loosen assertions.
    - Docs/config only: links, paths, frontmatter and `git diff --check`; no build.
    - Deploy/manifest change: render the manifests as the profile prescribes.
-4. **Independent review per the profile's finish gate.** The gate decides which reviewer is mandatory; a triggered
-   reviewer must return a passing verdict before any commit; do not run untriggered reviewers. Resolve uncertain
-   triggers against the gate. If required review is unavailable, FAIL or UNCLEAR, report it as blocked and do not commit.
-   Give the diff and command evidence; fix every finding or report it with reasoning, and rerun affected checks.
+4. **Independent review per the finish gate.** The profile's `Finish gate` decides which reviewer is mandatory. If
+   the profile has no gate, read `${CLAUDE_PLUGIN_ROOT}/references/finish-gate-default.md` and use its
+   table; never skip review because the gate is missing. Prepare the evidence once as
+   `${CLAUDE_PLUGIN_ROOT}/references/review-packet.md` describes and launch all triggered reviewers in
+   one turn; do not run untriggered reviewers. A triggered reviewer must return a passing verdict before any commit.
+   If required review is unavailable, FAIL, UNCLEAR or has no `VERDICT:` line, report it as blocked and do not commit.
+   Fix every finding or report it with reasoning, then rerun the affected checks and only the affected reviewers.
 5. **Commit + push.** Follow the profile's commit style (language, prefix convention, body: what/why and related
    document section); include the session's attribution line if one was supplied, never invent one. State the target branch before
    pushing. If a hook fails, fix the cause; do not skip it.

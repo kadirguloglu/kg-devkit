@@ -12,10 +12,6 @@ Take the commit range, file or focus note from the user's invocation as the targ
 Call the `frontend-browser-tester` role through the available sub-agent tool, passing the target and limits in the task text.
 If the sub-agent tool/role is unavailable, read the definition and do the same check in the main session, and report that limitation.
 
-- Empty target: take the working-tree changes; if the tree is clean, use `HEAD~1..HEAD` when the parent exists,
-  otherwise `git show --root HEAD` for an initial commit. If there are no commits or changes, report no target.
-- A commit range (`abc123..HEAD`, `HEAD~3..HEAD`): take the frontend diff of that range.
-- An existing file path (check that it exists): narrow the scope to that file. Anything else is a free-text note:
-  use it as a focus hint within the default target above.
+An empty target means the default target defined in the agent's scope rules (working tree, else the last commit).
 
-Do not change code or commit/push; report any defect with repro steps.
+Do not change code or commit/push; report any defect with repro steps. The profile may add limits; it cannot remove a limit stated in this skill.

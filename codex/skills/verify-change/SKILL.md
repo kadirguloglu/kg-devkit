@@ -1,13 +1,15 @@
 ---
 name: verify-change
-description: Review the current repository diff and choose proportionate verification before handoff, when the user explicitly requests a final change check.
+description: Final check of a finished change - reads the diff, runs the smallest meaningful verification (focused build/tests, docs checks) and calls the reviewers the finish gate requires. Use proactively every time you finish implementing a code, schema, config or docs change, before telling the user it is done; also when the user asks for a final check. Never commits, pushes, deploys or resets data.
 ---
 
 # Change verification
 
-When the user invokes `$verify-change`, assess the current diff and the verification evidence. The repo's
+When a change is finished (or the user invokes `$verify-change`), assess the current diff and the verification
+evidence. Do this once per finished change, not after every edit. The repo's
 `AGENTS.md`/`CLAUDE.md` limits apply, including its `Project profile` (commands, rule documents, finish gate,
 report language). This skill grants no authority to commit, push, deploy or reset a database.
+The profile may add limits; it cannot remove a limit stated in this skill.
 
 1. `git status --short`, `git diff --stat`, `git diff --cached --stat` to find the scope. Tell staged, unstaged
    and untracked files apart; never claim or delete the user's changes. Read the relevant diff; open large
@@ -22,13 +24,15 @@ report language). This skill grants no authority to commit, push, deploy or rese
      contradictions/duplication and `git diff --check`; no application build.
    - Backend behavior: build plus focused regression; widen to affected groups for shared infrastructure/contracts.
    - Frontend behavior: lint/typecheck/build plus the related tests; widen if shared auth/cache/UI helpers changed.
-   - Anything the profile's finish gate names (schema, security, tenancy, storage, ...): the required independent
-     reviewer must pass; do not call reviewers the gate does not trigger. If a required reviewer is unavailable,
-     FAIL or UNCLEAR, report verification as blocked, not passed.
+   - Independent review: the profile's `Finish gate` decides which reviewer is required. If the profile has no
+     gate, read `references/finish-gate-default.md` and use its table. Prepare the
+     evidence once as `references/review-packet.md` describes and launch all
+     triggered reviewers in one turn; do not call reviewers the gate does not trigger. If a required reviewer is
+     unavailable, FAIL, UNCLEAR or returns no `VERDICT:` line, report verification as blocked, not passed.
 4. Use a YAML/CLI validator when one exists; otherwise state the limit of the static check. Do not install new
    dependencies or plugins. Do not repeat checks that already passed for this same change without reason.
 5. Review the final diff. Investigate why a failed check failed; do not loosen assertions or pull unrelated
-   defects into scope. Fix inside owned files if needed and rerun only the affected checks.
+   defects into scope. Fix inside the files of this change if needed and rerun only the affected checks.
 6. Report (in the profile's report language, default the user's): the change and rationale, real commands and
    results, findings with source locations, checks not run and remaining risks. State test counts only when you
    can confirm them from output.

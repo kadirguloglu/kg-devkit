@@ -1,8 +1,19 @@
 {
   "name": "kg-devkit",
   "version": "0.8.9",
-  "description": "Personal, project-agnostic agents and skills; project facts come from each repo's Project profile.",
+  "description": "Personal, project-agnostic agents, skills and safety hooks; project facts come from each repo's Project profile.",
   "author": {
     "name": "Kadir Güloğlu"
-  }
+  },
+  "homepage": "https://github.com/kadirguloglu/kg-devkit",
+  "repository": "https://github.com/kadirguloglu/kg-devkit",
+  "license": "MIT",
+  "keywords": [
+    "agents",
+    "skills",
+    "code-review",
+    "devops",
+    "release",
+    "hooks"
+  ]
 }

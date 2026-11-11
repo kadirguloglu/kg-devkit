@@ -2,23 +2,23 @@
 name: live-check
 description: Read-only health check of the production environment when the user explicitly invokes /live-check — pods, restarts, OOM, certificate, DNS, endpoints and recent errors.
 disable-model-invocation: true
-user-invocable: true
+disallowed-tools: Edit, Write, NotebookEdit
 ---
 
 # Production health check (`/live-check`)
 
 Read-only. Changes nothing, deploys nothing, reads no secrets. The repo's `AGENTS.md`/`CLAUDE.md` limits and its
 `Project profile` `Production` entry (cluster context, namespace, status command, health URLs and expected codes,
-workload names, runbook) apply. Use legacy Release health values only when Production omits them; stop on
-conflicting values. Without Production or required target/health values, stop and ask. For compose/plain hosts,
+workload names, runbook) apply. Deploy and health values come from `Production`; a legacy `Release` value is used only when `Production` omits it, and conflicting values stop the run. Without Production or required target/health values, stop and ask. For compose/plain hosts,
 use the profile's equivalent status/logs commands. Hand work to `devops-engineer` if useful, preserving these
 read-only limits. Bound commands with the runbook's timeouts (defaults: 30s for ordinary requests, 600s for rollout
 status); use a tool/process timeout for wrappers. A timeout is a check that could not complete, never a pass.
+The profile may add limits; it cannot remove a limit stated in this skill.
 
 1. **Prerequisites.** Check that the cloud CLI session and kubectl context exist (the profile's cloud CLI identity command and, on
    Kubernetes, `kubectl config get-contexts`); if not, report the state and ask the user to authenticate. Pass the
    profile's context and namespace explicitly on every `kubectl` call, written out in full. Do not hide `kubectl`
-   behind a shell alias or function: the plugin's guard hook inspects the literal command text.
+   behind a shell alias, function, variable or script: the plugin's guard hook only sees the literal command text.
 2. **Overall status.** The profile's status command (address, load-balancer IP, DNS, pods, certificate). Compare
    DNS against the profile's expected direct-LB, CNAME or CDN/proxy route; a different IP alone is not a fault.
 3. **Pod health.** `get pods -o wide`; record pod UIDs, container restart counts and observation time. Claim an

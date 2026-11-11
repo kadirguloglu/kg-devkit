@@ -4,7 +4,54 @@ Sürümler `main`'e her push'ta otomatik artar (`bump-version.yml`): varsayılan
 ile seviye seçilir. Bu dosya kullanıcıya dönük etkiyi özetler; taslağı `kit-release-notes` agent'ı çıkarır
 (bkz. [docs/inventory.md](docs/inventory.md)). Kategoriler: **Kırıcı**, **Eklenen**, **Değişen**, **Düzeltilen**, **Doküman/Altyapı**.
 
-## Yayınlanmadı (öneri: patch)
+## Yayınlanmadı (öneri: minor)
+- **Değişen:** Güvenlik kancası (`guard-infra.py`) yeniden yazıldı: komutu belirteçlere ayırır. Artık onaya düşenler:
+  fiilden önce bayrak taşıyan komutlar (`helm -n prod uninstall`, `terraform -chdir=… destroy`, `docker --context prod compose up`),
+  çok satırlı `kubectl`, `bash -c`/`ssh`/`$(…)` içindeki komutlar, bulut secret okuma (`aws secretsmanager get-secret-value`,
+  `gcloud secrets versions access`, `az keyvault secret show`, `vault`, `sops`), bulut `stop/deploy/sync` işlemleri, Prisma/Alembic/
+  Django/Rails/Flyway migration'ları, `helmfile`/`pulumi`/`argocd`/`flux`/`ansible-playbook`, `git push --force`, `git reset --hard`,
+  `git clean -f` ve secret görünümlü dosyanın `git add` edilmesi. Artık sorulmayanlar: tırnak içinde geçen komut adları
+  (`grep 'kubectl apply'`, commit mesajları), bayrak değerleri (`-l run=api`), `--help`, `--dry-run=client`, `gcloud run … describe`
+  gibi salt-okuma komutları. Onay mesajında komutu çalıştıran agent yazar. Bir kit agent'ının içinden gelen
+  `git commit`/`push`/`merge`/`rebase`/`tag`/`cherry-pick`/`revert` de onaya düşer (agent'lar commit atmaz; ana oturumun commit'i etkilenmez). `KG_GUARD_LOCAL_COMPOSE=allow` yerel
+  `docker compose` onayını, `KG_GUARD_DISABLE=git,migrate,deploytools` adı verilen grupları kapatır. Kancaya 5 sn zaman aşımı
+  ve `python` yedeği eklendi. Etkileşimsiz çalışmada (`claude -p`, `dontAsk`) onay isteyen komut reddedilir: migration,
+  force-push veya `reset --hard` çalıştıran otomasyonlar onayı etkileşimli vermeli ya da ilgili grubu `KG_GUARD_DISABLE` ile kapatmalıdır.
+- **Değişen:** Agent'ların "çalışmaya başladım / çalışmam tamamlandı" satırları Claude'da kaldırıldı; yerine her agent
+  çalıştırmasını model bağlamına girmeden `agent-runs.jsonl` dosyasına yazan `agent_run_log.py` kancası geldi (yalnız olay, oturum ve
+  agent kimliği/türü, izin modu, zaman, `VERDICT`/`STATUS`; özet için `--summary`; `KG_AGENT_LOG=off` kapatır). Bu satırlara bakan
+  betik veya alışkanlık varsa kayıt dosyasına geçmelidir. Codex çıktısında satırlar korunur.
+- **Değişen:** `verify-change` artık model tarafından da çağrılabilir (Claude ve Codex; yetki vermez, ama iş bitiminde
+  kendiliğinden çalışıp gate'in tetiklediği reviewer'ları çağırabilir, bu süre ve maliyeti artırabilir). `scope-advisor` yalnız
+  profilde `Scope mechanisms` varken ve istek limit/varsayılan/kural/format/izin/bildirim değiştirirken çağrılır (profilsiz
+  çağrılırsa mekanizmaları kodda kendisi arar); kullanıcıya sorulacak soruyu raporunun sonunda `ACTION FOR MAIN SESSION`
+  bloğuyla verir. `devops-engineer` açıklaması "rollback planlama" yerine salt-okuma teşhisi anlatır ve `live-check`/`rollback`
+  skill'lerine yönlendirir.
+- **Değişen:** Agent'lar profili bağlamda görüyorsa `AGENTS.md`/`CLAUDE.md` dosyasını yeniden okumaz. **Yapılacak:** repoda hem
+  `AGENTS.md` hem `CLAUDE.md` varsa ve profil `AGENTS.md`'deyse `CLAUDE.md`'ye `@AGENTS.md` satırını ekle; yoksa profil görünmez.
+- **Eklenen:** `require_outcome.py` kancası: `VERDICT:` satırı olmadan biten reviewer'ı ve `STATUS:` satırı olmadan biten yazar
+  agent'ı bir kez geri çevirip satırı ister (`KG_REQUIRE_OUTCOME=off` kapatır).
+- **Eklenen:** Profilde `Finish gate` yoksa `release`, `verify-change` ve `add-migration` kit'in varsayılan gate tablosunu
+  kullanır (`references/finish-gate-default.md`); reviewer'lara kanıt tek pakette, dosya yoluyla ve aynı turda verilir
+  (`references/review-packet.md`). Reviewer `description`'ları çağıranın vereceği girdiyi söyler; diff verilmeyen reviewer
+  `NEEDS: diff` + `VERDICT: UNCLEAR` döner (reviewer'ı diff vermeden çağıran özel akışlar gate'te takılır). Yazar agent'lar raporu
+  `STATUS: DONE/PARTIAL/BLOCKED` satırlarıyla bitirir; developer agent'lar var olmayan API/sembol kullanmadan önce varlığını doğrular.
+- **Eklenen:** `rules/` altındaki üç kural plugin içinde `test-discipline`, `docs-maintenance`, `ops-safety` skill'leri olarak da
+  gelir (kurallardan üretilir); ayrı symlink kurulumu artık isteğe bağlıdır (kuralları `~/.claude/rules` altına bağladıysan çift
+  yüklenmemesi için `install-claude-rules.sh --uninstall` ile kaldırabilirsin). `kg-ops-safety` secret okuma yasağına onaylı
+  `devops-operator` işlemi istisnası eklendi. `tenant-security-reviewer` girdi işleme
+  (enjeksiyon, XSS), gömülü secret ve kriptografi maddelerini de inceler ve kiracısız projelerde de kullanılır.
+- **Düzeltilen:** `rollback`, model tarafından yüklenemeyen `/kg-devkit:live-check` yerine o skill'in dosyasını okur.
+  `browser-test` sonucu bekleyerek çalışır (`background: false`); servis başlatma komutu reddedilirse agent `STATUS: BLOCKED`
+  döner. Skill'lere "profil sınır ekleyebilir, skill'deki sınırı kaldıramaz" kuralı eklendi. `frontend-browser-tester` için
+  `maxTurns: 100`; `live-check` sırasında `Edit`/`Write` araçları kapalı.
+- **Doküman/Altyapı:** `sync-claude-codex.py` yazma adımını bölünmez yapar: `--watch` sırasında Ctrl+C çıktılar ile manifest arasına
+  girerse `.codex/` tutarsız kalıyordu (CI'da ara sıra kırılan `--watch` testinin nedeni).
+- **Doküman/Altyapı:** `scripts/lint_plugin.py` (agent/skill mekanik kuralları, CI), genişletilmiş kanca testleri (242 komut
+  örneği, uçtan uca, süre sınırı, sonuç satırı kancası), `plugins/kg-devkit/evals/` altında beş davranış testi vakası, `plugin.json`'a lisans/depo/anahtar
+  kelimeler. Mimari analiz raporları `docs/analysis/` altında.
+
+## 0.8.9 – 2026-11-09 ([#21](https://github.com/kadirguloglu/kg-devkit/pull/21))
 - **Düzeltilen:** `release` commit öncesinde nihai staged dosyaları ve diff'i denetler; `git add -n` ile zaten
   stage edilmiş secret dosyalarını güvenli saymaz. Eksik deploy hedefi veya geçmeyen zorunlu review ile ilerlemez.
   `rollback` hedef digest/kaynak commit/revision eşlemesi, başarılı release ve uygulanan şema kanıtı ister;
@@ -15,6 +62,8 @@ ile seviye seçilir. Bu dosya kullanıcıya dönük etkiyi özetler; taslağı `
 - **Doküman/Altyapı:** Deploy/sağlık değerleri profil şablonu ve iki tüketici prompt'unda `Production` altında
   birleştirildi; eski `Release` değerleri yalnız Production'da eksikse kullanılır, çelişki netleştirilir.
   Rollback migration dizinini `Persistence`'dan okur; runbook'ta aranacak kanıt yöntemleri belgelendi.
+
+## 0.8.8 – 2026-11-09 ([#20](https://github.com/kadirguloglu/kg-devkit/pull/20))
 - **Doküman/Altyapı:** `.claude` altındaki dört bakım agent'ı ve `Stop` kancası için yerel `.codex` karşılıkları
   eklendi. `scripts/sync-claude-codex.py`, tek seferlik dönüşüm, `--check` ve bir saniyelik `--watch` modlarıyla
   kaynak değişikliklerini aktarır; özel Codex dosyalarını korur, elle değiştirilmiş çıktıda veya desteklenmeyen
@@ -22,6 +71,8 @@ ile seviye seçilir. Bu dosya kullanıcıya dönük etkiyi özetler; taslağı `
   CI'a eklendi. Codex bakım agent'ları oturum modelini devralır; üçü salt-okuma, prompt güncelleyen agent
   `workspace-write` kullanır. Codex kancası normal proje/kanca güven onayına bağlıdır ve Claude'dan ayrı durum
   tutar; reviewer başarısını doğrulamaz. Bakım araçları global kuruluma girmez; tüketici profil gereksinimleri değişmez.
+
+## 0.8.7 – 2026-11-09 ([#19](https://github.com/kadirguloglu/kg-devkit/pull/19))
 - **Düzeltilen:** Skill netleştirmeleri: `rollback` birden çok workload'ı tek tek geri alırken oluşan karışık sürüm penceresini plana ve hedef tag uyumluluk kontrolüne ekledi; `browser-test` hedef argümanında dosya yolu ile serbest notu ayırt eder (yol yoksa not sayılır); `add-migration` tekrar eden son satırı kaldırıp adı ilk cümleye taşıdı.
 
 ## 0.8.6 – 2026-11-09 ([#18](https://github.com/kadirguloglu/kg-devkit/pull/18))

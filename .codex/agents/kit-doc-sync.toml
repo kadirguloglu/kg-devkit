@@ -31,8 +31,10 @@ If the brief names no change at all, check the whole repository.
 - `plugins/kg-devkit/agents/*.md` -> `README.md` (agent list, count, model tiers), `docs/agent-requirements.md`
   (table row, tools, model, profile fields read, shared rules), `docs/inventory.md` (agent count, design decisions),
   `docs/project-profile-template.md`.
-- `plugins/kg-devkit/skills/*` -> `README.md` skill list, `docs/inventory.md` count.
-- `rules/*.md` -> `README.md` rule list, `docs/inventory.md` count.
+- `plugins/kg-devkit/skills/*`, `plugins/kg-devkit/references/*`, `plugins/kg-devkit/evals/*` -> `README.md` skill list,
+  `docs/inventory.md` counts, the skill table of `docs/agent-requirements.md`.
+- `rules/*.md` -> `README.md` rule list, `docs/inventory.md` count; the plugin skills `test-discipline`,
+  `docs-maintenance` and `ops-safety` are generated from them (`build-codex.py --check` verifies they are equal).
 - `plugins/kg-devkit/hooks/*` and `scripts/test_guard_infra.py` -> `README.md`, `docs/inventory.md`,
   the hook rows of `docs/agent-requirements.md`; every verb the hook guards is covered by a test case.
 - `docs/project-profile-template.md` -> field names used in `docs/agent-requirements.md`.
