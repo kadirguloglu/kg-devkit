@@ -18,6 +18,7 @@ sys.dont_write_bytecode = True  # plugin dizininde __pycache__ oluşmasın
 HOOKS = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "plugins", "kg-devkit", "hooks")
 GUARD = os.path.join(HOOKS, "guard-infra.py")
 RUNLOG = os.path.join(HOOKS, "agent_run_log.py")
+OUTCOME = os.path.join(HOOKS, "require_outcome.py")
 spec = importlib.util.spec_from_file_location("guard_infra", GUARD)
 mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mod)
@@ -287,6 +288,7 @@ def run(script, payload, args=(), env=None):
     e.pop("KG_GUARD_DISABLE", None)
     e.pop("KG_GUARD_LOCAL_COMPOSE", None)
     e.pop("KG_AGENT_LOG", None)
+    e.pop("KG_REQUIRE_OUTCOME", None)
     e.update(env or {})
     data = payload if isinstance(payload, bytes) else json.dumps(payload).encode()
     return subprocess.run([sys.executable, "-B", script, *args], input=data, capture_output=True, env=e, timeout=30)
@@ -364,11 +366,53 @@ def test_run_log():
         text = open(os.path.join(tmp, "agent-runs.jsonl"), encoding="utf-8").read()
         rows = [json.loads(line) for line in text.splitlines()]
         assert len(rows) == 3 and "GIZLI" not in text
+        # aynı agent iki kez durursa (sonuç satırı hatırlatması) özet tek çalışma sayar ve son sonucu alır
+        run(RUNLOG, {**base, "hook_event_name": "SubagentStop", "last_assistant_message": "VERDICT: FAIL"}, [tmp])
+        out = subprocess.run([sys.executable, "-B", RUNLOG, "--summary", tmp], capture_output=True, text=True).stdout
+        line = next(row for row in out.splitlines() if "database-reviewer" in row)
+        assert " 1 " in line and "VERDICT:FAIL" in line and "VERDICT:PASS" not in line, line
         assert rows[1]["outcome"] == "VERDICT:PASS" and rows[2]["outcome"] == "STATUS:PARTIAL" and "outcome" not in rows[0]
         assert set(rows[1]) <= {"ts", "hook_event_name", "session_id", "agent_id", "agent_type", "permission_mode", "outcome"}
         p = subprocess.run([sys.executable, "-B", RUNLOG, "--summary", tmp], capture_output=True)
         assert p.returncode == 0 and b"kg-devkit:database-reviewer" in p.stdout
     assert not os.path.exists("${CLAUDE_PLUGIN_DATA}")
+
+
+def test_require_outcome():
+    def blocked(agent, message, env=None, **extra):
+        p = run(OUTCOME, {"hook_event_name": "SubagentStop", "agent_type": agent, "last_assistant_message": message, **extra}, env=env)
+        assert p.returncode == 0 and p.stderr == b"", p
+        return bool(p.stdout.strip()) and json.loads(p.stdout)["decision"] == "block"
+
+    assert blocked("kg-devkit:database-reviewer", "bulgular...")
+    assert not blocked("kg-devkit:database-reviewer", "bulgular\nVERDICT: FAIL")
+    assert not blocked("kg-devkit:api-contract-reviewer", "x\n**VERDICT: UNCLEAR** eksik: diff")
+    assert blocked("kg-devkit:tenant-security-reviewer", "STATUS: DONE")  # reviewer için STATUS yetmez
+    assert blocked("kg-devkit:backend-developer", "değişti: a.cs")
+    assert not blocked("kg-devkit:backend-developer", "STATUS: PARTIAL\nCHANGED: a.cs")
+    assert not blocked("kg-devkit:frontend-browser-tester", "senaryolar...\nSTATUS: BLOCKED")
+    assert blocked("kg-devkit:devops-operator", "bitti")
+    # danışmanlar, başka plugin'ler ve yerleşik agent'lar kapsam dışı
+    for agent in ("kg-devkit:scope-advisor", "kg-devkit:engineering-software-architect", "other:database-reviewer", "Explore", None):
+        assert not blocked(agent, "sonuç satırı yok")
+    assert not blocked("kg-devkit:database-reviewer", "satır yok", stop_hook_active=True)  # ikinci durma: döngü yok
+    assert not blocked("kg-devkit:database-reviewer", "satır yok", env={"KG_REQUIRE_OUTCOME": "off"})
+    assert not blocked("kg-devkit:database-reviewer", None)
+    for raw in (b"", b"[]", b"not json", b"null"):
+        p = run(OUTCOME, raw)
+        assert (p.returncode, p.stdout, p.stderr) == (0, b"", b"")
+    # yazar agent listesi agent dosyalarıyla eşit kalmalı
+    spec2 = importlib.util.spec_from_file_location("require_outcome", OUTCOME)
+    ro = importlib.util.module_from_spec(spec2)
+    spec2.loader.exec_module(ro)
+    agents_dir = os.path.join(os.path.dirname(HOOKS), "agents")
+    writers = set()
+    for name in os.listdir(agents_dir):
+        text = open(os.path.join(agents_dir, name), encoding="utf-8").read()
+        tools = next(line for line in text.splitlines() if line.startswith("tools:"))
+        if "Bash" in tools:
+            writers.add(name[:-3])
+    assert writers == ro.WRITERS, (writers ^ ro.WRITERS)
 
 
 def test_hooks_json():
@@ -381,7 +425,7 @@ def test_hooks_json():
 
 
 if __name__ == "__main__":
-    tests = [test_rules, test_end_to_end, test_env_switches, test_time_bound, test_run_log, test_hooks_json]
+    tests = [test_rules, test_end_to_end, test_env_switches, test_time_bound, test_run_log, test_require_outcome, test_hooks_json]
     for test in tests:
         test()
     print(f"kancalar: {len(ASK)} onay + {len(PASS)} geçiş örneği, {len(KNOWN_BLIND)} bilinen kör nokta, {len(tests)} test geçti")

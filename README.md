@@ -68,6 +68,9 @@ agent'ı/skill'i plugin'i ezer. Betikler yalnız sembolik bağ kurar, var olan d
   `agent-runs.jsonl` dosyasına yazar (yalnız olay, oturum ve agent kimliği/türü, izin modu, zaman ve `VERDICT`/`STATUS` değeri;
   prompt, komut veya rapor metni yok).
   Özet: `python3 <plugin>/hooks/agent_run_log.py --summary ~/.claude/plugins/data/<kg-devkit dizini>`; kapatmak için `KG_AGENT_LOG=off`.
+- **Sonuç satırı zorlaması** (yalnız Claude): `hooks/require_outcome.py`, bir reviewer raporunu `VERDICT:` satırı olmadan veya bir
+  yazar agent `STATUS:` satırı olmadan bitirirse agent'ı bir kez geri çevirip satırı ister (ikinci durmada karışmaz; satırın
+  değerini denetlemez). Kapatmak için `KG_REQUIRE_OUTCOME=off`.
 
 ## Sürümleme
 

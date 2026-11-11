@@ -37,24 +37,26 @@ def record(data, directory):
 
 
 def summary(directory):
-    starts, runs = {}, {}
+    starts, stops = {}, {}
     with open(os.path.join(directory, "agent-runs.jsonl"), encoding="utf-8") as f:
-        for line in f:
+        for n, line in enumerate(f):
             try:
                 r = json.loads(line)
             except ValueError:
                 continue
-            key = r.get("agent_id")
-            agent = r.get("agent_type", "?")
+            key = r.get("agent_id") or f"satır-{n}"
             if r.get("hook_event_name") == "SubagentStart":
                 starts[key] = r.get("ts", 0)
             elif r.get("hook_event_name") == "SubagentStop":
-                s = runs.setdefault(agent, {"n": 0, "sec": 0.0, "outcomes": {}})
-                s["n"] += 1
-                if key in starts:
-                    s["sec"] += max(0.0, r.get("ts", 0) - starts.pop(key))
-                o = r.get("outcome", "none")
-                s["outcomes"][o] = s["outcomes"].get(o, 0) + 1
+                stops[key] = r  # aynı agent birden çok kez durabilir (sonuç satırı hatırlatması): sonuncusu geçerli
+    runs = {}
+    for key, r in stops.items():
+        s = runs.setdefault(r.get("agent_type", "?"), {"n": 0, "sec": 0.0, "outcomes": {}})
+        s["n"] += 1
+        if key in starts:
+            s["sec"] += max(0.0, r.get("ts", 0) - starts[key])
+        o = r.get("outcome", "none")
+        s["outcomes"][o] = s["outcomes"].get(o, 0) + 1
     print(f"{'agent':45} {'çalışma':>7} {'ort. sn':>8}  sonuçlar")
     for agent, s in sorted(runs.items(), key=lambda kv: -kv[1]["n"]):
         avg = s["sec"] / s["n"] if s["n"] else 0

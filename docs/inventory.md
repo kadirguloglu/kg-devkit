@@ -11,7 +11,7 @@ halidir. Projeye özgü bilgi (komutlar, yollar, cluster adları, kural belgeler
 | Agent (15) | `plugins/kg-devkit/agents/*.md` | plugin, `kg-devkit:<ad>` | `codex/agents/*.toml` → `~/.codex/agents` |
 | Skill (9) | `plugins/kg-devkit/skills/*/SKILL.md` (6 iş akışı + kurallardan üretilen 3 disiplin skill'i) | plugin, `/kg-devkit:<ad>` | `codex/skills/*` → `~/.agents/skills`, `$<ad>` |
 | Ortak referans (2) | `plugins/kg-devkit/references/*.md` | skill'ler `${CLAUDE_PLUGIN_ROOT}/references/...` yoluyla okur | ilgili skill'in `references/` klasörüne kopyalanır |
-| Kanca (2 betik, 3 olay) | `plugins/kg-devkit/hooks/` | plugin ile gelir | yok |
+| Kanca (3 betik, 3 olay) | `plugins/kg-devkit/hooks/` | plugin ile gelir | yok |
 | Davranış testi (5 vaka) | `plugins/kg-devkit/evals/` | `claude plugin eval` (elle) | yok |
 | Kural (3) | `rules/*.md` (tek kaynak) | plugin içinde disiplin skill'i olarak; isteğe bağlı `~/.claude/rules` symlink | disiplin skill'leri olarak (`$test-discipline` vb.) |
 | Repo bakım agent'ı (4) | `.claude/agents/*.md` | yalnız bu repoda | `.codex/agents/*.toml`, yalnız bu repoda |
@@ -59,12 +59,16 @@ olarak kurmaz. Tüketici projelerin `Project profile` sözleşmesi değişmez.
   Bash komut metnine bakar (kabuk kısayolu/fonksiyon, değişken, betik içi komut, `psql`, `scp/rsync` ve MCP araçları görünmez);
   `python3` yoksa `python` denenir, o da yoksa sessizce geçer (fail-open); 5 sn zaman aşımı. `KG_GUARD_LOCAL_COMPOSE=allow`
   yerel compose'u, `KG_GUARD_DISABLE=git,migrate,deploytools` adı verilen grupları kapatır. Canlıda doğrulandı (Claude Code
-  2.1.322): kanca ana oturumda ve alt-agent'ta çalışır; `claude -p` ve `dontAsk` modunda `ask` kararı ret olarak uygulanır.
+  2.1.322): kanca ana oturumda ve alt-agent'ta çalışır; `claude -p` ile varsayılan, `dontAsk` ve `bypassPermissions` modlarında `ask` kararı ret olarak uygulanır.
   Testler: `python3 scripts/test_guard_infra.py` (CI'da çalışır; kural listeleri, uçtan uca, ortam değişkenleri, süre sınırı).
 - **Çalışma kaydı kancası:** `hooks/agent_run_log.py` (SubagentStart/SubagentStop, eşzamansız) her agent çalıştırmasını
   `${CLAUDE_PLUGIN_DATA}/agent-runs.jsonl` dosyasına yazar: yalnız olay, oturum ve agent kimliği/türü, izin modu, zaman ve
   rapordaki `VERDICT`/`STATUS` değeri. Agent gövdelerindeki eski `Logging:` paragrafının yerini alır (Codex çıktısında paragraf
   korunur). Delegasyon sayısı, süre ve hüküm dağılımı buradan ölçülür (`--summary`). `KG_AGENT_LOG=off` kapatır.
+- **Sonuç satırı kancası:** `hooks/require_outcome.py` (SubagentStop, eşzamanlı) reviewer raporunda `VERDICT:`, yazar agent ve
+  tarayıcı testçisi raporunda `STATUS:` satırı yoksa `decision: block` ile bir kez hatırlatır. Döngü olmaz: ikinci durmada
+  `stop_hook_active` gelir ve kanca karışmaz. Yalnız satırın varlığını zorlar; danışman agent'lara (architect, scope-advisor) ve
+  başka plugin'lerin agent'larına dokunmaz. Yazar agent listesi testte agent dosyalarıyla eşitlenir. `KG_REQUIRE_OUTCOME=off` kapatır.
 - **Varsayılan gate ve devir sözleşmesi:** `references/finish-gate-default.md` profilde `Finish gate` yokken hangi değişikliğin
   hangi reviewer'ı gerektirdiğini verir (profil gate'i her zaman önceliklidir); `release`, `verify-change` ve `add-migration`
   ona düşer. `references/review-packet.md` reviewer'a verilecek kanıtı (diff dosya yoluyla, tek paket, reviewer'lar aynı turda)
@@ -106,7 +110,9 @@ olarak kurmaz. Tüketici projelerin `Project profile` sözleşmesi değişmez.
 
 - Codex tarafı Claude kadar sınanmadı: agent'ların yüklenmesi ve `$verify-change` doğrulandı, diğer skill'ler denenmedi.
 - `frontend-browser-tester` gerçek Chrome oturumunda denenmedi.
-- `bypassPermissions` modunda kancanın `ask` kararının davranışı ve Windows'ta `python` yedeği sınanmadı.
+- Etkileşimli oturumda `bypassPermissions` modunda kancanın `ask` kararının davranışı ve Windows'ta `python` yedeği sınanmadı.
+- `verify-change` model tarafından çağrılabilir, ancak denemelerde model iş bitiminde onu kendiliğinden çağırmadı; pratikte
+  hâlâ çoğunlukla kullanıcı komutuyla çalışır.
 - Eval vakalarından kabuk gerektiren ikisi sandbox arka ucu (Linux'ta `bubblewrap` + `socat`) olmayan makinede koşmaz.
 - `release`, `rollback`, `live-check`, `add-migration` canlı bir ortamda uçtan uca çalıştırılmadı; yalnız talimat düzeyinde gözden geçirildi.
 - Yerel `.codex/agents/` keşfi ve `Stop` kancası desteği istemciye bağlıdır. Eski veya bu özellikleri

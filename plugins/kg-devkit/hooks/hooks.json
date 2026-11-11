@@ -29,6 +29,15 @@
         "hooks": [
           {
             "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/require_outcome.py\" || python \"${CLAUDE_PLUGIN_ROOT}/hooks/require_outcome.py\"",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
             "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/agent_run_log.py\" \"${CLAUDE_PLUGIN_DATA}\" || python \"${CLAUDE_PLUGIN_ROOT}/hooks/agent_run_log.py\" \"${CLAUDE_PLUGIN_DATA}\"",
             "timeout": 5,
             "async": true

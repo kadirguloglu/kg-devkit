@@ -15,6 +15,8 @@ danışmanlığı) bölümünü kullan. Do not open a public issue; use **Securi
   belirteçlere ayırarak); her komutu yakalamayı garanti etmez. Takma ad, değişken, betik ve MCP çağrıları görünmez.
 - **`hooks/agent_run_log.py` yalnız meta veri yazar** (olay, oturum ve agent kimliği/türü, izin modu, zaman, `VERDICT`/`STATUS` değeri); prompt, komut veya
   rapor metni kaydetmez. Dosya yerelde, plugin veri dizininde kalır; `KG_AGENT_LOG=off` ile kapatılır.
+- **`hooks/require_outcome.py` yalnız sonuç satırının varlığını zorlar** (`VERDICT:`/`STATUS:`); hükmün doğruluğunu
+  kanıtlamaz. Bir reviewer'ın `PASS` demesi incelemenin yeterli olduğu anlamına gelmez.
 - **Yazma yetkisi** yalnız repo sahibi ve belirlenen collaborator'dadır. Dışarıdan katkı fork + PR iledir.
 
 ## Katkı vermeden önce / Before contributing

@@ -28,6 +28,8 @@ ile seviye seçilir. Bu dosya kullanıcıya dönük etkiyi özetler; taslağı `
   skill'lerine yönlendirir.
 - **Değişen:** Agent'lar profili bağlamda görüyorsa `AGENTS.md`/`CLAUDE.md` dosyasını yeniden okumaz. **Yapılacak:** repoda hem
   `AGENTS.md` hem `CLAUDE.md` varsa ve profil `AGENTS.md`'deyse `CLAUDE.md`'ye `@AGENTS.md` satırını ekle; yoksa profil görünmez.
+- **Eklenen:** `require_outcome.py` kancası: `VERDICT:` satırı olmadan biten reviewer'ı ve `STATUS:` satırı olmadan biten yazar
+  agent'ı bir kez geri çevirip satırı ister (`KG_REQUIRE_OUTCOME=off` kapatır).
 - **Eklenen:** Profilde `Finish gate` yoksa `release`, `verify-change` ve `add-migration` kit'in varsayılan gate tablosunu
   kullanır (`references/finish-gate-default.md`); reviewer'lara kanıt tek pakette, dosya yoluyla ve aynı turda verilir
   (`references/review-packet.md`). Reviewer `description`'ları çağıranın vereceği girdiyi söyler; diff verilmeyen reviewer
@@ -43,7 +45,7 @@ ile seviye seçilir. Bu dosya kullanıcıya dönük etkiyi özetler; taslağı `
   döner. Skill'lere "profil sınır ekleyebilir, skill'deki sınırı kaldıramaz" kuralı eklendi. `frontend-browser-tester` için
   `maxTurns: 100`; `live-check` sırasında `Edit`/`Write` araçları kapalı.
 - **Doküman/Altyapı:** `scripts/lint_plugin.py` (agent/skill mekanik kuralları, CI), genişletilmiş kanca testleri (242 komut
-  örneği, uçtan uca, süre sınırı), `plugins/kg-devkit/evals/` altında beş davranış testi vakası, `plugin.json`'a lisans/depo/anahtar
+  örneği, uçtan uca, süre sınırı, sonuç satırı kancası), `plugins/kg-devkit/evals/` altında beş davranış testi vakası, `plugin.json`'a lisans/depo/anahtar
   kelimeler. Mimari analiz raporları `docs/analysis/` altında.
 
 ## 0.8.9 – 2026-11-09 ([#21](https://github.com/kadirguloglu/kg-devkit/pull/21))

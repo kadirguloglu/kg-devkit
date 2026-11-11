@@ -1,6 +1,6 @@
 ---
 name: verify-change
-description: Review the current diff and run the smallest meaningful verification (focused build/tests, docs checks, gate-triggered reviewers) before handing work back. Use when implementation of a change is finished and before saying it is done, or when the user asks for a final check. Never commits, pushes, deploys or resets data.
+description: Final check of a finished change - reads the diff, runs the smallest meaningful verification (focused build/tests, docs checks) and calls the reviewers the finish gate requires. Use proactively every time you finish implementing a code, schema, config or docs change, before telling the user it is done; also when the user asks for a final check. Never commits, pushes, deploys or resets data.
 ---
 
 # Change verification
