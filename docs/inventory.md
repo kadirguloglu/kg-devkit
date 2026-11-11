@@ -60,11 +60,13 @@ olarak kurmaz. Tüketici projelerin `Project profile` sözleşmesi değişmez.
   `python3` yoksa `python` denenir, o da yoksa sessizce geçer (fail-open); 5 sn zaman aşımı. `KG_GUARD_LOCAL_COMPOSE=allow`
   yerel compose'u, `KG_GUARD_DISABLE=git,migrate,deploytools` adı verilen grupları kapatır. Canlıda doğrulandı (Claude Code
   2.1.322): kanca ana oturumda ve alt-agent'ta çalışır; `claude -p` ile varsayılan, `dontAsk` ve `bypassPermissions` modlarında `ask` kararı ret olarak uygulanır.
-  Testler: `python3 scripts/test_guard_infra.py` (CI'da çalışır; kural listeleri, uçtan uca, ortam değişkenleri, süre sınırı).
+  Testler: `python3 scripts/test_guard_infra.py` (CI'da çalışır; kural listeleri, uçtan uca, ortam değişkenleri, süre sınırı,
+  çalışma kaydı ve özeti, sonuç satırı kancası).
 - **Çalışma kaydı kancası:** `hooks/agent_run_log.py` (SubagentStart/SubagentStop, eşzamansız) her agent çalıştırmasını
   `${CLAUDE_PLUGIN_DATA}/agent-runs.jsonl` dosyasına yazar: yalnız olay, oturum ve agent kimliği/türü, izin modu, zaman ve
   rapordaki `VERDICT`/`STATUS` değeri. Agent gövdelerindeki eski `Logging:` paragrafının yerini alır (Codex çıktısında paragraf
-  korunur). Delegasyon sayısı, süre ve hüküm dağılımı buradan ölçülür (`--summary`). `KG_AGENT_LOG=off` kapatır.
+  korunur). Delegasyon sayısı, süre ve hüküm dağılımı buradan ölçülür (`--summary`; aynı agent'ın tekrar eden durmaları tek çalışma
+  sayılır, son sonuç geçerlidir). `KG_AGENT_LOG=off` kapatır.
 - **Sonuç satırı kancası:** `hooks/require_outcome.py` (SubagentStop, eşzamanlı) reviewer raporunda `VERDICT:`, yazar agent ve
   tarayıcı testçisi raporunda `STATUS:` satırı yoksa `decision: block` ile bir kez hatırlatır. Döngü olmaz: ikinci durmada
   `stop_hook_active` gelir ve kanca karışmaz. Yalnız satırın varlığını zorlar; danışman agent'lara (architect, scope-advisor) ve

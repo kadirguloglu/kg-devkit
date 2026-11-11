@@ -86,7 +86,7 @@ Tek kaynak Claude tarafıdır. Plugin dağıtımı `codex/`, bu reponun bakım a
 ```bash
 python3 scripts/build-codex.py            # kural skill'lerini, codex/ ve .codex/ çıktılarını güncelle
 python3 scripts/build-codex.py --check    # üretilen dosyaların güncelliğini denetle
-python3 scripts/test_guard_infra.py       # kanca testleri (kurallar, uçtan uca, süre sınırı, çalışma kaydı)
+python3 scripts/test_guard_infra.py       # kanca testleri (kurallar, uçtan uca, süre sınırı, çalışma kaydı, sonuç satırı)
 python3 scripts/lint_plugin.py            # agent/skill mekanik kuralları
 python3 scripts/test_sync_claude_codex.py # bakım dönüşümü ve kanca testleri
 claude plugin validate . && claude plugin validate plugins/kg-devkit
