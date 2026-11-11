@@ -9,6 +9,7 @@ import hashlib
 import json
 from pathlib import Path, PurePosixPath
 import re
+import signal
 import sys
 import time
 import tomllib
@@ -196,13 +197,26 @@ def sync(root, check=False):
             return 1
         print(".codex/ bakım çıktıları güncel.")
         return 0
-    for name in removed:
-        target(root, name).unlink()
-    for name in sorted(changed, key=lambda name: (name == MANIFEST, name)):
-        content = changed[name]
-        path = target(root, name)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(content, encoding="utf-8")
+    # Yazma adımı bölünmez: Ctrl+C çıktılar ile manifest arasına girerse .codex/ tutarsız kalır (--watch'ta yarış).
+    # Kesinti, bütün dosyalar yazılana kadar ertelenir ve sonra yeniden yükseltilir.
+    interrupted = []
+    try:
+        previous_handler = signal.signal(signal.SIGINT, lambda *_: interrupted.append(True))
+    except ValueError:  # ana iş parçacığı dışında sinyal işleyici kurulamaz
+        previous_handler = None
+    try:
+        for name in removed:
+            target(root, name).unlink()
+        for name in sorted(changed, key=lambda name: (name == MANIFEST, name)):
+            content = changed[name]
+            path = target(root, name)
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(content, encoding="utf-8")
+    finally:
+        if previous_handler is not None:
+            signal.signal(signal.SIGINT, previous_handler)
+    if interrupted:
+        raise KeyboardInterrupt
     print(f".codex/: {len(changed)} dosya güncellendi, {len(removed)} eski çıktı kaldırıldı.", flush=True)
     return 0
 

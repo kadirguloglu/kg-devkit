@@ -45,6 +45,8 @@ ile seviye seçilir. Bu dosya kullanıcıya dönük etkiyi özetler; taslağı `
   `browser-test` sonucu bekleyerek çalışır (`background: false`); servis başlatma komutu reddedilirse agent `STATUS: BLOCKED`
   döner. Skill'lere "profil sınır ekleyebilir, skill'deki sınırı kaldıramaz" kuralı eklendi. `frontend-browser-tester` için
   `maxTurns: 100`; `live-check` sırasında `Edit`/`Write` araçları kapalı.
+- **Doküman/Altyapı:** `sync-claude-codex.py` yazma adımını bölünmez yapar: `--watch` sırasında Ctrl+C çıktılar ile manifest arasına
+  girerse `.codex/` tutarsız kalıyordu (CI'da ara sıra kırılan `--watch` testinin nedeni).
 - **Doküman/Altyapı:** `scripts/lint_plugin.py` (agent/skill mekanik kuralları, CI), genişletilmiş kanca testleri (242 komut
   örneği, uçtan uca, süre sınırı, sonuç satırı kancası), `plugins/kg-devkit/evals/` altında beş davranış testi vakası, `plugin.json`'a lisans/depo/anahtar
   kelimeler. Mimari analiz raporları `docs/analysis/` altında.
