@@ -4,7 +4,7 @@ Sürümler `main`'e her push'ta otomatik artar (`bump-version.yml`): varsayılan
 ile seviye seçilir. Bu dosya kullanıcıya dönük etkiyi özetler; taslağı `kit-release-notes` agent'ı çıkarır
 (bkz. [docs/inventory.md](docs/inventory.md)). Kategoriler: **Kırıcı**, **Eklenen**, **Değişen**, **Düzeltilen**, **Doküman/Altyapı**.
 
-## Yayınlanmadı (öneri: minor)
+## 0.9.0 – 2026-11-11 ([#22](https://github.com/kadirguloglu/kg-devkit/pull/22))
 - **Değişen:** Güvenlik kancası (`guard-infra.py`) yeniden yazıldı: komutu belirteçlere ayırır. Artık onaya düşenler:
   fiilden önce bayrak taşıyan komutlar (`helm -n prod uninstall`, `terraform -chdir=… destroy`, `docker --context prod compose up`),
   çok satırlı `kubectl`, `bash -c`/`ssh`/`$(…)` içindeki komutlar, bulut secret okuma (`aws secretsmanager get-secret-value`,
