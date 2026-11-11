@@ -53,7 +53,7 @@ olarak kurmaz. Tüketici projelerin `Project profile` sözleşmesi değişmez.
   `kubectl/oc/helm/terraform/tofu`, `docker`/`docker compose`, migration (`dotnet ef`, Prisma, Alembic, Django, Rails, Flyway…),
   dağıtım aracı (`helmfile`, `pulumi`, `argocd`, `flux`, `ansible-playbook`…) ve bulut CLI (`doctl/gcloud/az/oci/aws`) komutlarını,
   ayrıca `git push --force`, `git reset --hard`, `git clean -f`, secret görünümlü dosyanın `git add` edilmesini ve bir kit
-  agent'ının içinden gelen `git commit`/`push`/`merge`/`rebase`/`tag` komutlarını onaya düşürür
+  agent'ının içinden gelen `git commit`/`push`/`merge`/`rebase`/`tag`/`cherry-pick`/`revert` komutlarını onaya düşürür
   (bloklamaz, `ask`; mesajda çalıştıran agent yazar). Komut `shlex` ile belirteçlere ayrılır: tırnaklı metin komut sayılmaz,
   satır devamı ve fiilden önceki bayraklar çözülür, `bash -c`/`ssh`/`sudo`/`xargs`/`$(…)` içine girilir, `--help` ve
   `--dry-run=client` sorulmaz; ayrıştırılamayan komutta şüphede sorulur. Claude'a özgüdür; Codex'te yoktur. Sınırlar: yalnız

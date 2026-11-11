@@ -59,7 +59,7 @@ birim testleriyle doğrulandı.
 | A-10 | Deney yapıldı, **katman değiştirilmedi** | E-5 kolay vakalarda fark göstermedi, ama bu reviewer yalnız bağımlılık değişince çalışır: mutlak tasarruf inceleme başına birkaç senttir, kaçırılan bir tedarik zinciri sorununun bedeli ise yüksektir. 0.8.1'deki bilinçli `opus` kararı korunur; değiştirmek isterseniz tek satır (`model: sonnet`) |
 | S-01 | Uygulandı | `rollback` → `${CLAUDE_PLUGIN_ROOT}/skills/live-check/SKILL.md` |
 | S-02 | Uygulandı, etkisi görülmedi | `verify-change` model-çağrılabilir ve açıklaması güçlendirildi; denemelerde model yine de kendiliğinden çağırmadı (deney S-02) |
-| S-03 | Kısmen | Gate/paket kuralları referans dosyalarında; `browser-test` tekrarı kaldırıldı. "Legacy Release" paragrafı üç skill'de bırakıldı (kısa ve güvenlik açısından yerinde durması tercih edildi) |
+| S-03 | Uygulandı | Gate/paket kuralları referans dosyalarında; `browser-test` tekrarı kaldırıldı. "Legacy Release" kuralı üç skill'de artık harfi harfine aynı tek cümle (lint eşitliği zorlar); cümle zaten kısa olduğu için referans dosyasına taşınmadı |
 | S-04 | Uygulandı | `live-check`: `disallowed-tools: Edit, Write, NotebookEdit` (alan dokümanda var; etkisi canlıda sınanmadı) |
 | S-05 | Uygulandı | Varsayılanla aynı `user-invocable: true` satırları silindi |
 | I-01 | Uygulandı | `references/finish-gate-default.md`; üç skill ona düşer; profil gate'i önceliklidir |
@@ -76,7 +76,7 @@ birim testleriyle doğrulandı.
 | D-03 | Çözüldü (ölçüm) | Bkz. deney D-03 |
 | D-04 | Uygulandı | Profil şablonunda `@AGENTS.md` notu |
 
-Özet: 27 uygulandı, 6 kısmen, 1 deney sonrası bilinçli olarak değiştirilmedi (A-10), 1 ölçümle kapandı (D-03).
+Özet: 28 uygulandı, 5 kısmen, 1 deney sonrası bilinçli olarak değiştirilmedi (A-10), 1 ölçümle kapandı (D-03).
 
 ## 3. Değişiklik sonrası ölçümler
 
@@ -100,7 +100,7 @@ bir takastır; karşılığın gerçekleşip gerçekleşmediği **ölçülmedi**
   `stop/deploy`, ORM migration'ları, `git push --force`, `git reset --hard`, `git clean -f`, `git add .env`.
   Kapatma: `KG_GUARD_DISABLE=git,migrate,deploytools`.
 - Daha önce sorulan bazıları artık sorulmaz: tırnak içindeki komut adları, `--help`, `--dry-run=client`, salt-okuma bulut komutları.
-- Bir kit agent'ının içinden gelen `git commit`/`push`/`merge`/`rebase`/`tag` onay ister (`KG_GUARD_DISABLE=git` bunu da kapatır).
+- Bir kit agent'ının içinden gelen `git commit`/`push`/`merge`/`rebase`/`tag`/`cherry-pick`/`revert` onay ister (`KG_GUARD_DISABLE=git` bunu da kapatır).
 - Sonuç satırı (`VERDICT:`/`STATUS:`) olmadan biten kit agent'ı bir kez geri çevrilir (`KG_REQUIRE_OUTCOME=off`).
 - Agent raporlarında "çalışmaya başladım / çalışmam tamamlandı" satırları (Claude'da) yok; kayıt dosyada.
 - `verify-change` kullanıcı yazmadan da çalışabilir.
@@ -115,5 +115,4 @@ bir takastır; karşılığın gerçekleşip gerçekleşmediği **ölçülmedi**
 3. Sınanamayanlar: etkileşimli oturumda `bypassPermissions`; fork içi onay istemi; Windows'ta `python` yedeği; Codex
    tarafı; Claude in Chrome ile tarayıcı testi; gerçek kümede `release deploy` ve `rollback` uygulaması.
 4. Kabuk gerektiren iki eval vakasının sandbox'lı makinede koşulması.
-5. Bilinçli bırakılanlar: model katmanları (A-10), tarayıcı testçisinde `Bash` kısıtı (A-08), üç skill'deki
-   "legacy Release" paragrafı (S-03), plugin ikonu (M-02).
+5. Bilinçli bırakılanlar: model katmanları (A-10), tarayıcı testçisinde `Bash` kısıtı (A-08), plugin ikonu (M-02).

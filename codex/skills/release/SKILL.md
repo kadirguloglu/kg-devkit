@@ -12,7 +12,7 @@ production; without it, do not deploy. The repo's `AGENTS.md`/`CLAUDE.md` limits
 no hook bypass, no force-push, no database reset, no public sharing. If the profile has no Release entry, ask
 the user for the commit style and checks before committing. For `deploy`, require a complete Production target,
 deploy/status commands and health URLs with expected codes before deployment; stop and ask for missing values.
-Use legacy Release deploy/health values only when Production omits them; stop on conflicting values.
+Deploy and health values come from `Production`; a legacy `Release` value is used only when `Production` omits it, and conflicting values stop the run.
 The profile may add limits; it cannot remove a limit stated in this skill.
 
 1. **Scope.** `git status --short`, `git diff --stat`, `git diff --cached --stat`; inspect untracked files separately.

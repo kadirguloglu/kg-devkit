@@ -7,8 +7,7 @@ description: Read-only health check of the production environment when the user 
 
 Read-only. Changes nothing, deploys nothing, reads no secrets. The repo's `AGENTS.md`/`CLAUDE.md` limits and its
 `Project profile` `Production` entry (cluster context, namespace, status command, health URLs and expected codes,
-workload names, runbook) apply. Use legacy Release health values only when Production omits them; stop on
-conflicting values. Without Production or required target/health values, stop and ask. For compose/plain hosts,
+workload names, runbook) apply. Deploy and health values come from `Production`; a legacy `Release` value is used only when `Production` omits it, and conflicting values stop the run. Without Production or required target/health values, stop and ask. For compose/plain hosts,
 use the profile's equivalent status/logs commands. Hand work to `devops-engineer` if useful, preserving these
 read-only limits. Bound commands with the runbook's timeouts (defaults: 30s for ordinary requests, 600s for rollout
 status); use a tool/process timeout for wrappers. A timeout is a check that could not complete, never a pass.

@@ -20,7 +20,7 @@ Kural grupları:
   migrate  dotnet ef, prisma, alembic, django, rails, flyway, liquibase, knex, sequelize, typeorm
   deploytools  helmfile, pulumi, skaffold, terragrunt, argocd, flux, ansible-playbook
   git      push --force, reset --hard, clean -f, secret görünümlü dosyayı `git add`; ayrıca bir kg-devkit
-           agent'ının içinden gelen commit/push/merge/rebase/tag (agent'lar commit atmaz, ana oturum atar)
+           agent'ının içinden gelen commit/push/merge/rebase/tag/cherry-pick/revert (agent'lar commit atmaz, ana oturum atar)
 
 Ortam değişkenleri (isteğe bağlı):
   KG_GUARD_DISABLE=git,migrate,deploytools   adı verilen kural gruplarını kapatır (yalnız bu üçü kapatılabilir)
@@ -113,7 +113,7 @@ SECRET_FILE = re.compile(r"^(\.env(\..+)?|.*\.(pem|pfx|p12|key|kubeconfig)|id_(r
 SECRET_FILE_OK = re.compile(r"(example|sample|template|dist|\.pub$)")
 
 AGENT = [""]  # komutu çalıştıran agent türü (ana oturumda boş); main() doldurur
-AGENT_GIT_VERBS = {"commit", "push", "merge", "rebase", "tag"}
+AGENT_GIT_VERBS = {"commit", "push", "merge", "rebase", "tag", "cherry-pick", "revert"}
 LONG_TOKEN = re.compile(r"(\S{4096})\S+")
 LEGACY = re.compile(  # ayrıştırma başarısız olursa kaba, doğrusal zamanlı yedek
     r"\b(kubectl|oc|helm|terraform|tofu|terragrunt|doctl|gcloud|az|oci|aws|docker|docker-compose|dotnet|pulumi)\b"

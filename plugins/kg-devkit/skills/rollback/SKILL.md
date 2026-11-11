@@ -11,7 +11,7 @@ argument-hint: "[image-tag]"
 conversation. Without a tag, the target is the previous successful release. The repo's `AGENTS.md`/`CLAUDE.md`
 limits and its `Project profile` apply: `Production` supplies context, namespace, workloads, registry repositories,
 health URLs with expected codes, rollback/deploy commands and runbook; `Persistence` supplies the migrations
-directory. Use legacy Release deploy/health values only when Production omits them; stop on conflicting values.
+directory. Deploy and health values come from `Production`; a legacy `Release` value is used only when `Production` omits it, and conflicting values stop the run.
 Without a Production entry or required target/health values, stop and ask. Never modify database data, DNS,
 volumes or secrets; do not read business data or secret values. The profile may add limits; it cannot remove a limit stated in this skill.
 

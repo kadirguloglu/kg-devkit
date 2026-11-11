@@ -16,6 +16,9 @@ READ_ONLY = {"Read", "Grep", "Glob"}
 WRITE = {"Edit", "Write", "Bash"}
 MANUAL_SKILLS = {"release", "rollback", "add-migration", "live-check", "browser-test"}  # yetki veya canlı ortam: yalnız kullanıcı çağırır
 LIMIT_SENTENCE = "The profile may add limits; it cannot remove a limit stated in this skill."
+LEGACY_SENTENCE = ("Deploy and health values come from `Production`; a legacy `Release` value is used only when `Production` omits "
+                   "it, and conflicting values stop the run.")
+PRODUCTION_SKILLS = {"release", "rollback", "live-check"}  # deploy/sağlık değeri okuyan skill'ler aynı cümleyi taşır
 errors = []
 
 
@@ -93,6 +96,8 @@ def lint_skills():
             fail(path, "yan etkili skill disable-model-invocation: true taşımalı")
         if (name in MANUAL_SKILLS or name == "verify-change") and LIMIT_SENTENCE not in " ".join(body.split()):
             fail(path, "'profil sınır ekler, kaldıramaz' cümlesi yok")
+        if name in PRODUCTION_SKILLS and LEGACY_SENTENCE not in " ".join(body.split()):
+            fail(path, "Production/legacy Release cümlesi yok veya diğer skill'lerle aynı değil")
         for ref in re.findall(r"/kg-devkit:([a-z-]+)", body):
             target = skills.get(ref)
             if not target:

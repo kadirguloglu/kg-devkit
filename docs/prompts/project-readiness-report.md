@@ -58,7 +58,7 @@ commit/revision eşlemesi ve uygulanan şemanın salt-okunur doğrulama yöntemi
 tek başına canlı şema kanıtı sayma. Gerekli reviewer yoksa veya sonucu FAIL/UNCLEAR ise doğrulamayı geçmiş gösterme.
 
 Her agent ve skill ayrıca profildeki `Report language`'ı izler; `Hard limits` yalnız matriste yazan satırlarda okunur ve yalnız kısıt ekler. Commit/push yok (yalnız `release` kullanıcı
-çağırınca commit+push yapar). Plugin kancası canlıyı değiştiren veya secret okuyan komutları, migration/dağıtım araçlarını ve `git push --force`/`reset --hard`/`clean -f`/secret dosyası `git add` komutlarını, ayrıca bir kit agent'ının içinden gelen `git commit`/`push`/`merge`/`rebase`/`tag` komutlarını onaya düşürür (ana oturumun commit'i etkilenmez; yalnız Claude'da; `KG_GUARD_DISABLE`, `KG_GUARD_LOCAL_COMPOSE` ortam değişkenleri bazı grupları gevşetir).
+çağırınca commit+push yapar). Plugin kancası canlıyı değiştiren veya secret okuyan komutları, migration/dağıtım araçlarını ve `git push --force`/`reset --hard`/`clean -f`/secret dosyası `git add` komutlarını, ayrıca bir kit agent'ının içinden gelen `git commit`/`push`/`merge`/`rebase`/`tag`/`cherry-pick`/`revert` komutlarını onaya düşürür (ana oturumun commit'i etkilenmez; yalnız Claude'da; `KG_GUARD_DISABLE`, `KG_GUARD_LOCAL_COMPOSE` ortam değişkenleri bazı grupları gevşetir).
 `test-discipline`, `docs-maintenance`, `ops-safety` kural skill'leri profil alanı gerektirmez; skill'lerdeki sınırları profil kaldıramaz, yalnız ekleyebilir.
 Agent'lar profili bağlamda görüyorsa dosyayı yeniden okumaz: hem `AGENTS.md` hem `CLAUDE.md` varsa ve profil `AGENTS.md` içindeyse `CLAUDE.md`'de `@AGENTS.md` satırı olmalı, yoksa ana oturum profili görmez (bunu uyarı olarak raporla).
 
