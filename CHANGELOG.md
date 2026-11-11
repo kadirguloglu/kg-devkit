@@ -12,7 +12,8 @@ ile seviye seçilir. Bu dosya kullanıcıya dönük etkiyi özetler; taslağı `
   Django/Rails/Flyway migration'ları, `helmfile`/`pulumi`/`argocd`/`flux`/`ansible-playbook`, `git push --force`, `git reset --hard`,
   `git clean -f` ve secret görünümlü dosyanın `git add` edilmesi. Artık sorulmayanlar: tırnak içinde geçen komut adları
   (`grep 'kubectl apply'`, commit mesajları), bayrak değerleri (`-l run=api`), `--help`, `--dry-run=client`, `gcloud run … describe`
-  gibi salt-okuma komutları. Onay mesajında komutu çalıştıran agent yazar. `KG_GUARD_LOCAL_COMPOSE=allow` yerel
+  gibi salt-okuma komutları. Onay mesajında komutu çalıştıran agent yazar. Bir kit agent'ının içinden gelen
+  `git commit`/`push`/`merge`/`rebase`/`tag` de onaya düşer (agent'lar commit atmaz; ana oturumun commit'i etkilenmez). `KG_GUARD_LOCAL_COMPOSE=allow` yerel
   `docker compose` onayını, `KG_GUARD_DISABLE=git,migrate,deploytools` adı verilen grupları kapatır. Kancaya 5 sn zaman aşımı
   ve `python` yedeği eklendi. Etkileşimsiz çalışmada (`claude -p`, `dontAsk`) onay isteyen komut reddedilir: migration,
   force-push veya `reset --hard` çalıştıran otomasyonlar onayı etkileşimli vermeli ya da ilgili grubu `KG_GUARD_DISABLE` ile kapatmalıdır.

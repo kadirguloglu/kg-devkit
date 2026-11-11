@@ -52,7 +52,8 @@ olarak kurmaz. Tüketici projelerin `Project profile` sözleşmesi değişmez.
 - **Altyapı kancası:** `plugins/kg-devkit/hooks/guard-infra.py` (PreToolUse/Bash) canlı ortamı değiştiren veya secret okuyan
   `kubectl/oc/helm/terraform/tofu`, `docker`/`docker compose`, migration (`dotnet ef`, Prisma, Alembic, Django, Rails, Flyway…),
   dağıtım aracı (`helmfile`, `pulumi`, `argocd`, `flux`, `ansible-playbook`…) ve bulut CLI (`doctl/gcloud/az/oci/aws`) komutlarını,
-  ayrıca `git push --force`, `git reset --hard`, `git clean -f` ve secret görünümlü dosyanın `git add` edilmesini onaya düşürür
+  ayrıca `git push --force`, `git reset --hard`, `git clean -f`, secret görünümlü dosyanın `git add` edilmesini ve bir kit
+  agent'ının içinden gelen `git commit`/`push`/`merge`/`rebase`/`tag` komutlarını onaya düşürür
   (bloklamaz, `ask`; mesajda çalıştıran agent yazar). Komut `shlex` ile belirteçlere ayrılır: tırnaklı metin komut sayılmaz,
   satır devamı ve fiilden önceki bayraklar çözülür, `bash -c`/`ssh`/`sudo`/`xargs`/`$(…)` içine girilir, `--help` ve
   `--dry-run=client` sorulmaz; ayrıştırılamayan komutta şüphede sorulur. Claude'a özgüdür; Codex'te yoktur. Sınırlar: yalnız

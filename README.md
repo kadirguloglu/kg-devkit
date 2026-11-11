@@ -58,7 +58,8 @@ agent'ı/skill'i plugin'i ezer. Betikler yalnız sembolik bağ kurar, var olan d
   (`dotnet ef`, Prisma, Alembic, Django, Rails, Flyway…), dağıtım araçları (`helmfile`, `pulumi`, `argocd`, `flux`, `ansible-playbook`…),
   bulut CLI'larının (`doctl`, `gcloud`, `az`, `oci`, `aws`) oluşturma/değiştirme/silme/durdurma/dağıtım komutlarını; ayrıca
   `git push --force`, `git reset --hard`, `git clean -f` ve secret görünümlü dosyanın `git add` edilmesini kullanıcı onayına
-  düşürür (bloklamaz; mesajda çalıştıran agent yazar). Fiilden önce gelen bayrakları, satır devamını ve `bash -c`/`ssh`/`sudo`
+  düşürür (bloklamaz; mesajda çalıştıran agent yazar). Bir kit agent'ının içinden gelen `git commit`/`push`/`merge`/`rebase`/`tag`
+  de sorulur: agent'lar commit atmaz, bunu ana oturum yapar. Fiilden önce gelen bayrakları, satır devamını ve `bash -c`/`ssh`/`sudo`
   sarmalayıcılarını çözer; tırnak içindeki metni, `--help` ve `--dry-run=client` komutlarını sormaz. Yalnız Bash komut metnine
   bakar: kabuk kısayolu/fonksiyon, değişken, betik içinde çağrılan komutlar ve MCP araçları görünmez; `python3`/`python` yoksa
   sessizce geçer. Etkileşimsiz çalışmada (`claude -p`, `dontAsk`) onay isteyen komut reddedilir. Ayarlar:

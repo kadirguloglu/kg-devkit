@@ -49,7 +49,7 @@ birim testleriyle doğrulandı.
 | A-01 | Uygulandı | 6 reviewer + architect `description`'ında girdi; `NEEDS:` kuralı; `references/review-packet.md` |
 | A-02 | Uygulandı | Dar tetik; `ACTION FOR MAIN SESSION` bloğu. Olumlu tetik `sonnet` ile çalıştı (deney A-02 b) |
 | A-03 | Uygulandı | 6 yazar agent'ta `STATUS/CHANGED/CHECKS/NOT RUN/HANDOFF`; tarayıcı testçisinde tek `STATUS:` satırı; developer'lara "sembolün varlığını doğrula" |
-| A-04 | Kısmen | Onay mesajında agent adı; kanca kapsamı genişledi. Onayın ana oturumdan aktarılması (metin) aynen duruyor |
+| A-04 | Kısmen | Onay mesajında agent adı; kanca kapsamı genişledi; kit agent'ının içinden gelen `git commit`/`push` kancada sorulur (canlıda doğrulandı). Canlı ortam onayının ana oturumdan aktarılması (metin) aynen duruyor |
 | A-05 | Uygulandı | "Profil bağlamdaysa dosyayı yeniden okuma" (15 agent) |
 | A-06 | Uygulandı | `Logging:` paragrafı kaynaktan kaldırıldı; `hooks/agent_run_log.py`. Codex çıktısında paragraf korunur (kanca yok) |
 | A-07 | Uygulandı | Girdi işleme/enjeksiyon/XSS/gömülü secret/kripto maddesi; `description` kiracısız projeleri de kapsar. Ad değişmedi |

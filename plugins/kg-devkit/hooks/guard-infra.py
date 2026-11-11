@@ -19,7 +19,8 @@ Kural grupları:
   secrets  vault, sops
   migrate  dotnet ef, prisma, alembic, django, rails, flyway, liquibase, knex, sequelize, typeorm
   deploytools  helmfile, pulumi, skaffold, terragrunt, argocd, flux, ansible-playbook
-  git      push --force, reset --hard, clean -f, secret görünümlü dosyayı `git add`
+  git      push --force, reset --hard, clean -f, secret görünümlü dosyayı `git add`; ayrıca bir kg-devkit
+           agent'ının içinden gelen commit/push/merge/rebase/tag (agent'lar commit atmaz, ana oturum atar)
 
 Ortam değişkenleri (isteğe bağlı):
   KG_GUARD_DISABLE=git,migrate,deploytools   adı verilen kural gruplarını kapatır (yalnız bu üçü kapatılabilir)
@@ -111,6 +112,8 @@ DEPLOY_TOOLS = {
 SECRET_FILE = re.compile(r"^(\.env(\..+)?|.*\.(pem|pfx|p12|key|kubeconfig)|id_(rsa|ed25519|ecdsa|dsa)|.*secrets?\.(ya?ml|json|env)|credentials(\.json)?)$")
 SECRET_FILE_OK = re.compile(r"(example|sample|template|dist|\.pub$)")
 
+AGENT = [""]  # komutu çalıştıran agent türü (ana oturumda boş); main() doldurur
+AGENT_GIT_VERBS = {"commit", "push", "merge", "rebase", "tag", "cherry-pick", "revert"}
 LONG_TOKEN = re.compile(r"(\S{4096})\S+")
 LEGACY = re.compile(  # ayrıştırma başarısız olursa kaba, doğrusal zamanlı yedek
     r"\b(kubectl|oc|helm|terraform|tofu|terragrunt|doctl|gcloud|az|oci|aws|docker|docker-compose|dotnet|pulumi)\b"
@@ -295,6 +298,8 @@ def r_git(args, env):
     pos = _positionals(args, {"-C", "-c", "--git-dir", "--work-tree"})
     if not pos:
         return None
+    if AGENT[0].startswith("kg-devkit:") and pos[0] in AGENT_GIT_VERBS and not _is_help(args):
+        return "git " + pos[0] + ": kg-devkit agent'ları commit/push yapmaz, bu işi ana oturum yapar"
     if pos[0] == "push" and (_has(args, "--force", "-f", "--mirror") or any(p.startswith("+") for p in pos[1:])):
         return "git force-push (uzak geçmişi ezer)"
     if pos[0] == "reset" and _has(args, "--hard"):
@@ -447,6 +452,7 @@ def main():
             return
         tool_input = data.get("tool_input")
         command = tool_input.get("command") if isinstance(tool_input, dict) else None
+        AGENT[0] = data["agent_type"] if isinstance(data.get("agent_type"), str) else ""
         reason = check(command)
     except Exception:
         return  # fail-open: kanca hatası geliştirme akışını kilitlemez

@@ -320,6 +320,14 @@ def test_end_to_end():
     # agent adı gerekçeye eklenir; komut metni ve içindeki değerler geri yazılmaz
     out = decision(cmd("TOKEN=abc123 helm -n prod upgrade a ./c", agent_type="kg-devkit:devops-engineer"))
     assert "kg-devkit:devops-engineer" in out["permissionDecisionReason"] and "abc123" not in json.dumps(out)
+    # kg-devkit agent'ı içinden commit/push sorulur; ana oturumda ve başka plugin'in agent'ında sorulmaz
+    for text in ("git commit -m x", "git -C repo push origin feat", "cd app && git merge main", "git tag v1"):
+        assert decision(cmd(text, agent_type="kg-devkit:backend-developer")), text
+        assert decision(cmd(text)) is None, text
+        assert decision(cmd(text, agent_type="other:helper")) is None, text
+    for text in ("git status --short", "git diff --cached", "git log --oneline", "git commit --help"):
+        assert decision(cmd(text, agent_type="kg-devkit:devops-engineer")) is None, text
+    assert decision(cmd("git commit -m x", agent_type="kg-devkit:backend-developer"), {"KG_GUARD_DISABLE": "git"}) is None
     # bozuk veya beklenmeyen girdi: sessiz, çıkış 0 (fail-open)
     for raw in (b"", b"not json", b"[1,2]", b'{"tool_input":"x"}', b'{"tool_input":{"command":["kubectl","delete"]}}', b"null"):
         p = run(GUARD, raw)
