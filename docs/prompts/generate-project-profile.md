@@ -2,13 +2,13 @@
 
 kg-devkit agent ve skill'leri çalıştıkları reponun `AGENTS.md` dosyasındaki `## Project profile` bölümünü okur
 ([şablon](../project-profile-template.md), [gereksinimler](../agent-requirements.md)). Aşağıdaki prompt'u yeni
-projenin kök dizininde Claude Code veya Codex'e ver (kg-devkit reposunu açman gerekmez): repodan çıkarabildiğini çıkarır, **yalnız bulamadığı veya emin olmadığı alanları** sana
-sorar, sonra bölümü yazar.
+projenin kök dizininde Claude Code veya Codex'e ver (kg-devkit reposunu açman gerekmez). Önce projeyi araştırır, ardından
+ilgili her alanı sana sorar. Bulduğu bilgiyi doğrulatır, bulamadığı bilgiyi senden ister ve cevaplarına göre bölümü yazar.
 
 ````markdown
 Görev: Bu reponun AGENTS.md dosyasına (yoksa oluştur; CLAUDE.md varsa yalnız oku, yalnız `@AGENTS.md` satırı eksikse bölüm 4'e göre ekletmeyi öner) `## Project profile` bölümünü ekle veya
-güncelle. Şablon aşağıda (## 0). Bölüm dışındaki içeriği değiştirme. Bunu SORU-CEVAP olarak yürüt: önce repodan çıkar,
-cevabı bulunanı sorma, kalanı kullanıcıya sor. Dil: Türkçe. Bu prompt kendi içinde eksiksizdir: kg-devkit reposundaki dosyalara ihtiyaç duymaz.
+güncelle. Şablon aşağıda (## 0). Bölüm dışındaki içeriği değiştirme. Önce ilgili soruların yanıtlarını projede ara.
+Ardından bulgu olup olmamasına bakmadan ilgili her alanı kullanıcıya sor. Dil: Türkçe. Bu prompt kendi içinde eksiksizdir: kg-devkit reposundaki dosyalara ihtiyaç duymaz.
 
 ## 0. Şablon (alan listesi; kullanılmayan alanı silerek doldur)
 ```markdown
@@ -47,7 +47,8 @@ cevabı bulunanı sorma, kalanı kullanıcıya sor. Dil: Türkçe. Bu prompt ken
 ```
 
 ## 1. Keşif (yalnız oku; komut çalıştırma, canlı sisteme bağlanma)
-Mevcut `## Project profile` varsa önce onu oku; dolu ve repoyla tutarlı alanı yeniden sorma, çelişen/eskiyeni işaretle.
+Mevcut `## Project profile` varsa önce onu oku ve alanlarını repodaki kaynaklarla karşılaştır. Dolu ve tutarlı alanları da
+doğrulatmak için soru listesine al. Çelişen veya eski görünen değerleri işaretle.
 Her alan için değeri ve dayanak dosyayı (yol:satır) çıkar:
 - Layers / dirs: backend/frontend/test dizinleri, bağımlılık yönü
 - Commands: start, status, lint/typecheck/build, odaklı test, tam test (package.json, Makefile, CI, README)
@@ -74,21 +75,24 @@ Her alan için değeri ve dayanak dosyayı (yol:satır) çıkar:
 - Report language ve Hard limits: yasak komutlar, branch politikası, ek kısıtlar
 
 ## 2. Eşleştirme: cevaplı / cevapsız
-Keşiften sonra alanları üç gruba ayır ve kullanıcıya KISA bir tablo olarak göster (alan | durum | değer/dayanak):
-1. **Bulundu:** dayanak dosya var, çelişki yok. Sorma; yalnız tabloda göster.
-2. **Belirsiz:** birden fazla aday veya çelişen kaynak. Aday(lar)ı seçenek diye sun, kullanıcı seçsin.
-3. **Bulunamadı:** repoda dayanak yok. Sor.
-Her zaman kullanıcıya sorulacaklar (çıkarım yazılmaz): Production hedefi ve deploy komutu, Hard limits, Finish gate
-(belgede yoksa sor; kullanıcı istemezse alanı yazma, kit'in varsayılan gate tablosu kullanılır), Dev app test girişi (belgelenmemişse). Tek müşterili olduğu anlaşıldıysa tenant alanlarını sorma.
-`ASO` hakkında yalnız App Store veya Google Play kapsamı olan projelerde ve eksik bilgi ilgili bir ASO kararını etkiliyorsa sor.
+Keşiften sonra ilgili alanları kısa bir tabloda göster (alan | durum | değer/dayanak). Her durum için soru sor.
+
+1. **Bulundu.** Değeri ve `yol:satır` dayanağını paylaş. Güncel ve doğru olduğunu doğrulat veya düzeltmesini iste.
+2. **Belirsiz.** Aday değerleri ve dayanaklarını paylaş. Hangisinin geçerli olduğunu sor.
+3. **Bulunamadı.** Baktığın dosyaları kısaca belirt ve değeri kullanıcıdan iste.
+
+`Production` hedefi ve deploy komutunu, `Hard limits` ve `Finish gate` alanlarını doğrudan kullanıcıya sor.
+`Dev app` kapsamı varsa test girişini de sor. Kullanıcı `Finish gate` istemezse alanı yazma. Kit'in varsayılan gate tablosu kullanılır.
+Kiracı modelini doğrulat. Kullanıcı tek müşterili olduğunu doğrularsa kiracıya özgü alanları atla.
+App Store veya Google Play kapsamı varsa isteğe bağlı `ASO` alanını da aynı şekilde sor.
 
 ## 3. Soru-cevap
 - Soruları gruplar halinde ve en çok 4 soruyla sor (AskUserQuestion varsa onu kullan: cevaplanabilir seçenekler + "Diğer").
-  Her soruda neyi aradığını, nerede baktığını ve varsa önerini söyle.
+  Her soruda neyi aradığını, nerede baktığını ve varsa önerini söyle. Gizli değerler için yalnız dosya yolunu belirt.
 - Kullanıcı "bilmiyorum/geç" derse alanı `BELİRTİLMEMİŞ` yaz; ısrar etme, uydurma.
 - İsteğe bağlı `ASO` alanını mevcut ve ilgili bilgilerle doldur. Bilgi yoksa alanı atla. Girdiler çağrı sırasında da verilebilir.
-- Aynı cevabı iki kez isteme; önceki cevaplardan türeyen alanı (ör. tek müşterili → tenant alanları yok) sormadan ele.
-- Cevapları yazmadan önce özetle ve onay al; onaydan sonra bölümü yaz.
+- Kullanıcının bu oturumda yanıtladığı soruyu tekrarlama. Önceki yanıtlar bir alanı kapsam dışı bırakıyorsa o alanı atla.
+- Profil taslağında kullanıcının doğruladığı veya düzelttiği değerleri esas al. Bölümü yazmadan önce taslağı özetle ve onay al.
 
 ## 4. Yazma kuralları
 - Yalnız ilgili alanları yaz, kullanılmayanı sil. Her alan tek satır/kısa madde; uzun açıklama için belgeye link.
