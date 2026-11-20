@@ -8,8 +8,8 @@ dokümanı için [agent-requirements.md](../agent-requirements.md); eksik alanla
 
 ````markdown
 Görev: Bu projenin kg-devkit agent/skill'leri için ne kadar hazır olduğunu raporla. Kod, AGENTS.md, CLAUDE.md ve diğer dosyalara
-dokunma; yalnız oku. Dil: Türkçe. SORU-CEVAP yürüt: repodan cevaplanabilen hiçbir şeyi sorma; yalnız çözülemeyen
-noktaları en çok 4 soruluk gruplarla (AskUserQuestion varsa onunla) sor.
+dokunma; yalnız oku. Dil: Türkçe. Önce ilgili soruların yanıtlarını projede ara. Ardından bulgu olup olmamasına bakmadan
+ilgili her soruyu kullanıcıya en çok 4 soruluk gruplarla sor (AskUserQuestion varsa onu kullan).
 
 Önemli: agent/skill dosyalarını bu repoda arama ve "bulunamadı" diye raporlama; kit plugin'den gelir. Bu prompt'taki matris tek
 kaynaktır. Kit'in iç yapısını (commit, bakım agent'ları, Codex üretimi, kit tutarsızlıkları) rapora yazma.
@@ -75,10 +75,16 @@ Her agent ve skill ayrıca profildeki `Report language`'ı izler; `Hard limits` 
 Agent'lar profili bağlamda görüyorsa dosyayı yeniden okumaz: hem `AGENTS.md` hem `CLAUDE.md` varsa ve profil `AGENTS.md` içindeyse `CLAUDE.md`'de `@AGENTS.md` satırı olmalı, yoksa ana oturum profili görmez (bunu uyarı olarak raporla).
 
 ## 3. Eşleştirme ve soru-cevap
-Keşif bulgularını matrisle eşleştirip her agent/skill için durumu belirle. Şunlar kaynaktan çözülemezse sor (çözülürse sorma):
-kiracı modeli, canlı ortam türü/hedefi, tarayıcı testi istenip istenmediği, `Finish gate`/`Hard limits` belgede yoksa gerçekten
-yok mu. Çıkarım yapabildiğin şeyi sorma; "geç" denirse durumu "BELİRSİZ" bırak.
-Yalnız mağaza kapsamı olan projelerde ilgili ASO kararını etkileyen eksik girdileri sor.
+Keşif bulgularını matrisle eşleştir ve hazır olma durumunu etkileyen soruları belirle. Kiracı modeli, canlı ortam türü ve
+hedefi, tarayıcı testi ihtiyacı, `Finish gate` ve `Hard limits` gibi ilgili başlıkları kullanıcıya sor.
+
+- Bir cevap bulduysan değeri ve `yol:satır` dayanağını paylaş. Güncel ve doğru olduğunu doğrulat veya düzeltmesini iste.
+- Kaynaklar çelişiyorsa aday değerleri dayanaklarıyla paylaş ve hangisinin geçerli olduğunu sor.
+- Cevap bulamadıysan baktığın dosyaları kısaca belirt ve bilgiyi kullanıcıdan iste.
+
+Mağaza kapsamı olan projelerde ilgili ASO girdilerini de aynı şekilde sor. Gizli değerler için yalnız dosya yolunu belirt.
+Kullanıcının bu oturumda yanıtladığı soruyu tekrarlama. Bulguları yanıtlara göre güncelle ve her agent ve skill'in durumunu
+matrisle belirle. Kullanıcı "geç" derse ilgili durumu "BELİRSİZ" bırak.
 
 ## 4. Çıktı (sohbette; dosya yazma)
 1. **Özet tablo:** agent/skill | durum (HAZIR / ÇIKARIM / DURUR / UYGULANAMAZ / BELİRSİZ) | neden (eksik alan veya dayanak).
