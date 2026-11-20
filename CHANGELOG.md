@@ -4,6 +4,12 @@ Sürümler `main`'e her push'ta otomatik artar (`bump-version.yml`): varsayılan
 ile seviye seçilir. Bu dosya kullanıcıya dönük etkiyi özetler; taslağı `kit-release-notes` agent'ı çıkarır
 (bkz. [docs/inventory.md](docs/inventory.md)). Kategoriler: **Kırıcı**, **Eklenen**, **Değişen**, **Düzeltilen**, **Doküman/Altyapı**.
 
+## Yayınlanmadı (öneri: minor)
+- **Eklenen:** Apple App Store ve Google Play için altı salt-okuma ASO agent'ı (kapsam, arama, yerelleştirme,
+  kreatif, büyüme analizi ve bağımsız mağaza incelemesi) ve Codex karşılıkları. Agent sayısı 15 → 21.
+- **Eklenen:** `Project profile` şablonunda isteğe bağlı `ASO` alanı. Kapsam ve kanıt çağrıda da verilebilir.
+- **Doküman/Altyapı:** ASO rollerinin girdileri ve çağrı örnekleri belgelendi. İki profil prompt'u yeni rollerle eşitlendi.
+
 ## 0.9.0 – 2026-11-11 ([#22](https://github.com/kadirguloglu/kg-devkit/pull/22))
 - **Değişen:** Güvenlik kancası (`guard-infra.py`) yeniden yazıldı: komutu belirteçlere ayırır. Artık onaya düşenler:
   fiilden önce bayrak taşıyan komutlar (`helm -n prod uninstall`, `terraform -chdir=… destroy`, `docker --context prod compose up`),

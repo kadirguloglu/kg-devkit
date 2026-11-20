@@ -1,7 +1,8 @@
 # Project profile şablonu
 
 Her projenin `AGENTS.md` (veya `CLAUDE.md`) dosyasına `## Project profile` başlığıyla eklenir.
-kg-devkit agent ve skill'leri önce bu bölümü okur; yoksa `package.json`/README'den çıkarım yapar ve raporda söyler.
+kg-devkit agent ve skill'leri önce bu bölümü okur. Profil yoksa ASO rolleri çağıranın kanıtını kullanır. Diğer rollerin
+profil olmadan nasıl çalıştığı [agent gereksinimlerinde](agent-requirements.md) açıklanır.
 Yalnız ilgili alanları doldur, kullanılmayanı sil.
 
 Claude Code `AGENTS.md` dosyasını yalnız aynı dizinde veya üstünde `CLAUDE.md` yokken kendiliğinden okur. İkisi de
@@ -29,6 +30,9 @@ varsa ve profil `AGENTS.md` içindeyse `CLAUDE.md`'ye `@AGENTS.md` satırını e
   (performance-reviewer okur)
 - Observability: log/metrik/trace kütüphaneleri ve kuralları, korelasyon/tenant kimliği, log'a girmeyecek veriler, sağlık endpoint'leri
   (observability-reviewer okur)
+- ASO (isteğe bağlı): uygulama adı ve mağaza bağlantıları, hedef platformlar, ülkeler ve diller, hedef kullanıcı, marka dili,
+  doğrulanmış özellikler, analitik olayları, veri dönemi ve mevcut mağaza varlıkları veya kanıt dosyalarının yolları
+  (ASO agent'ları okur; kapsam ve kanıt çağrı sırasında da verilebilir)
 - Finish gate: hangi değişiklik hangi bağımsız kontrolü/reviewer'ı zorunlu kılar (tek kaynak); reviewer geçti ifadesi
   (yazılmazsa kit'in varsayılan gate tablosu kullanılır)
 - Release: changelog dosyası + sürüm kuralı (özellik=minor, düzeltme=patch), commit stili (dil, önek),

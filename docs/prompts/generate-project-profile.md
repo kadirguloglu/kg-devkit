@@ -33,6 +33,9 @@ cevabı bulunanı sorma, kalanı kullanıcıya sor. Dil: Türkçe. Bu prompt ken
   (performance-reviewer okur)
 - Observability: log/metrik/trace kütüphaneleri ve kuralları, korelasyon/tenant kimliği, log'a girmeyecek veriler, sağlık endpoint'leri
   (observability-reviewer okur)
+- ASO (isteğe bağlı): uygulama adı ve mağaza bağlantıları, hedef platformlar, ülkeler ve diller, hedef kullanıcı, marka dili,
+  doğrulanmış özellikler, analitik olayları, veri dönemi ve mevcut mağaza varlıkları veya kanıt dosyalarının yolları
+  (ASO agent'ları okur; kapsam ve kanıt çağrı sırasında da verilebilir)
 - Finish gate: hangi değişiklik hangi bağımsız kontrolü/reviewer'ı zorunlu kılar (tek kaynak); reviewer geçti ifadesi
   (yazılmazsa kit'in varsayılan gate tablosu kullanılır)
 - Release: changelog dosyası + sürüm kuralı (özellik=minor, düzeltme=patch), commit stili (dil, önek),
@@ -59,6 +62,9 @@ Her alan için değeri ve dayanak dosyayı (yol:satır) çıkar:
 - Dependencies: paket yöneticileri, lockfile konumları, izinli lisanslar, güvenlik taraması komutu, sabitleme/güncelleme politikası, özel registry
 - Performance: gecikme/boyut bütçeleri, sıcak endpoint/ekranlar, veri hacmi, önbellek (yalnız belgelenmişse)
 - Observability: log/metrik/trace kütüphaneleri ve kuralları, korelasyon/tenant kimliği, log'a girmeyecek veriler, sağlık endpoint'leri
+- İsteğe bağlı `ASO` alanı için uygulama adını, mağaza bağlantılarını, platform/ülke/dil kapsamını, hedef kullanıcıyı, marka dilini,
+  doğrulanmış özellikleri, analitik olaylarını, veri dönemini ve varlık veya kanıt dosyalarının yollarını ara. Ürün belgelerini,
+  mağaza taslaklarını ve mevcut raporları kullan.
 - Finish gate: hangi değişiklik hangi bağımsız kontrolü/reviewer'ı gerektirir; reviewer geçti ifadesi (yalnız mevcut belgelerden)
 - Release: changelog + sürüm kuralı, commit stili, commit'e girmeyecek gizli dosyalar (.gitignore ve belgelenmiş dosya listesinden; zaten izlenen/stage edilmiş dosyalar da kapsamdadır)
 - Production: orkestratör/hedef (Kubernetes: context+namespace; değilse host/proje/stack), bulut CLI kimlik komutu, status/deploy/rollback komutları,
@@ -74,11 +80,13 @@ Keşiften sonra alanları üç gruba ayır ve kullanıcıya KISA bir tablo olara
 3. **Bulunamadı:** repoda dayanak yok. Sor.
 Her zaman kullanıcıya sorulacaklar (çıkarım yazılmaz): Production hedefi ve deploy komutu, Hard limits, Finish gate
 (belgede yoksa sor; kullanıcı istemezse alanı yazma, kit'in varsayılan gate tablosu kullanılır), Dev app test girişi (belgelenmemişse). Tek müşterili olduğu anlaşıldıysa tenant alanlarını sorma.
+`ASO` hakkında yalnız App Store veya Google Play kapsamı olan projelerde ve eksik bilgi ilgili bir ASO kararını etkiliyorsa sor.
 
 ## 3. Soru-cevap
 - Soruları gruplar halinde ve en çok 4 soruyla sor (AskUserQuestion varsa onu kullan: cevaplanabilir seçenekler + "Diğer").
   Her soruda neyi aradığını, nerede baktığını ve varsa önerini söyle.
 - Kullanıcı "bilmiyorum/geç" derse alanı `BELİRTİLMEMİŞ` yaz; ısrar etme, uydurma.
+- İsteğe bağlı `ASO` alanını mevcut ve ilgili bilgilerle doldur. Bilgi yoksa alanı atla. Girdiler çağrı sırasında da verilebilir.
 - Aynı cevabı iki kez isteme; önceki cevaplardan türeyen alanı (ör. tek müşterili → tenant alanları yok) sormadan ele.
 - Cevapları yazmadan önce özetle ve onay al; onaydan sonra bölümü yaz.
 
