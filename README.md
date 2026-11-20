@@ -1,7 +1,7 @@
 # kg-devkit
 
-Project-agnostic agents, skills and rules for **Claude Code** and **Codex**: developers, test developers, reviewers
-(database, tenant security), an architecture advisor, a scope advisor, and release/rollback/live-check/migration skills.
+Project-agnostic agents, skills and rules for **Claude Code** and **Codex**, including developers, test developers,
+reviewers, architecture and scope advisors, App Store and Google Play optimization specialists, and release/rollback/live-check/migration skills.
 A Claude-only safety hook asks for approval before `kubectl`/`helm`/`terraform`/`docker`/cloud-CLI mutations, database migration applies, secret reads and destructive git commands (best-effort, fail-open without Python).
 Nothing project-specific is baked in: each repo describes itself in a `## Project profile` section of its `AGENTS.md`
 (see the [template](docs/project-profile-template.md)), and the agents read it first. License: MIT.
@@ -41,10 +41,11 @@ agent'ı/skill'i plugin'i ezer. Betikler yalnız sembolik bağ kurar, var olan d
 
 ## İçerik
 
-- **Agent'lar (15):** `frontend-developer`, `frontend-browser-tester`, `frontend-test-developer`, `backend-developer`,
+- **Agent'lar (21):** `frontend-developer`, `frontend-browser-tester`, `frontend-test-developer`, `backend-developer`,
   `backend-test-developer`, `database-reviewer`, `engineering-software-architect`, `devops-engineer`, `devops-operator`,
   `tenant-security-reviewer`, `scope-advisor`, `api-contract-reviewer`, `dependency-supply-chain-reviewer`,
-  `performance-reviewer`, `observability-reviewer`. Riskli işler için `devops-operator`, `database-reviewer`,
+  `performance-reviewer`, `observability-reviewer`, `aso-lead`, `aso-search-specialist`, `aso-copy-localization-specialist`,
+  `aso-creative-specialist`, `aso-growth-analyst`, `aso-release-reviewer`. Riskli işler için `devops-operator`, `database-reviewer`,
   `tenant-security-reviewer`, `api-contract-reviewer` ve `dependency-supply-chain-reviewer` `opus`, diğerleri `sonnet` modelini kullanır. `tenant-security-reviewer` ve `scope-advisor`
   çok kiracılı projeler içindir (tek müşterili projede `scope-advisor` `NOT-APPLICABLE` döner). Ayrıntı: [agent gereksinimleri](docs/agent-requirements.md).
 - **Skill'ler:** yalnız açıkça çağrılanlar `browser-test`, `add-migration`, `release`, `rollback`, `live-check`; `verify-change`
@@ -72,6 +73,26 @@ agent'ı/skill'i plugin'i ezer. Betikler yalnız sembolik bağ kurar, var olan d
 - **Sonuç satırı zorlaması** (yalnız Claude): `hooks/require_outcome.py`, bir reviewer raporunu `VERDICT:` satırı olmadan veya bir
   yazar agent `STATUS:` satırı olmadan bitirirse agent'ı bir kez geri çevirip satırı ister (ikinci durmada karışmaz; satırın
   değerini denetlemez). Kapatmak için `KG_REQUIRE_OUTCOME=off`.
+
+## App Store ve Google Play optimizasyonu
+
+ASO çalışmasının kapsamını ve önceliklerini `aso-lead` belirler. `aso-search-specialist` pazar ve mağaza alanı bazında
+arama haritası çıkarır. `aso-copy-localization-specialist` alan başına karakter sayısıyla yerelleştirilmiş metin taslakları,
+`aso-creative-specialist` görsel brief ve varyant hipotezleri, `aso-growth-analyst` metrik tanımları ve deney planı verir.
+`aso-release-reviewer` hazırlanan mağaza metinlerini, görselleri ve ilgili ölçüm kanıtını bağımsız inceler.
+
+Kapsamlı denetimde ana oturum önce liderden kapsam ve girdi listesi alır, bağımsız uzmanları paralel çağırabilir ve
+hazırlanan taslakları reviewer'a verir. Tek görevde ilgili uzman doğrudan çağrılır. İsteğe bağlı `ASO` profil alanını
+veya çağrıyla paylaşılan kanıtı kullan. Mağaza konsolu çıktıları ve güncel resmî belge bölümleri dosya olarak verilebilir.
+Altı rol de salt-okuma çalışır. ASO incelemesi isteğe bağlıdır ve mevcut mobil kod, QA ve yayın sorumlulukları ilgili ekiplerdedir.
+
+Claude Code ana oturumundan `kg-devkit:<ad>` adlı alt agent'ı çağırmasını iste. Codex'te `./scripts/install-codex.sh`
+ile kurulumdan sonra ana oturumda yalnız `<ad>` kullan. Örnek istemlerdeki dosya yollarını kendi projene göre değiştir.
+
+- Claude Code — `kg-devkit:aso-copy-localization-specialist` ile TR/tr-TR için App Store ve Google Play mağaza metni taslağı hazırla.
+  Mevcut metin, arama bulguları, doğrulanmış özellikler ve resmî alan sınırları `docs/aso/brief.md` dosyasında.
+- Codex — `aso-release-reviewer` ile TR/tr-TR iOS ve Android mağaza taslaklarını incele. Metin ve değişen görseller
+  `docs/aso/listing-draft.md` dosyasında, teklif başlatma olayı kanıtı `docs/aso/events.md` dosyasında.
 
 ## Sürümleme
 

@@ -8,7 +8,7 @@ halidir. Projeye özgü bilgi (komutlar, yollar, cluster adları, kural belgeler
 
 | Tür | Kaynak | Claude | Codex |
 | --- | --- | --- | --- |
-| Agent (15) | `plugins/kg-devkit/agents/*.md` | plugin, `kg-devkit:<ad>` | `codex/agents/*.toml` → `~/.codex/agents` |
+| Agent (21) | `plugins/kg-devkit/agents/*.md` | plugin, `kg-devkit:<ad>` | `codex/agents/*.toml` → `~/.codex/agents` |
 | Skill (9) | `plugins/kg-devkit/skills/*/SKILL.md` (6 iş akışı + kurallardan üretilen 3 disiplin skill'i) | plugin, `/kg-devkit:<ad>` | `codex/skills/*` → `~/.agents/skills`, `$<ad>` |
 | Ortak referans (2) | `plugins/kg-devkit/references/*.md` | skill'ler `${CLAUDE_PLUGIN_ROOT}/references/...` yoluyla okur | ilgili skill'in `references/` klasörüne kopyalanır |
 | Kanca (3 betik, 3 olay) | `plugins/kg-devkit/hooks/` | plugin ile gelir | yok |
@@ -20,15 +20,22 @@ halidir. Projeye özgü bilgi (komutlar, yollar, cluster adları, kural belgeler
 `codex/` plugin dağıtımıdır; `.codex/` bu reponun yerel bakım araçlarıdır. `scripts/build-codex.py` plugin
 çıktısını üretir ve `scripts/sync-claude-codex.py` ile bakım çıktısını günceller. `--check` iki çıktıyı da
 dosya yazmadan doğrular. `install-codex.sh` yalnız `codex/` altındaki dağıtımı kurar; bakım agent'larını global
-olarak kurmaz. Tüketici projelerin `Project profile` sözleşmesi değişmez.
+olarak kurmaz.
 
 ## Tasarım kararları
 
-- **Profil okuma:** Agent ve skill'ler önce `Project profile` bölümünü okur; yoksa `package.json`/README'den çıkarım yapar
-  ve raporda söyler. Rapor dili profilden gelir (varsayılan: kullanıcının isteği).
-- **Reviewer çıktısı:** tüm reviewer agent'ları (`database-reviewer`, `tenant-security-reviewer`, `api-contract-reviewer`, `dependency-supply-chain-reviewer`, `performance-reviewer`, `observability-reviewer`) raporu `VERDICT: PASS / FAIL / UNCLEAR` ile bitirir;
-  profil farklı bir geçti ifadesi isterse onu da yazar.
+- **Profil okuma:** Agent ve skill'ler önce `Project profile` bölümünü okur. Profil yoksa ASO rolleri çağıranın kanıtını
+  kullanır. Diğer rollerin bu durumda nasıl çalıştığı [agent gereksinimlerinde](agent-requirements.md) açıklanır.
+  Rapor dili profilden gelir (varsayılan: kullanıcının isteği).
+- **Reviewer çıktısı:** tüm reviewer agent'ları (`database-reviewer`, `tenant-security-reviewer`, `api-contract-reviewer`, `dependency-supply-chain-reviewer`, `performance-reviewer`, `observability-reviewer`, `aso-release-reviewer`) raporunda tek `VERDICT: PASS / FAIL / UNCLEAR` satırı verir.
+  Profil farklı bir geçti ifadesi isterse onu da yazar. `aso-release-reviewer` mağaza taslağı veya diff'i, değişen varlıkları
+  ve varsa ölçüm kanıtını alır. Hüküm için gerekli kanıt eksikse `NEEDS:` ve `VERDICT: UNCLEAR` döner.
 - **Salt-okuma sınırı:** Reviewer, danışman ve scope agent'ları yalnız `Read, Grep, Glob` kullanır (Codex'te `sandbox_mode = "read-only"`).
+- **ASO rolleri:** `aso-lead` kapsamı ve öncelikleri, `aso-search-specialist` arama terimi haritasını ve rakip gözlemlerini,
+  `aso-copy-localization-specialist` yerelleştirilmiş metinleri, `aso-creative-specialist` görsel brief ve varyant hipotezlerini,
+  `aso-growth-analyst` ölçüm ve deney kararlarını, `aso-release-reviewer` bağımsız listeleme incelemesini yürütür.
+  Altı rol de isteğe bağlı `ASO` profil alanı veya çağrı girdisiyle salt-okuma çalışır. Uzmanları ana oturum çağırır.
+  Reviewer'ın bulguları danışmanlık kapsamındadır. Mobil kod, QA ve yayın sorumluluğu ilgili ekiplerdedir.
 - **Yan etkili skill'ler:** `release`, `rollback`, `live-check`, `add-migration`, `browser-test`
   `disable-model-invocation: true` ile yalnız açıkça çağrılır; `verify-change` yetki vermediği için model iş bitiminde
   kendiliğinden de çağırabilir. Bir skill başka bir manuel skill'e `/kg-devkit:<ad>` ile değil dosya yoluyla atıf yapar

@@ -21,13 +21,19 @@ dosyayı not et:
 - Canlı ortam: Kubernetes (context+namespace), compose/host, ya da yok (deploy/manifest/CI dosyaları)
 - Frontend ve çalışan dev uygulaması var mı; dev URL ve test girişi belgeli mi
 - Veri katmanı: ORM, migration komutu/dizini; API şeması/OpenAPI; paket yöneticileri ve lockfile
+- App Store veya Google Play kapsamı varsa uygulama/mağaza bağlantıları, pazarlar ve diller, hedef kullanıcı ve marka dili,
+  doğrulanmış özellikler, analitik olayları, veri dönemi ve mağaza varlıkları veya kanıt dosyaları
 - Profilde hangi alanlar dolu: Layers/dirs, Commands, Dev app, Router/navigation files, Rule docs, Conventions, Scope mechanisms,
-  Security review, Persistence, API contract, Dependencies, Performance, Observability, Finish gate, Release, Production,
+  Security review, Persistence, API contract, Dependencies, Performance, Observability, ASO (isteğe bağlı), Finish gate, Release, Production,
   Report language, Hard limits
 
 ## 2. Matris (kit agent'ı / skill'i -> ihtiyaç)
 Durum kuralı: gerekli alan dolu -> HAZIR; alan yok ama koddan çıkarabilir -> ÇIKARIM (raporda belirtir); zorunlu alan yok ve
 agent çıkarım yapmaz -> DURUR; koşul yok -> UYGULANAMAZ.
+ASO rolleri için `ASO` alanı isteğe bağlıdır. İlgili kapsam ve kanıt profilde veya çağrı girdisinde tamamlanıyorsa HAZIR,
+kısmi kanıtla ilerlenebiliyorsa ÇIKARIM yaz. Eldeki kanıtla yapılabilecek işi ve eksik girdinin hangi kararı etkilediğini belirt.
+Gerektiğinde güncel resmî Apple veya Google belge bölümünü çağrı girdisine eklenebilecek kanıt olarak belirt.
+Mağaza kapsamında iş yoksa UYGULANAMAZ yaz.
 
 | Agent / skill | Alanlar | Alan yoksa |
 | --- | --- | --- |
@@ -43,6 +49,12 @@ agent çıkarım yapmaz -> DURUR; koşul yok -> UYGULANAMAZ.
 | `observability-reviewer` | Observability, Conventions (hata), Rule docs | ÇIKARIM |
 | `scope-advisor` | Scope mechanisms, Report language | `Scope mechanisms` yoksa çağrılmaz; yalnız limit/varsayılan/kural/format/izin/bildirim/isteğe bağlı akış değişikliğinde çağrılır; tek müşterili projede UYGULANAMAZ (`NOT-APPLICABLE`) |
 | `engineering-software-architect` | Layers/dirs, Conventions, Scope mechanisms, Rule docs, Finish gate | ÇIKARIM |
+| `aso-lead` | ASO (isteğe bağlı), hedef, pazar ve platformlar, eldeki kanıt ve varsa uzman raporları | Mevcut girdiden kapsam, öncelik ve uzmanların ihtiyaçlarını çıkarır |
+| `aso-search-specialist` | ASO (isteğe bağlı), hedef, mağaza bağlantıları veya görüntüleri, varsa arama ve rakip kanıtı | Mevcut kanıtla terim hipotezleri ve doğrulama ihtiyaçları çıkarır |
+| `aso-copy-localization-specialist` | ASO (isteğe bağlı), hedef diller ve pazarlar, listeleme veya brief, marka dili, doğrulanmış özellikler ve varsa arama bulguları | Kanıtın desteklediği taslağı yazar ve doğrulama gerektiren noktaları belirtir |
+| `aso-creative-specialist` | ASO (isteğe bağlı), dönüşüm hedefi, pazarlar, mevcut varlık veya taslaklar, doğrulanmış faydalar ve varsa performans kanıtı | Mevcut kanıtla görsel brief ve hipotezler çıkarır |
+| `aso-growth-analyst` | ASO (isteğe bağlı), ölçüm dönemi, mağaza ve uygulama içi ölçümler, olay tanımları, trafik kırılımı ve varsa deney verisi | Eldeki ölçümü kullanır. Veri veya örneklem yetersizse kazanan ilan etmez. |
+| `aso-release-reviewer` | ASO (isteğe bağlı), varsa profildeki reviewer geçme ifadesi, hedef platform/pazar, mağaza taslağı veya diff, değişen varlıklar ve varsa ölçüm kanıtı | Hüküm için gereken kanıt eksikse `NEEDS:` ile bildirir ve `VERDICT: UNCLEAR` döner. |
 | `frontend-browser-tester`, `browser-test` | Dev app (URL + yerel test girişi), Commands (start/status), Router/navigation files, Layers/dirs, Hard limits; Claude in Chrome eklentisi | URL veya test girişi yoksa DURUR |
 | `devops-engineer` | Production, Report language, Hard limits | Production yoksa yalnız statik dosyaya bakar; canlı komuttan önce hedefi sorar |
 | `devops-operator` | Production (hedef, secret konumları, registry, topoloji, runbook), Hard limits | DURUR |
@@ -66,6 +78,7 @@ Agent'lar profili bağlamda görüyorsa dosyayı yeniden okumaz: hem `AGENTS.md`
 Keşif bulgularını matrisle eşleştirip her agent/skill için durumu belirle. Şunlar kaynaktan çözülemezse sor (çözülürse sorma):
 kiracı modeli, canlı ortam türü/hedefi, tarayıcı testi istenip istenmediği, `Finish gate`/`Hard limits` belgede yoksa gerçekten
 yok mu. Çıkarım yapabildiğin şeyi sorma; "geç" denirse durumu "BELİRSİZ" bırak.
+Yalnız mağaza kapsamı olan projelerde ilgili ASO kararını etkileyen eksik girdileri sor.
 
 ## 4. Çıktı (sohbette; dosya yazma)
 1. **Özet tablo:** agent/skill | durum (HAZIR / ÇIKARIM / DURUR / UYGULANAMAZ / BELİRSİZ) | neden (eksik alan veya dayanak).
