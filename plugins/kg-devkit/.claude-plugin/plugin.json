@@ -1,6 +1,6 @@
 {
   "name": "kg-devkit",
-  "version": "0.10.1",
+  "version": "0.11.0",
   "description": "Project-agnostic development, operations, App Store, Google Play and web SEO agents for Claude Code and Codex; project facts come from each repo's Project profile.",
   "author": {
     "name": "Kadir Güloğlu"
