@@ -17,6 +17,14 @@ dev URL/test girişi bulamayan `frontend-browser-tester`) ve diğer istisnalar a
 | `dependency-supply-chain-reviewer` (model: opus) | salt-okuma | Dependencies (lisanslar, tarama komutu, sabitleme politikası), Hard limits | manifest/lockfile; ana oturum varsa audit çıktısını verir | manifest ve workflow dosyalarını kendisi bulur, doğrulayamadığını yazar |
 | `performance-reviewer` | salt-okuma | Performance (bütçe, sıcak yollar, hacim), Layers/dirs, Commands | ana oturum diff ve varsa ölçüm verir | bütçe/hacim varsayar ve söyler; ölçümsüz bulguyu "needs measurement" işaretler |
 | `observability-reviewer` | salt-okuma | Observability (log/metrik/trace kuralları, hassas veri, sağlık), Conventions (hata), Rule docs | ana oturum diff verir | log/metrik yığınını koddan çıkarır, doğrulayamadığını yazar |
+| `seo-lead` | salt-okuma (`Read, Grep, Glob`; sonnet) | SEO (isteğe bağlı), Report language | strateji/audit kapsamı için ana oturum isteği ve mevcut kanıt | profil yoksa ilgili repo kanıtından kapsam çıkarır; ölçümsüz etki tahmini yapmaz |
+| `seo-technical-specialist` | salt-okuma (sonnet) | SEO site/framework/sitemap/markets (isteğe bağlı) | ilgili URL veya kaynak/crawl kanıtı | kaynak kodu ve canlı gözlemi ayırır; deploy/index durumunu varsaymaz |
+| `seo-keyword-research-specialist` | salt-okuma (sonnet) | SEO markets/languages/audience/pages/competitors (isteğe bağlı) | hedef pazar/dil ve varsa Search Console/SEO tool export'u | araç verisi yoksa hacim, zorluk veya sıralama uydurmaz |
+| `seo-content-strategist` | salt-okuma (sonnet) | SEO audience/markets/languages/pages/constraints (isteğe bağlı) | hedef sayfa(lar), varsa hedef pazar/dil | doğrulanmamış ürün, fiyat, hukuk veya tıp iddiası eklemez |
+| `seo-offpage-specialist` | salt-okuma (sonnet) | SEO site/market/competitors (isteğe bağlı) | backlink/mention export'u varsa | kanıtsız profil etkisi iddia etmez; manipülatif link ve otomatik spam önermez |
+| `seo-data-analyst` | salt-okuma (sonnet) | SEO conversion goals, analytics/Search Console, baseline (isteğe bağlı) | ölçüm export'u varsa | veri yoksa analiz iddiası değil ölçüm planı; GSC clicks ile GA4 sessions farklıdır |
+| `seo-ai-search-specialist` | salt-okuma (sonnet) | SEO site/markets/languages/brand facts (isteğe bağlı) | AI arama gözlemi varsa platform, sorgu, pazar ve tarih | gözlem yoksa hipotez; alıntılanma/schema/GEO faktörü garantisi vermez |
+| `seo-local-international-specialist` | salt-okuma (sonnet) | SEO business type, countries/languages/URLs (isteğe bağlı) | yerel işletme veya çok dilli/çok bölgeli hedef | hiçbiri yoksa `NOT-APPLICABLE` döner |
 | `scope-advisor` | salt-okuma | Scope mechanisms, Report language | **çok kiracılı/çok müşterili ürün**; yalnız profilde `Scope mechanisms` varken ve istek limit/varsayılan/kural/format/izin/bildirim/isteğe bağlı akış değiştirirken çağrılır | kiracı yoksa `NOT-APPLICABLE` döner ve durur |
 | `engineering-software-architect` | salt-okuma | Layers/dirs, Conventions, Scope mechanisms, Rule docs, Finish gate | ana oturum soru ve kodu/diff'i verir | mimariyi koddan çıkarır |
 | `frontend-developer` | yazar | Layers/dirs, Commands (lint/typecheck/build/test), Rule docs, Hard limits | frontend dizini | `package.json`'dan çıkarım |
@@ -36,6 +44,8 @@ Apple veya Google belge bölümlerini iletebilir. ASO uzmanları gözlem, hipote
 Ana oturum uzman seçimini, paralel çağrıları ve bulguların ilgili ekibe devrini yürütür. Bu roller mağaza içeriği yayımlamaz,
 konsola yazmaz, canlı deney başlatmaz ve reklam harcaması yapmaz. Mobil kod, QA ve yayın kontrolleri ilgili ekibin sorumluluğundadır.
 
+`seo-audit`, birden çok SEO uzmanlığı gerektiren audit'leri ana oturumda kapsamlar ve konsolide eder; dar teknik soru/içerik brief'i için gerekmez. Gerçek agent delegasyonunu yalnız ana oturum yapar. `seo-audit` salt-okuma ve yetki vermez.
+
 ## Skill'ler
 
 `release`, `rollback`, `live-check`, `add-migration` ve `browser-test` `disable-model-invocation: true` taşır: yalnız kullanıcı açıkça çağırınca çalışır. `verify-change` yetki vermediği için model iş bitiminde kendiliğinden de çağırabilir. `test-discipline`, `docs-maintenance` ve `ops-safety` kural skill'leridir: kullanıcı menüsünde görünmez, model ilgili dosyalarla çalışırken yükler. `Project profile` ve `AGENTS.md`/`CLAUDE.md` kısıtları geçerlidir; profil sınır ekleyebilir, skill'de yazan bir sınırı kaldıramaz.
@@ -48,6 +58,7 @@ konsola yazmaz, canlı deney başlatmaz ve reklam harcaması yapmaz. Mobil kod, 
 | `add-migration` | commit/push/deploy/veritabanı yetkisi vermez | Persistence, Conventions, Finish gate, Report language | Persistence yoksa ORM araçlarını bulur, komutu onaylatır; Finish gate yoksa kit'in varsayılan gate tablosunu kullanır; gate belirsizse veya zorunlu review yoksa/FAIL/UNCLEAR ise doğrulandı demez |
 | `verify-change` | commit/push/deploy yetkisi vermez; model de çağırabilir | Commands, Rule docs, Finish gate, Report language | profil yoksa genel kural: koddan çıkarım ve raporda belirtme; Finish gate yoksa kit'in varsayılan gate tablosunu kullanır; zorunlu review yoksa/FAIL/UNCLEAR ise doğrulama engelli |
 | `browser-test` | commit/push/deploy yetkisi vermez; `frontend-browser-tester` agent'ında, sonucu bekleyerek (`background: false`) çalışır | `frontend-browser-tester` satırındaki alanlar | agent'ın davranışı geçerli |
+| `seo-audit` | salt-okuma; harici yayın/hesap değişikliği veya kod yetkisi vermez | SEO (isteğe bağlı), Report language | alanlar yoksa mevcut kanıtla sınırlı audit; yalnız gereken SEO agent'larını seçer |
 | `test-discipline`, `docs-maintenance`, `ops-safety` | yetki vermez; `rules/*.md` kurallarının plugin içindeki karşılığı (üretilir) | yok (repo kuralları ve profil önceliklidir) | genel kurallar geçerli |
 
 Varsayılan gate tablosu `plugins/kg-devkit/references/finish-gate-default.md`, çağıran ↔ agent devir sözleşmesi

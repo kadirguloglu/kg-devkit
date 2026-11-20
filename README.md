@@ -1,7 +1,7 @@
 # kg-devkit
 
 Project-agnostic agents, skills and rules for **Claude Code** and **Codex**, including developers, test developers,
-reviewers, architecture and scope advisors, App Store and Google Play optimization specialists, and release/rollback/live-check/migration skills.
+reviewers, architecture and scope advisors, App Store and Google Play optimization specialists, web SEO specialists, and release/rollback/live-check/migration skills.
 A Claude-only safety hook asks for approval before `kubectl`/`helm`/`terraform`/`docker`/cloud-CLI mutations, database migration applies, secret reads and destructive git commands (best-effort, fail-open without Python).
 Nothing project-specific is baked in: each repo describes itself in a `## Project profile` section of its `AGENTS.md`
 (see the [template](docs/project-profile-template.md)), and the agents read it first. License: MIT.
@@ -41,16 +41,22 @@ agent'ı/skill'i plugin'i ezer. Betikler yalnız sembolik bağ kurar, var olan d
 
 ## İçerik
 
-- **Agent'lar (21):** `frontend-developer`, `frontend-browser-tester`, `frontend-test-developer`, `backend-developer`,
+- **Agent'lar (29):** `frontend-developer`, `frontend-browser-tester`, `frontend-test-developer`, `backend-developer`,
   `backend-test-developer`, `database-reviewer`, `engineering-software-architect`, `devops-engineer`, `devops-operator`,
   `tenant-security-reviewer`, `scope-advisor`, `api-contract-reviewer`, `dependency-supply-chain-reviewer`,
   `performance-reviewer`, `observability-reviewer`, `aso-lead`, `aso-search-specialist`, `aso-copy-localization-specialist`,
-  `aso-creative-specialist`, `aso-growth-analyst`, `aso-release-reviewer`. Riskli işler için `devops-operator`, `database-reviewer`,
+  `aso-creative-specialist`, `aso-growth-analyst`, `aso-release-reviewer`, `seo-lead`, `seo-technical-specialist`,
+  `seo-keyword-research-specialist`, `seo-content-strategist`, `seo-offpage-specialist`, `seo-data-analyst`,
+  `seo-ai-search-specialist`, `seo-local-international-specialist`. Riskli işler için `devops-operator`, `database-reviewer`,
+  `tenant-security-reviewer`, `api-contract-reviewer` ve `dependency-supply-chain-reviewer` `opus`, diğerleri `sonnet` modelini kullanır. `tenant-security-reviewer` ve `scope-advisor`
+  çok kiracılı projeler içindir (tek müşterili projede `scope-advisor` `NOT-APPLICABLE` döner). Ayrıntı: [agent gereksinimleri](docs/agent-requirements.md).
   `tenant-security-reviewer`, `api-contract-reviewer` ve `dependency-supply-chain-reviewer` `opus`, diğerleri `sonnet` modelini kullanır. `tenant-security-reviewer` ve `scope-advisor`
   çok kiracılı projeler içindir (tek müşterili projede `scope-advisor` `NOT-APPLICABLE` döner). Ayrıntı: [agent gereksinimleri](docs/agent-requirements.md).
 - **Skill'ler:** yalnız açıkça çağrılanlar `browser-test`, `add-migration`, `release`, `rollback`, `live-check`; `verify-change`
   yetki vermediği için model iş bitiminde kendiliğinden de çağırabilir. Reviewer tetikleme profilin `Finish gate` alanından,
   o yoksa kit'in varsayılan tablosundan (`references/finish-gate-default.md`) gelir.
+- **SEO ekibi:** sekiz salt-okuma web SEO agent'ı ve çok aşamalı audit'ler için `seo-audit` skill'i. `SEO` project profile alanı isteğe bağlıdır; eksik profil çalışmayı engellemez. Ana oturum yalnız ilgili uzmanları seçer, paralel görevleri delege eder ve bulguları backlog'a dönüştürür. ASO app-store listing'lerini, SEO web aramasını kapsar; teknik uygulama mevcut developer agent'larına gider. Kullanım/ayrım ve yetki sınırları için [agent gereksinimleri](docs/agent-requirements.md) ve [SEO rapor sözleşmesi](plugins/kg-devkit/references/seo-report-contract.md).
+  Claude örnekleri: `kg-devkit:seo-technical-specialist` ile tek teknik soruyu yönelt; çok alanlı çalışma için `/kg-devkit:seo-audit` çağır. Codex örneği: agent seçicisinden `seo-data-analyst` rolünü seçip ölçüm export'u ve tarih aralığını ver; çok uzmanlı audit'te ana oturuma yalnız ilgili `seo-*` agent'larını paralel görevlendirmesini söyle. Her iki platformda da SEO agent'ları salt-okumadır; Codex agent tanımları `scripts/build-codex.py` ile üretilir.
 - **Kurallar** (`rules/` tek kaynak): `kg-test-discipline`, `kg-documentation-maintenance`, `kg-ops-safety`. Plugin içinde
   `test-discipline`, `docs-maintenance`, `ops-safety` skill'leri olarak gelir (model ilgili dosyalarla çalışırken yükler; Codex'te
   de skill olarak kurulur). İstersen aynı kuralları `~/.claude/rules` altına da bağlayabilirsin (`install-claude-rules.sh`).

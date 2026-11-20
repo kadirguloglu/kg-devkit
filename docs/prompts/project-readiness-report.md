@@ -24,7 +24,7 @@ dosyayı not et:
 - App Store veya Google Play kapsamı varsa uygulama/mağaza bağlantıları, pazarlar ve diller, hedef kullanıcı ve marka dili,
   doğrulanmış özellikler, analitik olayları, veri dönemi ve mağaza varlıkları veya kanıt dosyaları
 - Profilde hangi alanlar dolu: Layers/dirs, Commands, Dev app, Router/navigation files, Rule docs, Conventions, Scope mechanisms,
-  Security review, Persistence, API contract, Dependencies, Performance, Observability, ASO (isteğe bağlı), Finish gate, Release, Production,
+  Security review, Persistence, API contract, Dependencies, Performance, Observability, ASO (isteğe bağlı), SEO (isteğe bağlı), Finish gate, Release, Production,
   Report language, Hard limits
 
 ## 2. Matris (kit agent'ı / skill'i -> ihtiyaç)
@@ -47,6 +47,14 @@ Mağaza kapsamında iş yoksa UYGULANAMAZ yaz.
 | `dependency-supply-chain-reviewer` | Dependencies, Hard limits | ÇIKARIM |
 | `performance-reviewer` | Performance, Layers/dirs, Commands | ÇIKARIM (bütçeyi varsayar, söyler) |
 | `observability-reviewer` | Observability, Conventions (hata), Rule docs | ÇIKARIM |
+| `seo-lead` | SEO (isteğe bağlı), Report language | SEO profili yoksa repo/istek kanıtıyla kapsamlar; eksikleri bildirir |
+| `seo-technical-specialist` | SEO framework/site/sitemap/markets (isteğe bağlı) | İlgili kaynakları ve verilen kanıtı inceler; canlı davranış doğrulanmadıysa söyler |
+| `seo-keyword-research-specialist` | SEO markets/languages/audience/pages/competitors (isteğe bağlı) | Gerçek arama verisi yoksa hacim/zorluk uydurmaz; nitel hipotezleri işaretler |
+| `seo-content-strategist` | SEO audience/markets/languages/pages/constraints (isteğe bağlı) | Verilen sayfaları inceler; doğrulanmamış ürün/hukuk/tıp iddiası eklemez |
+| `seo-offpage-specialist` | SEO site/market/competitors (isteğe bağlı), backlink evidence | Veri yoksa profil analizi yapmaz; ücretli/manipülatif link önermez |
+| `seo-data-analyst` | SEO conversion goals, analytics/Search Console, baseline (isteğe bağlı) | Export yoksa ölçüm planı verir; Search Console clicks ≠ GA4 sessions |
+| `seo-ai-search-specialist` | SEO site/markets/languages/brand facts (isteğe bağlı) | Canlı gözlem yoksa hipotez der; citation veya özel sıralama faktörü garanti etmez |
+| `seo-local-international-specialist` | SEO business type, countries/languages/URLs (isteğe bağlı) | Yerel veya uluslararası hedef yoksa `NOT-APPLICABLE` döner |
 | `scope-advisor` | Scope mechanisms, Report language | `Scope mechanisms` yoksa çağrılmaz; yalnız limit/varsayılan/kural/format/izin/bildirim/isteğe bağlı akış değişikliğinde çağrılır; tek müşterili projede UYGULANAMAZ (`NOT-APPLICABLE`) |
 | `engineering-software-architect` | Layers/dirs, Conventions, Scope mechanisms, Rule docs, Finish gate | ÇIKARIM |
 | `aso-lead` | ASO (isteğe bağlı), hedef, pazar ve platformlar, eldeki kanıt ve varsa uzman raporları | Mevcut girdiden kapsam, öncelik ve uzmanların ihtiyaçlarını çıkarır |

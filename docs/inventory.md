@@ -6,13 +6,16 @@ halidir. Projeye özgü bilgi (komutlar, yollar, cluster adları, kural belgeler
 
 ## Ne nerede
 
+SEO web arama ekibi ASO listing ekibinden ayrıdır. SEO agent'ları salt-okumadır. `seo-audit` ana oturumda yalnız gereken uzmanları seçen tekrar kullanılabilir akıştır. ASO ve SEO profile alanları isteğe bağlıdır.
+
+
 | Tür | Kaynak | Claude | Codex |
 | --- | --- | --- | --- |
-| Agent (21) | `plugins/kg-devkit/agents/*.md` | plugin, `kg-devkit:<ad>` | `codex/agents/*.toml` → `~/.codex/agents` |
-| Skill (9) | `plugins/kg-devkit/skills/*/SKILL.md` (6 iş akışı + kurallardan üretilen 3 disiplin skill'i) | plugin, `/kg-devkit:<ad>` | `codex/skills/*` → `~/.agents/skills`, `$<ad>` |
-| Ortak referans (2) | `plugins/kg-devkit/references/*.md` | skill'ler `${CLAUDE_PLUGIN_ROOT}/references/...` yoluyla okur | ilgili skill'in `references/` klasörüne kopyalanır |
+| Agent (29) | `plugins/kg-devkit/agents/*.md` | plugin, `kg-devkit:<ad>` | `codex/agents/*.toml` → `~/.codex/agents` |
+| Skill (10) | `plugins/kg-devkit/skills/*/SKILL.md` (7 iş akışı + kurallardan üretilen 3 disiplin skill'i) | plugin, `/kg-devkit:<ad>` | `codex/skills/*` → `~/.agents/skills`, `$<ad>` |
+| Ortak referans (3) | `plugins/kg-devkit/references/*.md` | skill'ler `${CLAUDE_PLUGIN_ROOT}/references/...` yoluyla okur | ilgili skill'in `references/` klasörüne kopyalanır |
 | Kanca (3 betik, 3 olay) | `plugins/kg-devkit/hooks/` | plugin ile gelir | yok |
-| Davranış testi (5 vaka) | `plugins/kg-devkit/evals/` | `claude plugin eval` (elle) | yok |
+| Davranış testi (13 vaka) | `plugins/kg-devkit/evals/` | `claude plugin eval` (elle) | yok |
 | Kural (3) | `rules/*.md` (tek kaynak) | plugin içinde disiplin skill'i olarak; isteğe bağlı `~/.claude/rules` symlink | disiplin skill'leri olarak (`$test-discipline` vb.) |
 | Repo bakım agent'ı (4) | `.claude/agents/*.md` | yalnız bu repoda | `.codex/agents/*.toml`, yalnız bu repoda |
 | Repo bakım kancası | `.claude/settings.json`, `.claude/hooks/kit-review-gate.py` | yerel `Stop` kancası | `.codex/hooks.json`, `.codex/hooks/kit-review-gate.py` |
