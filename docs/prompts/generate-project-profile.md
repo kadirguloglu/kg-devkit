@@ -36,6 +36,7 @@ Ardından bulgu olup olmamasına bakmadan ilgili her alanı kullanıcıya sor. D
 - ASO (isteğe bağlı): uygulama adı ve mağaza bağlantıları, hedef platformlar, ülkeler ve diller, hedef kullanıcı, marka dili,
   doğrulanmış özellikler, analitik olayları, veri dönemi ve mevcut mağaza varlıkları veya kanıt dosyalarının yolları
   (ASO agent'ları okur; kapsam ve kanıt çağrı sırasında da verilebilir)
+- SEO (isteğe bağlı): website URL/domain, iş türü ve framework; birincil/hedef ülkeler ve diller; hedef kitle; önemli landing page'ler; rakipler; organik dönüşüm hedefleri; Analytics/Search Console erişilebilirliği; CMS; sitemap konumu; SEO kısıtları; baseline raporlama dönemi
 - Finish gate: hangi değişiklik hangi bağımsız kontrolü/reviewer'ı zorunlu kılar (tek kaynak); reviewer geçti ifadesi
   (yazılmazsa kit'in varsayılan gate tablosu kullanılır)
 - Release: changelog dosyası + sürüm kuralı (özellik=minor, düzeltme=patch), commit stili (dil, önek),
@@ -72,6 +73,7 @@ Her alan için değeri ve dayanak dosyayı (yol:satır) çıkar:
   sağlık URL'leri ve beklenen kodlar, iş yükü adları, registry repoları, topoloji sınırları ve güncelleme stratejisi, runbook, secret KONUMLARI.
   Rollback runbook'unda başarılı release kanıtı, image digest → kaynak commit/revision eşlemesi ve uygulanan şemayı salt-okunur doğrulama yöntemi var mı?
   Eski Release deploy/sağlık değerleri Production'da eksikse kullanılabilir; çelişen değerleri kullanıcıya netleştir, yeni yazımda Production'ı kullan.
+- SEO (isteğe bağlı): site/domain, iş türü/framework, hedef ülke/diller/kitle, önemli sayfalar, rakipler, organik dönüşüm hedefleri, Analytics/Search Console, CMS, sitemap, kısıtlar ve baseline dönemi; yalnız belgeli değerleri çıkar, eksikleri zorunlu sayma
 - Report language ve Hard limits: yasak komutlar, branch politikası, ek kısıtlar
 
 ## 2. Eşleştirme: cevaplı / cevapsız

@@ -5,10 +5,10 @@ ile seviye seçilir. Bu dosya kullanıcıya dönük etkiyi özetler; taslağı `
 (bkz. [docs/inventory.md](docs/inventory.md)). Kategoriler: **Kırıcı**, **Eklenen**, **Değişen**, **Düzeltilen**, **Doküman/Altyapı**.
 
 ## Yayınlanmadı (öneri: minor)
-- **Eklenen:** Apple App Store ve Google Play için altı salt-okuma ASO agent'ı (kapsam, arama, yerelleştirme,
-  kreatif, büyüme analizi ve bağımsız mağaza incelemesi) ve Codex karşılıkları. Agent sayısı 15 → 21.
-- **Eklenen:** `Project profile` şablonunda isteğe bağlı `ASO` alanı. Kapsam ve kanıt çağrıda da verilebilir.
-- **Doküman/Altyapı:** ASO rollerinin girdileri ve çağrı örnekleri belgelendi. İki profil prompt'u yeni rollerle eşitlendi.
+- **Eklenen:** Apple App Store ve Google Play için altı salt-okuma ASO agent'ı (kapsam, arama, yerelleştirme, kreatif, büyüme analizi ve bağımsız mağaza incelemesi) ve Codex karşılıkları.
+- **Eklenen:** Sekiz salt-okuma web SEO agent'ı (`seo-lead` ve yedi uzman), çok aşamalı denetimler için `seo-audit` skill'i ve ortak SEO rapor sözleşmesi. Kanıt, belirsizlik, öncelik, handoff, SEO/ASO ayrımı ve developer handoff'u belgelenmiştir.
+- **Eklenen:** İsteğe bağlı `ASO` ve `SEO` project profile alanları; ikisi de profilde bulunmasa da çalışma eldeki kanıtla sürer. SEO için sekiz davranış eval vakası ve senaryo kapsama haritası.
+- **Doküman/Altyapı:** README, agent gereksinimleri, inventory ve iki profile prompt'u ASO/SEO takımları için güncellendi; Codex çıktısı üretim script'iyle oluşturulur.
 
 ## 0.9.0 – 2026-11-11 ([#22](https://github.com/kadirguloglu/kg-devkit/pull/22))
 - **Değişen:** Güvenlik kancası (`guard-infra.py`) yeniden yazıldı: komutu belirteçlere ayırır. Artık onaya düşenler:

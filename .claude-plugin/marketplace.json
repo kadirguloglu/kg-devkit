@@ -7,7 +7,7 @@
     {
       "name": "kg-devkit",
       "source": "./plugins/kg-devkit",
-      "description": "Personal, project-agnostic agents and skills; project facts come from each repo's Project profile."
+      "description": "Project-agnostic development, operations, App Store, Google Play and web SEO agents; project facts come from each repo's Project profile."
     }
   ],
   "description": "Kadir's personal project-agnostic agents and skills"

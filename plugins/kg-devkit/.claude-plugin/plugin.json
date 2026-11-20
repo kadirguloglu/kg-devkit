@@ -1,7 +1,7 @@
 {
   "name": "kg-devkit",
   "version": "0.10.1",
-  "description": "Personal, project-agnostic agents, skills and safety hooks; project facts come from each repo's Project profile.",
+  "description": "Project-agnostic development, operations, App Store, Google Play and web SEO agents for Claude Code and Codex; project facts come from each repo's Project profile.",
   "author": {
     "name": "Kadir Güloğlu"
   },
@@ -12,6 +12,11 @@
     "agents",
     "skills",
     "code-review",
+    "aso",
+    "app-store-optimization",
+    "seo",
+    "technical-seo",
+    "content-strategy",
     "devops",
     "release",
     "hooks"

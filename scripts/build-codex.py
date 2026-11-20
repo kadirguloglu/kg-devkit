@@ -75,6 +75,10 @@ CODEX_LOGGING = (
     "language other than Turkish, write the same two lines in that language.\n\n"
 )
 PLUGIN_REF = "${CLAUDE_PLUGIN_ROOT}/references/"
+SEO_REPORT_CONTRACT_CODEX = (
+    "shared SEO report contract: cite source paths/lines or supplied URLs and observation context; separate observed facts, "
+    "hypotheses and unknowns; never invent metrics; state severity, impact, recommendation, validation and success metric when relevant."
+)
 
 
 def split_md(path):
@@ -136,26 +140,30 @@ def build():
             meta["description"] = meta["description"].replace(old, new)
         tools = {t.strip() for t in meta.get("tools", "").split(",") if t.strip()}
         read_only = bool(tools) and not (tools & WRITE_TOOLS)
+        codex_body = codexify(body).replace("references/seo-report-contract.md", SEO_REPORT_CONTRACT_CODEX)
         if '"""' in body:
             sys.exit(f"{name}: gövde üç çift tırnak içeriyor")
         out = f"name = {toml_str(meta['name'])}\ndescription = {toml_str(meta['description'])}\n"
         if read_only:
             out += 'sandbox_mode = "read-only"\n'
-        out += 'developer_instructions = """\n' + CODEX_LOGGING.format(name=name) + codexify(body).rstrip("\n") + '"""\n'
+        out += 'developer_instructions = """\n' + CODEX_LOGGING.format(name=name) + codex_body.rstrip("\n") + '"""\n'
         files[f"agents/{name}.toml"] = out
     for sk in sorted(glob.glob(os.path.join(SRC, "skills", "*", "SKILL.md"))):
         name = sk.split(os.sep)[-2]
         meta, body = split_md(sk)
-        uses_refs = PLUGIN_REF in body
+        refs = sorted(set(re.findall(re.escape(PLUGIN_REF) + r"([^`\s]+)", body)))
         body = SKILL_BODY_OVERRIDES.get(name, codexify(body))
         if "${CLAUDE_PLUGIN_ROOT}" in body:
             sys.exit(f"{name}: Codex karşılığı olmayan ${{CLAUDE_PLUGIN_ROOT}} yolu")
         files[f"skills/{name}/SKILL.md"] = (
             f"---\nname: {meta['name']}\ndescription: {meta['description']}\n---\n\n{body.lstrip()}"
         )
-        if uses_refs:  # Codex skill'i kendi dizininden okur: ortak referanslar yanına kopyalanır
-            for ref in sorted(glob.glob(os.path.join(SRC, "references", "*.md"))):
-                files[f"skills/{name}/references/{os.path.basename(ref)}"] = open(ref, encoding="utf-8").read()
+        if refs:  # Yalnız skill'in gerçekten kullandığı ortak referansı kopyala.
+            for ref in refs:
+                path = os.path.join(SRC, "references", ref)
+                if not os.path.isfile(path):
+                    sys.exit(f"{name}: ortak referans yok: {ref}")
+                files[f"skills/{name}/references/{os.path.basename(ref)}"] = open(path, encoding="utf-8").read()
         if meta.get("disable-model-invocation") == "true":
             files[f"skills/{name}/agents/openai.yaml"] = "policy:\n  allow_implicit_invocation: false\n"
     return files

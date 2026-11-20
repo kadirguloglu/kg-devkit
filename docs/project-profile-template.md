@@ -1,7 +1,7 @@
 # Project profile şablonu
 
 Her projenin `AGENTS.md` (veya `CLAUDE.md`) dosyasına `## Project profile` başlığıyla eklenir.
-kg-devkit agent ve skill'leri önce bu bölümü okur. Profil yoksa ASO rolleri çağıranın kanıtını kullanır. Diğer rollerin
+kg-devkit agent ve skill'leri önce bu bölümü okur. Profil yoksa ASO ve SEO rolleri çağıranın kanıtını kullanır. Diğer rollerin
 profil olmadan nasıl çalıştığı [agent gereksinimlerinde](agent-requirements.md) açıklanır.
 Yalnız ilgili alanları doldur, kullanılmayanı sil.
 
@@ -33,6 +33,7 @@ varsa ve profil `AGENTS.md` içindeyse `CLAUDE.md`'ye `@AGENTS.md` satırını e
 - ASO (isteğe bağlı): uygulama adı ve mağaza bağlantıları, hedef platformlar, ülkeler ve diller, hedef kullanıcı, marka dili,
   doğrulanmış özellikler, analitik olayları, veri dönemi ve mevcut mağaza varlıkları veya kanıt dosyalarının yolları
   (ASO agent'ları okur; kapsam ve kanıt çağrı sırasında da verilebilir)
+- SEO (isteğe bağlı): website URL/domain, iş türü ve framework; birincil/hedef ülkeler ve diller; hedef kitle; önemli landing page'ler; rakipler; organik dönüşüm hedefleri; Analytics/Search Console erişilebilirliği; CMS; sitemap konumu; SEO kısıtları; baseline raporlama dönemi
 - Finish gate: hangi değişiklik hangi bağımsız kontrolü/reviewer'ı zorunlu kılar (tek kaynak); reviewer geçti ifadesi
   (yazılmazsa kit'in varsayılan gate tablosu kullanılır)
 - Release: changelog dosyası + sürüm kuralı (özellik=minor, düzeltme=patch), commit stili (dil, önek),
